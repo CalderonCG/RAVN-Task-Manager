@@ -11,15 +11,15 @@ function SideBar() {
       <img src="/Ravn.png" alt="Logo" className="w-10 hidden lg:flex mb-5" />
 
       <SideBarCard label="Dashboard">
-        <RiFunctionLine className="text-xl" />
+        <RiFunctionLine className="text-2xl" />
       </SideBarCard>
 
       <SideBarCard label="Add project">
-        <IoIosAddCircle className="text-xl" />
+        <IoIosAddCircle className="text-2xl" />
       </SideBarCard>
 
       <SideBarCard label="My task">
-        <RiLayoutTopLine className="text-xl" />
+        <RiLayoutTopLine className="text-2xl" />
       </SideBarCard>
     </div>
   );

@@ -9,8 +9,10 @@
   --color-font-secondary: #94979a;
   --color-primary: #da584b;
   --color-primary-hover: #da584b33;
-
-  --color-secondary: #94979a;
+  --color-accent: #37393d;
+  --color-accent-hover: #94979a;
+  --color-secondary: #70b252;
+  --color-tertiary: #70b252;
 }
 
 .dark {
@@ -20,5 +22,8 @@
   --color-font-secondary: #94979a;
   --color-primary: #da584b;
   --color-primary-hover: #da584b1a;
-  --color-secondary: #94979a;
+  --color-accent: #37393d;
+  --color-accent-hover: #94979a;
+  --color-secondary: #70b252;
+  --color-tertiary: #70b252;
 }

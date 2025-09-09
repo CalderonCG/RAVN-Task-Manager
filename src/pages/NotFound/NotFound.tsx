@@ -1,5 +1,6 @@
 
 import AddButton from "../../components/AddButton/AddButton"
+import Card from "../../components/Card/Card"
 import SearchBar from "../../components/SearchBar/SearchBar"
 import TabSwitch from "../../components/TabSwitch/TabSwitch"
 
@@ -9,6 +10,7 @@ function NotFound() {
       <SearchBar/>
       <TabSwitch/>
       <AddButton/>
+      <Card/>
         {/* <h1>404 Page not found</h1> */}
     </div>
   )

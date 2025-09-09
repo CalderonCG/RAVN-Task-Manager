@@ -8,7 +8,7 @@ function TabSwitch() {
     lg:flex-row-reverse lg:w-fit lg:bg-inherit
     "
     >
-      <button className="py-1 px-6 w-1/2 rounded-lg bg-secondary flex items-center justify-center 
+      <button className="py-1 px-6 w-1/2 rounded-lg bg-accent-hover flex items-center justify-center 
       lg:w-fit lg:text-primary lg:border-2 lg:bg-inherit lg:p-2">
         <RiFunctionLine className=" hidden lg:flex text-3xl" />
         <p className="flex lg:hidden">Dashboard</p>
