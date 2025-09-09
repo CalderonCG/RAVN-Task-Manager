@@ -9,6 +9,8 @@
   --color-font-secondary: #94979a;
   --color-primary: #da584b;
   --color-primary-hover: #da584b33;
+
+  --color-secondary: #94979a;
 }
 
 .dark {
@@ -18,4 +20,5 @@
   --color-font-secondary: #94979a;
   --color-primary: #da584b;
   --color-primary-hover: #da584b1a;
+  --color-secondary: #94979a;
 }
