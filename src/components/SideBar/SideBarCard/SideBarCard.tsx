@@ -1,22 +1,28 @@
+import { Link, useLocation } from "react-router";
+
 type CardProps = {
   label: string;
-  className?: string;
+  route: string;
 };
 
 function SideBarCard({
   label,
+  route,
   children,
-  className,
 }: React.PropsWithChildren<CardProps>) {
+  const location = useLocation();
+  const isActive: boolean = location.pathname === route;
   return (
-    <div
-      className={`flex flex-col justify-center items-center 
+    <Link
+      to={`${route}`}
+      className={`flex flex-col justify-center items-center cursor-pointer
     lg:flex-row lg:justify-start lg:w-full lg:p-4 lg:gap-4 hover:text-primary hover:bg-primary-hover lg:hover:border-r-4 border-primary   
-    ${className ?? ""}`}
+    ${isActive ? "text-primary font-semibold" : ""}
+    `}
     >
       {children}
       <p className="text-sm">{label}</p>
-    </div>
+    </Link>
   );
 }
 

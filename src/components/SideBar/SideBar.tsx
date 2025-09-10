@@ -10,15 +10,20 @@ function SideBar() {
     >
       <img src="/Ravn.png" alt="Logo" className="w-10 hidden lg:flex mb-5" />
 
-      <SideBarCard label="Dashboard">
+      <SideBarCard label="Dashboard" route="/">
         <RiFunctionLine className="text-2xl" />
       </SideBarCard>
 
-      <SideBarCard label="Add project" className="lg:hidden">
+      <div
+        className={`flex flex-col justify-center items-center cursor-pointer
+    lg:flex-row lg:justify-start lg:w-full lg:p-4 lg:gap-4 hover:text-primary hover:bg-primary-hover lg:hover:border-r-4 border-primary   
+    lg:hidden`}
+      >
         <IoIosAddCircle className="text-2xl" />
-      </SideBarCard>
+        <p className="text-sm">Add task</p>
+      </div>
 
-      <SideBarCard label="My task">
+      <SideBarCard label="My task" route="/MyTasks">
         <RiLayoutTopLine className="text-2xl" />
       </SideBarCard>
     </div>

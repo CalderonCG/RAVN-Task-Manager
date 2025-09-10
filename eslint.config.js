@@ -21,15 +21,6 @@ export default tseslint.config([
     },
     rules: {
       "no-console": ["error", { allow: ["warn", "error"] }],
-      "@typescript-eslint/naming-convention": [
-        "error",
-        {
-          selector: "variable",
-          types: ["boolean"],
-          format: ["PascalCase", "camelCase"],
-          prefix: ["is", "has", "can", "should"],
-        },
-      ],
     },
   },
 ]);

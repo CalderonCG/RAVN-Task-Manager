@@ -1,5 +1,5 @@
 import AddButton from "../../components/AddButton/AddButton";
-import Card from "../../components/Card/Card";
+import Card from "./components/Card/Card";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import TabSwitch from "../../components/TabSwitch/TabSwitch";
 
@@ -11,13 +11,29 @@ function Dashboard() {
         <TabSwitch />
         <AddButton />
       </div>
-      <div className="w-full flex-1 flex gap-4 overflow-x-auto lg:justify-between">
+      <div
+        className="w-full flex-1 flex gap-4 overflow-x-auto lg:justify-between
+        [&::-webkit-scrollbar]:w-2
+  [&::-webkit-scrollbar-track]:bg-background
+  [&::-webkit-scrollbar-thumb]:bg-accent"
+      >
         <div
           className="w-11/12 flex flex-col shrink-0 gap-4
         lg:w-[calc(33.333%-1rem)] "
         >
           <h1 className="text-lg font-semibold">Working (03)</h1>
-          <div className="w-full flex-1 overflow-y-auto shrink-0 flex flex-col gap-4">
+          <div
+            className="w-full flex-1 overflow-y-auto shrink-0 flex flex-col gap-4 scroll-smooth 
+                  [&::-webkit-scrollbar]:w-2
+  [&::-webkit-scrollbar-track]:bg-background
+  [&::-webkit-scrollbar-thumb]:bg-accent"
+          >
+            <Card />
+            <Card />
+            <Card />
+            <Card />
+            <Card />
+            <Card />
             <Card />
             <Card />
             <Card />
@@ -30,7 +46,12 @@ function Dashboard() {
           lg:w-[calc(33.333%-1rem)]"
         >
           <h1 className="text-lg font-semibold">In Progress (03)</h1>
-          <div className="w-full flex-1 overflow-y-auto shrink-0 flex flex-col gap-4">
+          <div
+            className="w-full flex-1 overflow-y-auto shrink-0 flex flex-col gap-4
+            [&::-webkit-scrollbar]:w-2
+          [&::-webkit-scrollbar-track]:bg-background
+        [&::-webkit-scrollbar-thumb]:bg-accent"
+          >
             <Card />
             <Card />
             <Card />
@@ -43,7 +64,12 @@ function Dashboard() {
         lg:w-[calc(33.333%-1rem)]"
         >
           <h1 className="text-lg font-semibold">Completed (03)</h1>
-          <div className="w-full flex-1 overflow-y-auto shrink-0 flex flex-col gap-4">
+          <div
+            className="w-full flex-1 overflow-y-auto shrink-0 flex flex-col gap-4
+            [&::-webkit-scrollbar]:w-2
+          [&::-webkit-scrollbar-track]:bg-background
+          [&::-webkit-scrollbar-thumb]:bg-accent"
+          >
             <Card />
             <Card />
             <Card />

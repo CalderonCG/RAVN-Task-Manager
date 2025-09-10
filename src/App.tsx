@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router";
 import NotFound from "./pages/NotFound/NotFound";
 import SideBar from "./components/SideBar/SideBar";
 import Dashboard from "./pages/Dashboard/Dashboard";
+import Tasks from "./pages/Tasks/Tasks";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <SideBar />
       <Routes>
         <Route path="/" element={<Dashboard />} />
+        <Route path="/MyTasks" element={<Tasks />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
