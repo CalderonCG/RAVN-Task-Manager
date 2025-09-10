@@ -1,5 +1,5 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-import { useState } from "react";
+
 import { RiAddBoxFill } from "react-icons/ri";
 
 type ModalProps = {
@@ -9,18 +9,15 @@ type ModalProps = {
 
 const estimatePoints = [0, 1, 2, 4, 8];
 
-function PointsDropdown({ onSelect }: ModalProps) {
-  const [selected, setSelected] = useState<number | undefined>(undefined);
-
+function PointsDropdown({ selectedValue, onSelect }: ModalProps) {
   const handleSelect = (number: number) => {
     onSelect(number);
-    setSelected(number);
   };
 
   return (
     <Menu>
       <MenuButton className="flex gap-2">
-        {selected === undefined ? (
+        {selectedValue === undefined ? (
           <span className="flex items-center justify-center gap-2 bg-modal-card py-2 px-4 rounded-sm">
             <RiAddBoxFill />
             <p>Estimate</p>
@@ -29,7 +26,7 @@ function PointsDropdown({ onSelect }: ModalProps) {
           <span className="flex gap-2 w-full items-center text-font font-normal cursor-pointer  px-4 py-2">
             <RiAddBoxFill />
 
-            <p>{selected} Points</p>
+            <p>{selectedValue} Points</p>
           </span>
         )}
       </MenuButton>
@@ -38,7 +35,7 @@ function PointsDropdown({ onSelect }: ModalProps) {
         className="bg-background-modal border-1 border-accent-hover rounded-lg text-font mt-2 flex flex-col"
       >
         <MenuItem>
-          <span className="text-font-secondary font-semibold text-lg  px-4 py-2">
+          <span className="text-font-secondary font-semibold text-lg  px-4 py-2 cursor-default">
             Estimate
           </span>
         </MenuItem>
