@@ -1,9 +1,8 @@
-
 import { RiNotification3Line, RiSearchLine } from "react-icons/ri";
 
 function SearchBar() {
   return (
-    <div className="relative flex w-full h-12 text-font-secondary gap-4 items-center">
+    <div className="relative flex  w-full h-12 text-font-secondary gap-4 items-center">
       <RiSearchLine className="absolute left-6 top-1/2 -translate-y-1/2 text-2xl" />
       <input
         type="text"
@@ -11,7 +10,7 @@ function SearchBar() {
         placeholder="Search"
       />
       <div className="flex gap-4 h-full items-center w-fit lg:absolute right-6 ">
-        <RiNotification3Line className="text-2xl shrink-0" />
+        <RiNotification3Line className="text-2xl shrink-0 hover:text-font hover:scale-105" />
         <img src="/Avatar.png" alt="avatar" className="w-8 h-8" />
       </div>
     </div>

@@ -1,16 +1,14 @@
-
 import { RiAlarmLine, RiChat3Line, RiLink } from "react-icons/ri";
-import Badge from "../Badge/Badge";
+import Badge from "../../../../components/Badge/Badge";
 import { MdOutlineAccountTree } from "react-icons/md";
-import Dropdown from "../Dropdown/Dropdown";
-
+import Dropdown from "../../../../components/Dropdown/Dropdown";
 
 function Card() {
   return (
     <div className="w-full bg-background-secondary p-4 flex flex-col gap-4 rounded-lg">
       <div className="w-full flex items-center justify-between">
         <p className="text-lg">Slack</p>
-        <Dropdown/>
+        <Dropdown />
       </div>
       <div className="w-full flex items-center justify-between">
         <p className="font-normal text-sm">1 Pts</p>
