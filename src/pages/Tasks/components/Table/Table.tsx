@@ -8,9 +8,7 @@ function Table() {
         <p>To Do</p>
         <p className="text-font-secondary">(05)</p>
       </div>
-      <div>
-        
-      </div>
+      <div></div>
     </div>
   );
 }

@@ -1,9 +1,8 @@
-
 import { RiNotification3Line, RiSearchLine } from "react-icons/ri";
 
 function SearchBar() {
   return (
-    <div className="relative flex w-full h-12 text-font-secondary gap-4 items-center">
+    <div className="relative flex  w-full h-12 text-font-secondary gap-4 items-center">
       <RiSearchLine className="absolute left-6 top-1/2 -translate-y-1/2 text-2xl" />
       <input
         type="text"
