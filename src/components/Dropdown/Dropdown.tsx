@@ -10,16 +10,17 @@ function Dropdown() {
       </MenuButton>
       <MenuItems
         anchor="bottom end"
-        className="bg-accent border-1 border-accent-hover rounded-lg  text-font mt-2"
+        className="bg-background-modal border-1 border-accent-hover rounded-lg  text-font mt-2"
       >
         <MenuItem>
-          <span className=" data-focus:bg-accent-hover p-2 flex items-center gap-2 ">
-            <RiEditLine  className="text-lg"/>
+          <span className=" data-focus:bg-accent-hover p-2 flex items-center gap-2 cursor-pointer ">
+            <RiEditLine className="text-lg" />
             <p>Edit</p>
           </span>
         </MenuItem>
+
         <MenuItem>
-          <span className=" data-focus:bg-accent-hover p-2 flex items-center gap-2 ">
+          <span className=" data-focus:bg-accent-hover p-2 flex items-center gap-2 cursor-pointer">
             <RiDeleteBin7Line className="text-lg" />
             <p>Delete</p>
           </span>

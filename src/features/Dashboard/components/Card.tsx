@@ -1,7 +1,7 @@
 import { RiAlarmLine, RiChat3Line, RiLink } from "react-icons/ri";
-import Badge from "../../../../components/Badge/Badge";
 import { MdOutlineAccountTree } from "react-icons/md";
-import Dropdown from "../../../../components/Dropdown/Dropdown";
+import Dropdown from "../../../components/Dropdown/Dropdown";
+import Badge from "../../../components/Badge/Badge";
 
 function Card() {
   return (

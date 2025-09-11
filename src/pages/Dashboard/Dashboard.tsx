@@ -1,7 +1,7 @@
-import AddButton from "../../components/AddButton/AddButton";
-import Card from "./components/Card/Card";
+import AddButton from "../../features/AddTask/components/AddButton";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import TabSwitch from "../../components/TabSwitch/TabSwitch";
+import Card from "../../features/Dashboard/components/Card";
 
 function Dashboard() {
   return (

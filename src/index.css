@@ -5,10 +5,12 @@
 @theme {
   --color-background: #ffffff;
   --color-background-secondary: #f4f4f5;
+  --color-background-modal: #393D41;
+  --color-modal-card: #42464a;
   --color-font: #1f2937;
   --color-font-secondary: #94979a;
   --color-primary: #da584b;
-  --color-primary-hover: #da584b33;
+  --color-primary-hover: #c64638;
   --color-accent: #37393d;
   --color-accent-hover: #94979a;
   --color-secondary: #70b252;
@@ -18,10 +20,12 @@
 .dark {
   --color-background: #222528;
   --color-background-secondary: #2c2f33;
+  --color-background-modal: #393D41;
+  --color-modal-card: #42464a;
   --color-font: #ffffff;
   --color-font-secondary: #94979a;
   --color-primary: #da584b;
-  --color-primary-hover: #da584b1a;
+  --color-primary-hover: #c64638;
   --color-accent: #37393d;
   --color-accent-hover: #94979a;
   --color-secondary: #70b252;
