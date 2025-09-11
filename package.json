@@ -11,8 +11,10 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@apollo/client": "^3.14.0",
     "@headlessui/react": "^2.2.7",
     "@tailwindcss/vite": "^4.1.13",
+    "graphql": "^16.11.0",
     "react": "^19.1.1",
     "react-datepicker": "^8.7.0",
     "react-dom": "^19.1.1",
@@ -22,6 +24,10 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
+    "@graphql-codegen/cli": "^6.0.0",
+    "@graphql-codegen/typescript": "^5.0.0",
+    "@graphql-codegen/typescript-operations": "^5.0.0",
+    "@graphql-codegen/typescript-react-apollo": "^4.3.3",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react": "^5.0.0",
