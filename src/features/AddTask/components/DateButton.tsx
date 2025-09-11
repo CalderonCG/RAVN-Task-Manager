@@ -11,7 +11,8 @@ interface CustomInputProps {
 const ExampleCustomInput = forwardRef<HTMLButtonElement, CustomInputProps>(
   ({ value, selectedDate, onClick }, ref) => (
     <button
-      className="flex items-center justify-center gap-2 bg-modal-card py-2 px-4 rounded-sm"
+      className="flex items-center justify-start gap-2 bg-modal-card-mobile py-2 px-4 rounded-sm w-full 
+          lg:w-fit lg:justify-center lg:bg-modal-card"
       onClick={onClick}
       ref={ref}
     >

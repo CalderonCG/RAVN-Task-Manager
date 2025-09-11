@@ -7,6 +7,7 @@
   --color-background-secondary: #f4f4f5;
   --color-background-modal: #393D41;
   --color-modal-card: #42464a;
+  --color-modal-card-mobile: #2e3033;
   --color-font: #1f2937;
   --color-font-secondary: #94979a;
   --color-primary: #da584b;
@@ -22,6 +23,7 @@
   --color-background-secondary: #2c2f33;
   --color-background-modal: #393D41;
   --color-modal-card: #42464a;
+  --color-modal-card-mobile: #2e3033;
   --color-font: #ffffff;
   --color-font-secondary: #94979a;
   --color-primary: #da584b;
@@ -29,5 +31,5 @@
   --color-accent: #37393d;
   --color-accent-hover: #94979a;
   --color-secondary: #70b252;
-  --color-tertiary: #70b252;
+  --color-tertiary: #E5B454;
 }
