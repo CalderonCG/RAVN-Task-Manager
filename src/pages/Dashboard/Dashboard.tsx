@@ -5,10 +5,11 @@ import Card from "../../features/Dashboard/components/Card";
 import { useQuery } from "@apollo/client";
 import { GET_STATUS, GET_TASK } from "../../queries/task";
 import type { GetStatusQuery, GetTaskQuery } from "../../generated/graphql";
+import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 
 function Dashboard() {
   //Queries -----------------------------
-  const { data, loading } = useQuery<GetTaskQuery>(GET_TASK);
+  const { data, loading, error } = useQuery<GetTaskQuery>(GET_TASK);
   const { data: statusList, loading: statusLoading } =
     useQuery<GetStatusQuery>(GET_STATUS);
 
@@ -34,9 +35,11 @@ function Dashboard() {
       </div>
       {/* Container */}
       {isLoading ? (
-        <div className="w-full flex-1 flex items-center justify-center">
+        <div className="w-full flex-1 flex items-center justify-center font-bold text-font-secondary text-xl">
           Loading...
         </div>
+      ) : error ? (
+        <ErrorMessage message={error.message} />
       ) : (
         <div
           className="w-full flex-1 flex gap-4 overflow-x-auto lg:justify-between
@@ -45,27 +48,36 @@ function Dashboard() {
   [&::-webkit-scrollbar-thumb]:bg-accent"
         >
           {/* Columns */}
-          {status.map((type) => (
-            <div
-              key={type.name}
-              className="w-11/12 flex flex-col shrink-0 gap-4
-        lg:w-[calc(33.333%-1rem)] "
-            >
-              <h1 className="text-lg font-semibold">{type.name} (03)</h1>
+          {status.map((type) => {
+            const columnTasks = data?.tasks.filter(
+              (task) => task.status === type.name,
+            );
+            return (
               <div
-                className="w-full flex-1 overflow-y-auto shrink-0 flex flex-col gap-4 scroll-smooth 
+                key={type.name}
+                className="w-11/12 flex flex-col shrink-0 gap-4
+        lg:w-[calc(33.333%-1rem)] "
+              >
+                <h1 className="text-lg font-semibold">{type.name} (03)</h1>
+                <div
+                  className="w-full flex-1 overflow-y-auto shrink-0 flex flex-col gap-4 scroll-smooth 
                   [&::-webkit-scrollbar]:w-2
   [&::-webkit-scrollbar-track]:bg-background
   [&::-webkit-scrollbar-thumb]:bg-accent"
-              >
-                {data !== undefined
-                  ? data.tasks
-                      .filter((task) => task.status === type.name)
+                >
+                  {columnTasks?.length === 0 ? (
+                    <div className="flex w-full justify-center font-bold text-font-secondary text-xl">
+                      <p>Empty</p>
+                    </div>
+                  ) : (
+                    columnTasks
+                      ?.filter((task) => task.status === type.name)
                       .map((task) => <Card task={task} key={task.id} />)
-                  : ""}
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
