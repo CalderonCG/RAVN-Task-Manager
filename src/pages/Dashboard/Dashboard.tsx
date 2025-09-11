@@ -42,6 +42,23 @@ function Dashboard() {
               {data !== undefined
                 ? data.tasks.map((task) => <Card task={task} />)
                 : ""}
+              <Card
+                task={{
+                  __typename: "Task",
+                  id: "81defa64-3dc1-49c3-9d24-d1f3fe2237d2",
+                  name: "Ticket prueba",
+                  status: "BACKLOG",
+                  dueDate: "2025-09-11T15:10:05.431Z",
+                  pointEstimate: "EIGHT",
+                  assignee: {
+                    __typename: "User",
+                    id: "703de395-1d49-4471-aafa-d990dcf32cd1",
+                    fullName: "Grace Stone",
+                    avatar: "https://avatars.dicebear.com/api/initials/gs.svg",
+                  },
+                  tags: ["ANDROID", "REACT"],
+                }}
+              />
             </div>
           </div>
 
