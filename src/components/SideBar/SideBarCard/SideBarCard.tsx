@@ -3,11 +3,13 @@ import { Link, useLocation } from "react-router";
 type CardProps = {
   label: string;
   route: string;
+  isDesktopHidden?: boolean;
 };
 
 function SideBarCard({
   label,
   route,
+  isDesktopHidden = false,
   children,
 }: React.PropsWithChildren<CardProps>) {
   const location = useLocation();
@@ -17,7 +19,7 @@ function SideBarCard({
       to={`${route}`}
       className={`flex flex-col justify-center items-center cursor-pointer
     lg:flex-row lg:justify-start lg:w-full lg:p-4 lg:gap-4 hover:text-primary hover:bg-primary/10 lg:hover:border-r-4 border-primary   
-    ${isActive ? "text-primary font-semibold" : ""}
+    ${isActive ? "text-primary font-semibold" : ""} ${isDesktopHidden ? "lg:hidden" : ""}
     `}
     >
       {children}

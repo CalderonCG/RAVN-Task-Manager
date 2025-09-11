@@ -19,20 +19,23 @@ function TagDropdown({ selectedValue, onSelect }: ModalProps) {
 
   return (
     <Menu>
-      <MenuButton className="flex gap-2">
+      <MenuButton className="flex gap-2 w-full lg:w-auto ">
         {selectedValue.length === 0 ? (
-          <span className="flex items-center justify-center gap-2 bg-modal-card py-2 px-4 rounded-sm">
+          <span
+            className="flex items-center justify-start gap-2 bg-modal-card-mobile py-2 px-4 rounded-sm w-full 
+          lg:w-fit lg:justify-center lg:bg-modal-card"
+          >
             <RiPriceTag3Fill className="text-xl" />
             <p>Label</p>
           </span>
         ) : (
           <div className="flex gap-1 w-full items-center text-font font-normal cursor-pointer ">
-            <span className="flex items-center justify-center gap-2 bg-modal-card py-2 px-4 rounded-sm">
+            <span className="flex items-center justify-center gap-2 lg:bg-modal-card bg-modal-card-mobile py-2 px-4 rounded-sm ">
               {selectedValue[0]}
             </span>
             {selectedValue.length > 1 && (
               <span
-                className="flex items-center justify-center gap-2 bg-modal-card py-2 px-2 rounded-sm"
+                className="flex items-center justify-center gap-2 bg-modal-card-mobile lg:bg-modal-card py-2 px-2 rounded-sm"
                 title={selectedValue.slice(1).toString()}
               >
                 +{selectedValue.length - 1}
@@ -43,7 +46,7 @@ function TagDropdown({ selectedValue, onSelect }: ModalProps) {
       </MenuButton>
       <MenuItems
         anchor="bottom start"
-        className="bg-background-modal border-1 w-42 border-accent-hover rounded-lg text-font mt-2 flex flex-col"
+        className="bg-modal-card-mobile w-[calc(100%-2rem)] lg:w-auto lg:bg-background-modal border-1 border-accent-hover rounded-lg text-font mt-2 flex flex-col"
       >
         <MenuItem>
           <span className="text-font-secondary font-semibold text-lg  px-4 py-2 cursor-default">

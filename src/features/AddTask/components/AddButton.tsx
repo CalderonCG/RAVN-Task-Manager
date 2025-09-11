@@ -6,6 +6,7 @@ import PointsDropdown from "./PointsDropdown";
 import TagDropdown from "./TagDropdown";
 import "react-datepicker/dist/react-datepicker.css";
 import DateButton from "./DateButton";
+import Button from "../../../components/Button/Button";
 
 //Types------------
 type User = {
@@ -41,13 +42,13 @@ function AddButton() {
 
   return (
     <>
-      <button
-        className="py-1 px-6 w-1/2 rounded-lg items-center justify-center hidden  lg:bg-primary lg:hover:scale-105 lg:hover:bg-primary-hover
-    lg:flex lg:w-fit lg:p-2 "
+      <Button
+        variant="neutral"
+        visibility="desktop"
         onClick={() => setIsOpen(true)}
       >
         <RiAddLine className="text-3xl text-font" />
-      </button>
+      </Button>
       <Dialog
         open={isOpen}
         onClose={() => setIsOpen(false)}
@@ -76,15 +77,12 @@ function AddButton() {
               <DateButton />
             </div>
             <div className="w-full flex justify-end gap-8">
-              <button
-                className=" p-2 rounded-lg hover:bg-accent"
-                onClick={() => setIsOpen(false)}
-              >
+              <Button variant="neutral" onClick={() => setIsOpen(false)}>
                 Cancel
-              </button>
-              <button className="bg-primary p-2 rounded-lg hover:bg-primary-hover ">
+              </Button>
+              <Button variant="primary" onClick={() => setIsOpen(false)}>
                 Update
-              </button>
+              </Button>
             </div>
           </DialogPanel>
         </div>
