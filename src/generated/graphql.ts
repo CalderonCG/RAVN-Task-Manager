@@ -168,6 +168,7 @@ export type GetTaskQuery = {
     status: Status;
     pointEstimate: PointEstimate;
     dueDate: string;
+    tags: Array<TaskTag>;
     assignee: {
       __typename: "User";
       id: string;
@@ -190,6 +191,7 @@ export const GetTaskDocument = gql`
         fullName
         avatar
       }
+      tags
     }
   }
 `;
@@ -197,7 +199,7 @@ export const GetTaskDocument = gql`
 /**
  * __useGetTaskQuery__
  *
- * To run a query within a React component, call `useGetTaskQuery` and pass it Date options that fit your needs.
+ * To run a query within a React component, call `useGetTaskQuery` and pass it any options that fit your needs.
  * When your component renders, `useGetTaskQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *

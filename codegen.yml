@@ -12,6 +12,8 @@ generates:
       - typescript-operations
       - typescript-react-apollo
     config:
+      scalars:
+        DateTime: string
       avoidOptionals:
         field: true
         inputValue: false

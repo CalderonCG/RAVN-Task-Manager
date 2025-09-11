@@ -16,6 +16,8 @@
   --color-accent-hover: #94979a;
   --color-secondary: #70b252;
   --color-tertiary: #70b252;
+  --color-tag-blue: #5265b2;
+  --color-tag-purple: #a154e5;
 }
 
 .dark {
@@ -32,4 +34,6 @@
   --color-accent-hover: #94979a;
   --color-secondary: #70b252;
   --color-tertiary: #E5B454;
+  --color-tag-blue: #5265b2;
+  --color-tag-purple: #a154e5;
 }

@@ -8,6 +8,20 @@ type CardProps = {
   task: GetTaskQuery["tasks"][number];
 };
 function Card({ task }: CardProps) {
+  const numberMap = {
+    ZERO: 0,
+    ONE: 1,
+    TWO: 2,
+    FOUR: 4,
+    EIGHT: 8,
+  };
+  const colorMap = {
+    ANDROID: "yellow",
+    IOS: "green",
+    NODE_JS: "blue",
+    RAILS: "red",
+    REACT: "purple",
+  } as const;
   return (
     <div className="w-full bg-background-secondary p-4 flex flex-col gap-4 rounded-lg">
       <div className="w-full flex items-center justify-between">
@@ -15,11 +29,12 @@ function Card({ task }: CardProps) {
         <Dropdown />
       </div>
       <div className="w-full flex items-center justify-between">
-        <p className="font-normal text-sm">{task.pointEstimate} Pts</p>
+        <p className="font-normal text-sm">
+          {numberMap[task.pointEstimate]} Pts
+        </p>
         <span className="flex items-center bg-accent  py-1 px-4 rounded-sm gap-2">
           <RiAlarmLine className="text-lg" />
           <p className="font-normal text-sm">
-            {" "}
             {new Intl.DateTimeFormat("en-GB", {
               day: "numeric",
               month: "short",
@@ -29,7 +44,9 @@ function Card({ task }: CardProps) {
         </span>
       </div>
       <div className="flex gap-2 w-full">
-        <Badge />
+        {task.tags.map((tag) => (
+          <Badge key={tag} label={tag} variant={colorMap[tag]} />
+        ))}
       </div>
       <div className="flex items-center w-full justify-between">
         <img src="/Avatar.png" alt="user" className="w-8 h-8" />
