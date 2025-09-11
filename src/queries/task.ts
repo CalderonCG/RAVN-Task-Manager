@@ -18,3 +18,14 @@ export const GET_TASK = gql`
     }
   }
 `;
+
+export const GET_STATUS = gql`
+  query GetStatus {
+    __type(name: "Status") {
+      name
+      enumValues {
+        name
+      }
+    }
+  }
+`;
