@@ -28,7 +28,7 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
   Float: { input: number; output: number };
-  DateTime: { input: Date; output: Date };
+  DateTime: { input: string; output: string };
 };
 
 export type CreateTaskInput = {
@@ -166,7 +166,8 @@ export type GetTaskQuery = {
     id: string;
     name: string;
     status: Status;
-    dueDate: Date;
+    pointEstimate: PointEstimate;
+    dueDate: string;
     assignee: {
       __typename: "User";
       id: string;
@@ -182,6 +183,7 @@ export const GetTaskDocument = gql`
       id
       name
       status
+      pointEstimate
       dueDate
       assignee {
         id
@@ -195,7 +197,7 @@ export const GetTaskDocument = gql`
 /**
  * __useGetTaskQuery__
  *
- * To run a query within a React component, call `useGetTaskQuery` and pass it any options that fit your needs.
+ * To run a query within a React component, call `useGetTaskQuery` and pass it Date options that fit your needs.
  * When your component renders, `useGetTaskQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
