@@ -1,17 +1,20 @@
 type BadgeProps = {
-  variant?: "primary" | "secondary" | "tertiary";
+  variant?: "red" | "green" | "yellow" | "blue" | "purple";
+  label: string;
 };
 
-function Badge({ variant = "primary" }: BadgeProps) {
+function Badge({ variant = "red", label }: BadgeProps) {
   const variantStyles = {
-    primary: "bg-primary/10 text-primary",
-    secondary: "bg-secondary/10 text-secondary",
-    tertiary: "bg-tertiary/10 text-tertiary",
+    red: "bg-primary/10 text-primary",
+    green: "bg-secondary/10 text-secondary",
+    yellow: "bg-tertiary/10 text-tertiary",
+    blue: "bg-tag-blue/10 text-tag-blue",
+    purple: "bg-tag-purple/10 text-tag-purple",
   };
 
   return (
     <div className={`py-1 px-4 ${variantStyles[variant]} w-fit rounded-sm`}>
-      IOS APP
+      {label}
     </div>
   );
 }
