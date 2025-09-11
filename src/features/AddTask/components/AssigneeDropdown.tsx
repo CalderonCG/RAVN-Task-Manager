@@ -34,8 +34,8 @@ function AssigneeDropdown({ selectedValue, onSelect }: ModalProps) {
     <Menu>
       <MenuButton className="flex gap-2">
         {selectedValue === null ? (
-          <span className="flex items-center justify-center gap-2 bg-modal-card py-2 px-4 rounded-sm">
-            <RiUser3Fill />
+          <span className="flex items-center justify-center gap-2 bg-modal-card py-0 px-4 rounded-sm">
+            <RiUser3Fill className="text-xl" />
             <p>Assignee</p>
           </span>
         ) : (

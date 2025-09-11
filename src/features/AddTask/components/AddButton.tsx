@@ -4,6 +4,8 @@ import { RiAddLine } from "react-icons/ri";
 import AssigneeDropdown from "./AssigneeDropdown";
 import PointsDropdown from "./PointsDropdown";
 import TagDropdown from "./TagDropdown";
+import "react-datepicker/dist/react-datepicker.css";
+import DateButton from "./DateButton";
 
 //Types------------
 type User = {
@@ -53,7 +55,7 @@ function AddButton() {
       >
         <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-black/50">
           <DialogPanel
-            className="w-2/3 max-w-[40rem] space-y-4 bg-background-modal text-font p-4 rounded-lg
+            className="w-2/3 max-w-[42rem] space-y-4 bg-background-modal text-font p-4 rounded-lg
           "
           >
             <input
@@ -71,8 +73,9 @@ function AddButton() {
                 onSelect={setSelectedAssignee}
               />
               <TagDropdown selectedValue={tags} onSelect={dispatch} />
+              <DateButton />
             </div>
-            <div className="w-full flex justify-end gap-2">
+            <div className="w-full flex justify-end gap-8">
               <button
                 className=" p-2 rounded-lg hover:bg-accent"
                 onClick={() => setIsOpen(false)}

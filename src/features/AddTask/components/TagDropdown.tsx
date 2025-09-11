@@ -22,7 +22,7 @@ function TagDropdown({ selectedValue, onSelect }: ModalProps) {
       <MenuButton className="flex gap-2">
         {selectedValue.length === 0 ? (
           <span className="flex items-center justify-center gap-2 bg-modal-card py-2 px-4 rounded-sm">
-            <RiPriceTag3Fill />
+            <RiPriceTag3Fill className="text-xl" />
             <p>Label</p>
           </span>
         ) : (

@@ -19,12 +19,12 @@ function PointsDropdown({ selectedValue, onSelect }: ModalProps) {
       <MenuButton className="flex gap-2">
         {selectedValue === undefined ? (
           <span className="flex items-center justify-center gap-2 bg-modal-card py-2 px-4 rounded-sm">
-            <RiAddBoxFill />
+            <RiAddBoxFill className="text-xl" />
             <p>Estimate</p>
           </span>
         ) : (
           <span className="flex gap-2 w-full items-center text-font font-normal cursor-pointer  px-4 py-2">
-            <RiAddBoxFill />
+            <RiAddBoxFill className="text-xl" />
 
             <p>{selectedValue} Points</p>
           </span>
