@@ -2,15 +2,21 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { RiPriceTag3Fill, RiSquareFill, RiSquareLine } from "react-icons/ri";
 import type { TagAction } from "./AddButton";
 import type { MouseEvent } from "react";
+import type { GetTagsQuery, TaskTag } from "../../../generated/graphql";
 
 type ModalProps = {
-  selectedValue: string[];
+  selectedValue: TaskTag[];
+  isLoading: boolean;
+  options: GetTagsQuery | undefined;
   onSelect: React.ActionDispatch<[action: TagAction]>;
 };
 
-const tags = ["IOS", "Android", "React", "Node"];
-
-function TagDropdown({ selectedValue, onSelect }: ModalProps) {
+function TagDropdown({
+  selectedValue,
+  isLoading,
+  options,
+  onSelect,
+}: ModalProps) {
   const handleClick = (event: MouseEvent, action: TagAction) => {
     event.preventDefault();
     event.stopPropagation();
@@ -53,27 +59,39 @@ function TagDropdown({ selectedValue, onSelect }: ModalProps) {
             Tag Title
           </span>
         </MenuItem>
-        {tags.map((tag, index) => (
-          <MenuItem key={index}>
-            {!selectedValue.find((value) => value === tag) ? (
-              <span
-                className="flex gap-2 items-center text-font font-normal hover:bg-modal-card cursor-pointer  px-4 py-2"
-                onClick={(e) => handleClick(e, { type: "Add", value: tag })}
-              >
-                <RiSquareLine />
-                <p>{tag}</p>
-              </span>
-            ) : (
-              <span
-                className="flex gap-2 items-center text-font font-normal hover:bg-modal-card cursor-pointer  px-4 py-2"
-                onClick={(e) => handleClick(e, { type: "Remove", value: tag })}
-              >
-                <RiSquareFill />
-                <p>{tag}</p>
-              </span>
-            )}
-          </MenuItem>
-        ))}
+        {isLoading
+          ? "Loading..."
+          : options?.__type?.enumValues?.map((tag, index) => (
+              <MenuItem key={index}>
+                {!selectedValue.find((value) => value === tag.name) ? (
+                  <span
+                    className="flex gap-2 items-center text-font font-normal hover:bg-modal-card cursor-pointer  px-4 py-2"
+                    onClick={(e) =>
+                      handleClick(e, {
+                        type: "Add",
+                        value: tag.name as TaskTag,
+                      })
+                    }
+                  >
+                    <RiSquareLine />
+                    <p>{tag.name}</p>
+                  </span>
+                ) : (
+                  <span
+                    className="flex gap-2 items-center text-font font-normal hover:bg-modal-card cursor-pointer  px-4 py-2"
+                    onClick={(e) =>
+                      handleClick(e, {
+                        type: "Remove",
+                        value: tag.name as TaskTag,
+                      })
+                    }
+                  >
+                    <RiSquareFill />
+                    <p>{tag.name}</p>
+                  </span>
+                )}
+              </MenuItem>
+            ))}
       </MenuItems>
     </Menu>
   );

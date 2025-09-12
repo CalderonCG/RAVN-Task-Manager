@@ -1,31 +1,21 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { RiUser3Fill } from "react-icons/ri";
+import type { GetUsersQuery } from "../../../generated/graphql";
+import type { User } from "./AddButton";
 
 type ModalProps = {
   selectedValue: User | null;
+  isLoading: boolean;
+  options: GetUsersQuery | undefined;
   onSelect: React.Dispatch<React.SetStateAction<User | null>>;
 };
 
-type User = {
-  id: string;
-  name: string;
-  avatar: string;
-};
-
-const Users: User[] = [
-  {
-    id: "1",
-    name: "Chris Calderon",
-    avatar: "/Avatar.png",
-  },
-  {
-    id: "2",
-    name: "Toph",
-    avatar: "/Avatar.png",
-  },
-];
-
-function AssigneeDropdown({ selectedValue, onSelect }: ModalProps) {
+function AssigneeDropdown({
+  selectedValue,
+  isLoading,
+  options,
+  onSelect,
+}: ModalProps) {
   const handleSelect = (user: User) => {
     onSelect(user);
   };
@@ -45,10 +35,10 @@ function AssigneeDropdown({ selectedValue, onSelect }: ModalProps) {
           <span className="flex gap-2 w-full items-center text-font font-normal cursor-pointer  px-4 py-2">
             <img
               className="w-6"
-              src={selectedValue.avatar}
-              alt={selectedValue.name}
+              src="/Avatar.png"
+              alt={selectedValue.fullName}
             />
-            <p>{selectedValue.name}</p>
+            <p>{selectedValue.fullName}</p>
           </span>
         )}
       </MenuButton>
@@ -61,17 +51,25 @@ function AssigneeDropdown({ selectedValue, onSelect }: ModalProps) {
             Assign To...
           </span>
         </MenuItem>
-        {Users.map((user) => (
-          <MenuItem key={user.id}>
-            <span
-              className="flex gap-2 w-full items-center text-font font-normal hover:bg-modal-card cursor-pointer  px-4 py-2"
-              onClick={() => handleSelect(user)}
-            >
-              <img className="w-8" src={user.avatar} alt={user.name} />
-              <p>{user.name}</p>
-            </span>
-          </MenuItem>
-        ))}
+        {isLoading
+          ? "Loading..."
+          : options?.users.map((user) => (
+              <MenuItem key={user.id}>
+                <span
+                  className="flex gap-2 w-full items-center text-font font-normal hover:bg-modal-card cursor-pointer  px-4 py-2"
+                  onClick={() =>
+                    handleSelect({
+                      __typename: "User",
+                      id: user.id,
+                      fullName: user.fullName,
+                    })
+                  }
+                >
+                  <img className="w-8" src="/Avatar.png" alt={user.fullName} />
+                  <p>{user.fullName}</p>
+                </span>
+              </MenuItem>
+            ))}
       </MenuItems>
     </Menu>
   );
