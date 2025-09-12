@@ -12,6 +12,7 @@ import {
   CREATE_TASK,
   GET_POINTS,
   GET_TAGS,
+  GET_TASK,
   GET_USERS,
 } from "../../../queries/task";
 import type {
@@ -21,6 +22,7 @@ import type {
   Status,
   TaskTag,
 } from "../../../generated/graphql";
+import ErrorMessage from "../../../components/ErrorMessage/ErrorMessage";
 
 //Types------------
 export type User = GetUsersQuery["users"][number];
@@ -75,6 +77,8 @@ function AddButton() {
   const [tags, dispatch] = useReducer(tagsReducer, [] as TaskTag[]);
   const [createTask] = useMutation(CREATE_TASK);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isMissing, setIsMissing] = useState(false);
 
   //Event handlers
   const handleSuccess = () => {
@@ -90,6 +94,18 @@ function AddButton() {
     }, 1000);
   };
 
+  const handleError = (error: string) => {
+    setTaskName("");
+    setSelectedAssignee(null);
+    setSelectedPoints(undefined);
+    setSelectedDate(null);
+    dispatch({ type: "Reset" });
+    setError(error);
+    setTimeout(() => {
+      setError(null);
+    }, 1000);
+  };
+
   const handleNewTask = async () => {
     if (
       !selectedAssignee ||
@@ -98,6 +114,8 @@ function AddButton() {
       !selectedDate ||
       taskName.trim() === ""
     ) {
+      setIsMissing(true);
+      setTimeout(() => setIsMissing(false), 2000);
       return;
     }
     const addedTask: TaskType = {
@@ -114,13 +132,15 @@ function AddButton() {
         variables: {
           input: addedTask,
         },
+        refetchQueries: [{ query: GET_TASK }],
+        awaitRefetchQueries: true,
       });
 
       if (data) {
         handleSuccess();
       }
     } catch (error) {
-      console.warn(error);
+      if (error instanceof Error) handleError(error.message);
     }
   };
 
@@ -146,6 +166,13 @@ function AddButton() {
             >
               <RiCheckboxCircleLine className="text-6xl" />
               <p className="text-lg font-bold">Task created successfully</p>
+            </DialogPanel>
+          ) : error ? (
+            <DialogPanel
+              className="w-2/3 max-w-[42rem] space-y-2 bg-background-modal text-font py-8 px-4 rounded-lg
+            flex flex-col items-center justify-center"
+            >
+              <ErrorMessage message={error} />
             </DialogPanel>
           ) : (
             <DialogPanel className="w-2/3 max-w-[50rem] space-y-4 bg-background-modal text-font p-4 rounded-lg">
@@ -180,13 +207,20 @@ function AddButton() {
                   onChange={setSelectedDate}
                 />
               </div>
-              <div className="w-full flex justify-end gap-8">
-                <Button variant="neutral" onClick={() => setIsOpen(false)}>
-                  Cancel
-                </Button>
-                <Button variant="primary" onClick={() => handleNewTask()}>
-                  Update
-                </Button>
+              <div className="w-full flex justify-end items-center">
+                {isMissing && (
+                  <p className="text-primary flex-1">
+                    Please complete all fields
+                  </p>
+                )}
+                <div className="flex gap-8">
+                  <Button variant="neutral" onClick={() => setIsOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button variant="primary" onClick={() => handleNewTask()}>
+                    Update
+                  </Button>
+                </div>
               </div>
             </DialogPanel>
           )}
