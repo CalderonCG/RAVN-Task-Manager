@@ -29,6 +29,24 @@ export const GET_USERS = gql`
   }
 `;
 
+//Create new task
+export const CREATE_TASK = gql`
+  mutation CreateTask($input: CreateTaskInput!) {
+    createTask(input: $input) {
+      id
+      name
+      status
+      pointEstimate
+      dueDate
+      assignee {
+        id
+        fullName
+      }
+      tags
+    }
+  }
+`;
+
 //Enum queries-------------------------------------------
 //Status
 export const GET_STATUS = gql`
