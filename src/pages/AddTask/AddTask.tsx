@@ -7,17 +7,17 @@ import DateButton from "../../features/AddTask/components/DateButton";
 
 import Button from "../../components/Button/Button";
 import { useNavigate } from "react-router";
-//Types------------
-type User = {
-  id: string;
-  name: string;
-  avatar: string;
-};
-
-export type TagAction = {
-  type: "Add" | "Remove";
-  value: string;
-};
+import { useQuery } from "@apollo/client";
+import { GET_POINTS, GET_TAGS, GET_USERS } from "../../queries/task";
+import type {
+  GetPointsQuery,
+  GetTagsQuery,
+  GetUsersQuery,
+} from "../../generated/graphql";
+import type {
+  TagAction,
+  User,
+} from "../../features/AddTask/components/AddButton";
 
 //Reducer-----------------
 const tagsReducer = (state: string[], action: TagAction) => {
@@ -31,11 +31,23 @@ const tagsReducer = (state: string[], action: TagAction) => {
   }
 };
 function AddTask() {
+  //Queries--------------------------------------
+  //Queries---------------------------------------------------------------------------------
+  const { data: dataTags, loading: loadingTags } =
+    useQuery<GetTagsQuery>(GET_TAGS);
+  const { data: dataPoints, loading: loadingPoints } =
+    useQuery<GetPointsQuery>(GET_POINTS);
+  const { data: dataUsers, loading: loadingUsers } =
+    useQuery<GetUsersQuery>(GET_USERS);
+
+  //Selected states
   const [selectedAssignee, setSelectedAssignee] = useState<User | null>(null);
   const [selectedPoints, setSelectedPoints] = useState<number | undefined>(
     undefined,
   );
   const [tags, dispatch] = useReducer(tagsReducer, []);
+
+  //Consts
   const navigate = useNavigate();
 
   return (
@@ -56,11 +68,20 @@ function AddTask() {
       <PointsDropdown
         selectedValue={selectedPoints}
         onSelect={setSelectedPoints}
+        options={dataPoints}
+        isLoading={loadingPoints}
       />
-      <TagDropdown selectedValue={tags} onSelect={dispatch} />
+      <TagDropdown
+        selectedValue={tags}
+        onSelect={dispatch}
+        options={dataTags}
+        isLoading={loadingTags}
+      />
       <AssigneeDropdown
         selectedValue={selectedAssignee}
         onSelect={setSelectedAssignee}
+        options={dataUsers}
+        isLoading={loadingUsers}
       />
       <DateButton />
     </div>

@@ -3,51 +3,12 @@ import { MdOutlineAccountTree } from "react-icons/md";
 import Dropdown from "../../../components/Dropdown/Dropdown";
 import Badge from "../../../components/Badge/Badge";
 import type { GetTaskQuery } from "../../../generated/graphql";
+import { colorMap, mapDate, numberMap } from "../../../utils/DataMapper";
 
 type CardProps = {
   task: GetTaskQuery["tasks"][number];
 };
 function Card({ task }: CardProps) {
-  //Data mappers-----------------------------------------
-  //Estimate points
-  const numberMap = {
-    ZERO: 0,
-    ONE: 1,
-    TWO: 2,
-    FOUR: 4,
-    EIGHT: 8,
-  };
-  //Tag color
-  const colorMap = {
-    ANDROID: "yellow",
-    IOS: "green",
-    NODE_JS: "blue",
-    RAILS: "red",
-    REACT: "purple",
-  } as const;
-
-  //Date value
-  const mapDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const today = new Date();
-    const yesterday = new Date();
-    yesterday.setDate(today.getDate() - 1);
-
-    const isSameDay = (date1: Date, date2: Date) =>
-      date1.getFullYear() === date2.getFullYear() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getDate() === date2.getDate();
-
-    if (isSameDay(date, today)) return "TODAY";
-    if (isSameDay(date, yesterday)) return "YESTERDAY";
-
-    return new Intl.DateTimeFormat("en-GB", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    }).format(date);
-  };
-
   //Date status
   const isActive = (dateString: string) => {
     const date = new Date(dateString);

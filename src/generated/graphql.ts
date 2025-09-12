@@ -283,9 +283,38 @@ export type GetTaskQuery = {
   }>;
 };
 
+export type GetUsersQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetUsersQuery = {
+  __typename: "Query";
+  users: Array<{ __typename: "User"; id: string; fullName: string }>;
+};
+
 export type GetStatusQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetStatusQuery = {
+  __typename: "Query";
+  __type: {
+    __typename: "__Type";
+    name: string | null;
+    enumValues: Array<{ __typename: "__EnumValue"; name: string }> | null;
+  } | null;
+};
+
+export type GetTagsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetTagsQuery = {
+  __typename: "Query";
+  __type: {
+    __typename: "__Type";
+    name: string | null;
+    enumValues: Array<{ __typename: "__EnumValue"; name: string }> | null;
+  } | null;
+};
+
+export type GetPointsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetPointsQuery = {
   __typename: "Query";
   __type: {
     __typename: "__Type";
@@ -371,6 +400,76 @@ export type GetTaskQueryResult = Apollo.QueryResult<
   GetTaskQuery,
   GetTaskQueryVariables
 >;
+export const GetUsersDocument = gql`
+  query GetUsers {
+    users {
+      id
+      fullName
+    }
+  }
+`;
+
+/**
+ * __useGetUsersQuery__
+ *
+ * To run a query within a React component, call `useGetUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUsersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetUsersQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetUsersQuery, GetUsersQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetUsersQuery, GetUsersQueryVariables>(
+    GetUsersDocument,
+    options,
+  );
+}
+export function useGetUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetUsersQuery,
+    GetUsersQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetUsersQuery, GetUsersQueryVariables>(
+    GetUsersDocument,
+    options,
+  );
+}
+export function useGetUsersSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<GetUsersQuery, GetUsersQueryVariables>,
+) {
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<GetUsersQuery, GetUsersQueryVariables>(
+    GetUsersDocument,
+    options,
+  );
+}
+export type GetUsersQueryHookResult = ReturnType<typeof useGetUsersQuery>;
+export type GetUsersLazyQueryHookResult = ReturnType<
+  typeof useGetUsersLazyQuery
+>;
+export type GetUsersSuspenseQueryHookResult = ReturnType<
+  typeof useGetUsersSuspenseQuery
+>;
+export type GetUsersQueryResult = Apollo.QueryResult<
+  GetUsersQuery,
+  GetUsersQueryVariables
+>;
 export const GetStatusDocument = gql`
   query GetStatus {
     __type(name: "Status") {
@@ -445,4 +544,149 @@ export type GetStatusSuspenseQueryHookResult = ReturnType<
 export type GetStatusQueryResult = Apollo.QueryResult<
   GetStatusQuery,
   GetStatusQueryVariables
+>;
+export const GetTagsDocument = gql`
+  query GetTags {
+    __type(name: "TaskTag") {
+      name
+      enumValues {
+        name
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetTagsQuery__
+ *
+ * To run a query within a React component, call `useGetTagsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTagsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTagsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetTagsQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetTagsQuery, GetTagsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetTagsQuery, GetTagsQueryVariables>(
+    GetTagsDocument,
+    options,
+  );
+}
+export function useGetTagsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetTagsQuery,
+    GetTagsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetTagsQuery, GetTagsQueryVariables>(
+    GetTagsDocument,
+    options,
+  );
+}
+export function useGetTagsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<GetTagsQuery, GetTagsQueryVariables>,
+) {
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<GetTagsQuery, GetTagsQueryVariables>(
+    GetTagsDocument,
+    options,
+  );
+}
+export type GetTagsQueryHookResult = ReturnType<typeof useGetTagsQuery>;
+export type GetTagsLazyQueryHookResult = ReturnType<typeof useGetTagsLazyQuery>;
+export type GetTagsSuspenseQueryHookResult = ReturnType<
+  typeof useGetTagsSuspenseQuery
+>;
+export type GetTagsQueryResult = Apollo.QueryResult<
+  GetTagsQuery,
+  GetTagsQueryVariables
+>;
+export const GetPointsDocument = gql`
+  query GetPoints {
+    __type(name: "PointEstimate") {
+      name
+      enumValues {
+        name
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetPointsQuery__
+ *
+ * To run a query within a React component, call `useGetPointsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPointsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPointsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetPointsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetPointsQuery,
+    GetPointsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetPointsQuery, GetPointsQueryVariables>(
+    GetPointsDocument,
+    options,
+  );
+}
+export function useGetPointsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetPointsQuery,
+    GetPointsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetPointsQuery, GetPointsQueryVariables>(
+    GetPointsDocument,
+    options,
+  );
+}
+export function useGetPointsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<GetPointsQuery, GetPointsQueryVariables>,
+) {
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<GetPointsQuery, GetPointsQueryVariables>(
+    GetPointsDocument,
+    options,
+  );
+}
+export type GetPointsQueryHookResult = ReturnType<typeof useGetPointsQuery>;
+export type GetPointsLazyQueryHookResult = ReturnType<
+  typeof useGetPointsLazyQuery
+>;
+export type GetPointsSuspenseQueryHookResult = ReturnType<
+  typeof useGetPointsSuspenseQuery
+>;
+export type GetPointsQueryResult = Apollo.QueryResult<
+  GetPointsQuery,
+  GetPointsQueryVariables
 >;

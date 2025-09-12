@@ -7,13 +7,16 @@ import TagDropdown from "./TagDropdown";
 import "react-datepicker/dist/react-datepicker.css";
 import DateButton from "./DateButton";
 import Button from "../../../components/Button/Button";
+import { useQuery } from "@apollo/client";
+import { GET_POINTS, GET_TAGS, GET_USERS } from "../../../queries/task";
+import type {
+  GetPointsQuery,
+  GetTagsQuery,
+  GetUsersQuery,
+} from "../../../generated/graphql";
 
 //Types------------
-type User = {
-  id: string;
-  name: string;
-  avatar: string;
-};
+export type User = GetUsersQuery["users"][number];
 
 export type TagAction = {
   type: "Add" | "Remove";
@@ -34,6 +37,15 @@ const tagsReducer = (state: string[], action: TagAction) => {
 
 function AddButton() {
   const [isOpen, setIsOpen] = useState(false);
+  //Queries---------------------------------------------------------------------------------
+  const { data: dataTags, loading: loadingTags } =
+    useQuery<GetTagsQuery>(GET_TAGS);
+  const { data: dataPoints, loading: loadingPoints } =
+    useQuery<GetPointsQuery>(GET_POINTS);
+  const { data: dataUsers, loading: loadingUsers } =
+    useQuery<GetUsersQuery>(GET_USERS);
+
+  //Selected states
   const [selectedAssignee, setSelectedAssignee] = useState<User | null>(null);
   const [selectedPoints, setSelectedPoints] = useState<number | undefined>(
     undefined,
@@ -68,12 +80,21 @@ function AddButton() {
               <PointsDropdown
                 selectedValue={selectedPoints}
                 onSelect={setSelectedPoints}
+                isLoading={loadingPoints}
+                options={dataPoints}
               />
               <AssigneeDropdown
                 selectedValue={selectedAssignee}
                 onSelect={setSelectedAssignee}
+                isLoading={loadingUsers}
+                options={dataUsers}
               />
-              <TagDropdown selectedValue={tags} onSelect={dispatch} />
+              <TagDropdown
+                selectedValue={tags}
+                onSelect={dispatch}
+                isLoading={loadingTags}
+                options={dataTags}
+              />
               <DateButton />
             </div>
             <div className="w-full flex justify-end gap-8">

@@ -19,9 +19,45 @@ export const GET_TASK = gql`
   }
 `;
 
+//Fetch all users
+export const GET_USERS = gql`
+  query GetUsers {
+    users {
+      id
+      fullName
+    }
+  }
+`;
+
+//Enum queries-------------------------------------------
+//Status
 export const GET_STATUS = gql`
   query GetStatus {
     __type(name: "Status") {
+      name
+      enumValues {
+        name
+      }
+    }
+  }
+`;
+
+//Tags
+export const GET_TAGS = gql`
+  query GetTags {
+    __type(name: "TaskTag") {
+      name
+      enumValues {
+        name
+      }
+    }
+  }
+`;
+
+//Estimate points-
+export const GET_POINTS = gql`
+  query GetPoints {
+    __type(name: "PointEstimate") {
       name
       enumValues {
         name

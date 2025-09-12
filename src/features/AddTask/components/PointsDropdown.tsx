@@ -1,15 +1,22 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
 import { RiAddBoxFill } from "react-icons/ri";
+import type { GetPointsQuery } from "../../../generated/graphql";
+import { numberMap } from "../../../utils/DataMapper";
 
 type ModalProps = {
   selectedValue: number | undefined;
+  options: GetPointsQuery | undefined;
+  isLoading: boolean;
   onSelect: React.Dispatch<React.SetStateAction<number | undefined>>;
 };
 
-const estimatePoints = [0, 1, 2, 4, 8];
-
-function PointsDropdown({ selectedValue, onSelect }: ModalProps) {
+function PointsDropdown({
+  selectedValue,
+  isLoading,
+  options,
+  onSelect,
+}: ModalProps) {
   const handleSelect = (number: number) => {
     onSelect(number);
   };
@@ -42,17 +49,23 @@ function PointsDropdown({ selectedValue, onSelect }: ModalProps) {
             Estimate
           </span>
         </MenuItem>
-        {estimatePoints.map((number) => (
-          <MenuItem key={number}>
-            <span
-              className="flex gap-2 items-center text-font font-normal hover:bg-modal-card cursor-pointer  px-4 py-2"
-              onClick={() => handleSelect(number)}
-            >
-              <RiAddBoxFill />
-              <p>{number} Points</p>
-            </span>
-          </MenuItem>
-        ))}
+        {isLoading
+          ? "Loading..."
+          : options?.__type?.enumValues?.map((number) => {
+              const value = number.name;
+              const numberValue = numberMap[value as keyof typeof numberMap];
+              return (
+                <MenuItem key={numberValue}>
+                  <span
+                    className="flex gap-2 items-center text-font font-normal hover:bg-modal-card cursor-pointer  px-4 py-2"
+                    onClick={() => handleSelect(numberValue)}
+                  >
+                    <RiAddBoxFill />
+                    <p>{numberValue} Points</p>
+                  </span>
+                </MenuItem>
+              );
+            })}
       </MenuItems>
     </Menu>
   );
