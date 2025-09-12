@@ -14,7 +14,6 @@ export const GET_TASK = gql`
         fullName
         avatar
       }
-      e
       tags
     }
   }
