@@ -13,6 +13,8 @@ import type {
   GetPointsQuery,
   GetTagsQuery,
   GetUsersQuery,
+  Status,
+  TaskTag,
 } from "../../../generated/graphql";
 
 //Types------------
@@ -20,11 +22,20 @@ export type User = GetUsersQuery["users"][number];
 
 export type TagAction = {
   type: "Add" | "Remove";
-  value: string;
+  value: TaskTag;
+};
+
+type TaskType = {
+  assigneeID: string;
+  dueDate: string;
+  name: string;
+  pointEstimate: string;
+  status: Status;
+  tags: TaskTag[];
 };
 
 //Reducer-----------------
-const tagsReducer = (state: string[], action: TagAction) => {
+const tagsReducer = (state: TaskTag[], action: TagAction): TaskTag[] => {
   switch (action.type) {
     case "Add":
       return [...state, action.value];
@@ -46,11 +57,34 @@ function AddButton() {
     useQuery<GetUsersQuery>(GET_USERS);
 
   //Selected states
+  const [taskName, setTaskName] = useState<string>("");
   const [selectedAssignee, setSelectedAssignee] = useState<User | null>(null);
-  const [selectedPoints, setSelectedPoints] = useState<number | undefined>(
+  const [selectedPoints, setSelectedPoints] = useState<string | undefined>(
     undefined,
   );
-  const [tags, dispatch] = useReducer(tagsReducer, []);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [tags, dispatch] = useReducer(tagsReducer, [] as TaskTag[]);
+  const [newTask, setNewTask] = useState<TaskType | undefined>(undefined);
+
+  const handleNewTask = () => {
+    if (
+      !selectedAssignee ||
+      !selectedPoints ||
+      tags.length === 0 ||
+      !selectedDate ||
+      taskName.trim() === ""
+    ) {
+      return newTask;
+    }
+    setNewTask({
+      assigneeID: selectedAssignee?.id,
+      dueDate: selectedDate.toISOString(),
+      name: taskName,
+      pointEstimate: selectedPoints,
+      status: "BACKLOG",
+      tags: tags,
+    });
+  };
 
   return (
     <>
@@ -75,6 +109,8 @@ function AddButton() {
               type="text"
               placeholder="Task Name..."
               className="w-full p-2 text-xl font-semibold"
+              value={taskName}
+              onChange={(e) => setTaskName(e.target.value)}
             />
             <div className="flex gap-4">
               <PointsDropdown
@@ -95,13 +131,16 @@ function AddButton() {
                 isLoading={loadingTags}
                 options={dataTags}
               />
-              <DateButton />
+              <DateButton
+                selectedDate={selectedDate}
+                onChange={setSelectedDate}
+              />
             </div>
             <div className="w-full flex justify-end gap-8">
               <Button variant="neutral" onClick={() => setIsOpen(false)}>
                 Cancel
               </Button>
-              <Button variant="primary" onClick={() => setIsOpen(false)}>
+              <Button variant="primary" onClick={() => handleNewTask()}>
                 Update
               </Button>
             </div>

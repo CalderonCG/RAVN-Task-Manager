@@ -1,12 +1,18 @@
-import { forwardRef, useState } from "react";
+import { forwardRef } from "react";
 import DatePicker from "react-datepicker";
 import { RiCalendarCheckLine } from "react-icons/ri";
 
-interface CustomInputProps {
+//types---------------------------------------------
+type CustomInputProps = {
   value?: string;
   onClick?: () => void;
   selectedDate: Date | null;
-}
+};
+
+type DateProps = {
+  selectedDate: Date | null;
+  onChange: React.Dispatch<React.SetStateAction<Date | null>>;
+};
 
 const ExampleCustomInput = forwardRef<HTMLButtonElement, CustomInputProps>(
   ({ value, selectedDate, onClick }, ref) => (
@@ -24,13 +30,11 @@ const ExampleCustomInput = forwardRef<HTMLButtonElement, CustomInputProps>(
 
 ExampleCustomInput.displayName = "ExampleCustomInput";
 
-function DateButton() {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-
+function DateButton({ selectedDate, onChange }: DateProps) {
   return (
     <DatePicker
       selected={selectedDate}
-      onChange={(date: Date | null) => setSelectedDate(date)}
+      onChange={(date: Date | null) => onChange(date)}
       customInput={<ExampleCustomInput selectedDate={selectedDate} />}
       dateFormat="MMM. dd yyyy" // Add this format
       popperClassName=""

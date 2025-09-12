@@ -2,10 +2,10 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { RiPriceTag3Fill, RiSquareFill, RiSquareLine } from "react-icons/ri";
 import type { TagAction } from "./AddButton";
 import type { MouseEvent } from "react";
-import type { GetTagsQuery } from "../../../generated/graphql";
+import type { GetTagsQuery, TaskTag } from "../../../generated/graphql";
 
 type ModalProps = {
-  selectedValue: string[];
+  selectedValue: TaskTag[];
   isLoading: boolean;
   options: GetTagsQuery | undefined;
   onSelect: React.ActionDispatch<[action: TagAction]>;
@@ -67,7 +67,10 @@ function TagDropdown({
                   <span
                     className="flex gap-2 items-center text-font font-normal hover:bg-modal-card cursor-pointer  px-4 py-2"
                     onClick={(e) =>
-                      handleClick(e, { type: "Add", value: tag.name })
+                      handleClick(e, {
+                        type: "Add",
+                        value: tag.name as TaskTag,
+                      })
                     }
                   >
                     <RiSquareLine />
@@ -77,7 +80,10 @@ function TagDropdown({
                   <span
                     className="flex gap-2 items-center text-font font-normal hover:bg-modal-card cursor-pointer  px-4 py-2"
                     onClick={(e) =>
-                      handleClick(e, { type: "Remove", value: tag.name })
+                      handleClick(e, {
+                        type: "Remove",
+                        value: tag.name as TaskTag,
+                      })
                     }
                   >
                     <RiSquareFill />

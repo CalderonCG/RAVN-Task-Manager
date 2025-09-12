@@ -5,10 +5,10 @@ import type { GetPointsQuery } from "../../../generated/graphql";
 import { numberMap } from "../../../utils/DataMapper";
 
 type ModalProps = {
-  selectedValue: number | undefined;
+  selectedValue: string | undefined;
   options: GetPointsQuery | undefined;
   isLoading: boolean;
-  onSelect: React.Dispatch<React.SetStateAction<number | undefined>>;
+  onSelect: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
 function PointsDropdown({
@@ -17,7 +17,7 @@ function PointsDropdown({
   options,
   onSelect,
 }: ModalProps) {
-  const handleSelect = (number: number) => {
+  const handleSelect = (number: string) => {
     onSelect(number);
   };
 
@@ -36,7 +36,7 @@ function PointsDropdown({
           <span className="flex gap-2 w-full items-center text-font font-normal cursor-pointer  px-4 py-2">
             <RiAddBoxFill className="text-xl" />
 
-            <p>{selectedValue} Points</p>
+            <p>{numberMap[selectedValue as keyof typeof numberMap]} Points</p>
           </span>
         )}
       </MenuButton>
@@ -58,7 +58,7 @@ function PointsDropdown({
                 <MenuItem key={numberValue}>
                   <span
                     className="flex gap-2 items-center text-font font-normal hover:bg-modal-card cursor-pointer  px-4 py-2"
-                    onClick={() => handleSelect(numberValue)}
+                    onClick={() => handleSelect(number.name)}
                   >
                     <RiAddBoxFill />
                     <p>{numberValue} Points</p>
