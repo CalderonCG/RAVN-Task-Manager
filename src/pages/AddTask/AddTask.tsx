@@ -49,6 +49,7 @@ function AddTask() {
     useQuery<GetPointsQuery>(GET_POINTS);
   const { data: dataUsers, loading: loadingUsers } =
     useQuery<GetUsersQuery>(GET_USERS);
+  const [createTask] = useMutation(CREATE_TASK);
 
   //Selected states
   const navigate = useNavigate();
@@ -59,7 +60,6 @@ function AddTask() {
   );
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [tags, dispatch] = useReducer(tagsReducer, [] as TaskTag[]);
-  const [createTask] = useMutation(CREATE_TASK);
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isMissing, setIsMissing] = useState(false);

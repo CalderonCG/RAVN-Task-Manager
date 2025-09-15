@@ -1,8 +1,8 @@
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { Menu, MenuButton, MenuItems } from "@headlessui/react";
+import { type PropsWithChildren } from "react";
 import { BsThreeDots } from "react-icons/bs";
-import { RiDeleteBin7Line, RiEditLine } from "react-icons/ri";
 
-function Dropdown() {
+function Dropdown({ children }: PropsWithChildren) {
   return (
     <Menu>
       <MenuButton>
@@ -12,19 +12,7 @@ function Dropdown() {
         anchor="bottom end"
         className="bg-background-modal border-1 border-accent-hover rounded-lg  text-font mt-2"
       >
-        <MenuItem>
-          <span className=" data-focus:bg-accent-hover p-2 flex items-center gap-2 cursor-pointer ">
-            <RiEditLine className="text-lg" />
-            <p>Edit</p>
-          </span>
-        </MenuItem>
-
-        <MenuItem>
-          <span className=" data-focus:bg-accent-hover p-2 flex items-center gap-2 cursor-pointer">
-            <RiDeleteBin7Line className="text-lg" />
-            <p>Delete</p>
-          </span>
-        </MenuItem>
+        {children}
       </MenuItems>
     </Menu>
   );

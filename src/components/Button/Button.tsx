@@ -1,14 +1,14 @@
 import type { PropsWithChildren } from "react";
 
 type ButtonProps = {
-  variant: "primary" | "secondary" | "tertiary" | "neutral";
+  variant?: "primary" | "secondary" | "tertiary" | "neutral";
   visibility?: "mobile" | "desktop" | "all";
 
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
 
 function Button({
-  variant,
+  variant = "neutral",
   visibility = "all",
   onClick,
   children,
