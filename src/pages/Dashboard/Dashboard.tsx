@@ -1,4 +1,3 @@
-import AddButton from "../../features/AddTask/components/AddButton";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import TabSwitch from "../../components/TabSwitch/TabSwitch";
 import Card from "../../features/Dashboard/components/Card";
@@ -7,6 +6,10 @@ import { GET_STATUS, GET_TASK } from "../../queries/task";
 import type { GetStatusQuery, GetTaskQuery } from "../../generated/graphql";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import Loader from "../../components/Loader/Loader";
+import Button from "../../components/Button/Button";
+import { useState } from "react";
+import { RiAddLine } from "react-icons/ri";
+import AddModal from "../../features/AddTask/components/AddModal";
 
 function Dashboard() {
   //Queries -----------------------------
@@ -16,6 +19,7 @@ function Dashboard() {
 
   //Consts ---------------------------
   const isLoading = loading || statusLoading;
+  const [isOpen, setIsOpen] = useState(false);
   const statusOrder = ["BACKLOG", "TODO", "IN_PROGRESS", "DONE", "CANCELLED"];
   const status = (statusList?.__type?.enumValues ?? []).slice().sort((a, b) => {
     const indexA = statusOrder.indexOf(a.name);
@@ -32,7 +36,13 @@ function Dashboard() {
       <SearchBar />
       <div className="w-full flex items-center justify-center lg:justify-between">
         <TabSwitch />
-        <AddButton />
+        <Button
+          variant="neutral"
+          visibility="desktop"
+          onClick={() => setIsOpen(true)}
+        >
+          <RiAddLine className="text-3xl text-font" />
+        </Button>
       </div>
       {/* Container */}
       {isLoading ? (
@@ -81,26 +91,10 @@ function Dashboard() {
           })}
         </div>
       )}
+
+      <AddModal isOpen={isOpen} setIsOpen={setIsOpen} type="create" />
     </div>
   );
 }
 
 export default Dashboard;
-
-// <Card
-//   task={{
-//     __typename: "Task",
-//     id: "81defa64-3dc1-49c3-9d24-d1f3fe2237d2",
-//     name: "Ticket prueba",
-//     status: "BACKLOG",
-//     dueDate: "2025-09-11T15:10:05.431Z",
-//     pointEstimate: "EIGHT",
-//     assignee: {
-//       __typename: "User",
-//       id: "703de395-1d49-4471-aafa-d990dcf32cd1",
-//       fullName: "Grace Stone",
-//       avatar: "https://avatars.dicebear.com/api/initials/gs.svg",
-//     },
-//     tags: ["ANDROID", "REACT"],
-//   }}
-// />

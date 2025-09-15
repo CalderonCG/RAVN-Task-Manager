@@ -1,13 +1,13 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { RiUser3Fill } from "react-icons/ri";
 import type { GetUsersQuery } from "../../../generated/graphql";
-import type { User } from "./AddButton";
+import type { User } from "../../../utils/TaskTypes";
 
 type ModalProps = {
-  selectedValue: User | null;
+  selectedValue: User | undefined;
   isLoading: boolean;
   options: GetUsersQuery | undefined;
-  onSelect: React.Dispatch<React.SetStateAction<User | null>>;
+  onSelect: React.Dispatch<React.SetStateAction<User | undefined>>;
 };
 
 function AssigneeDropdown({
@@ -23,7 +23,7 @@ function AssigneeDropdown({
   return (
     <Menu>
       <MenuButton className="flex gap-2 w-full lg:w-auto ">
-        {selectedValue === null ? (
+        {selectedValue === undefined ? (
           <span
             className="flex items-center justify-start gap-2 bg-modal-card-mobile py-2 px-4 rounded-sm w-full 
           lg:w-fit lg:justify-center lg:bg-modal-card"

@@ -1,8 +1,8 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { RiPriceTag3Fill, RiSquareFill, RiSquareLine } from "react-icons/ri";
-import type { TagAction } from "./AddButton";
 import type { MouseEvent } from "react";
 import type { GetTagsQuery, TaskTag } from "../../../generated/graphql";
+import type { TagAction } from "../../../utils/TaskTypes";
 
 type ModalProps = {
   selectedValue: TaskTag[];

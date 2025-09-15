@@ -1,6 +1,6 @@
 import { Dialog, DialogPanel } from "@headlessui/react";
-import { useReducer, useState } from "react";
-import { RiAddLine, RiCheckboxCircleLine } from "react-icons/ri";
+import { useEffect, useReducer, useState } from "react";
+import { RiCheckboxCircleLine } from "react-icons/ri";
 import AssigneeDropdown from "./AssigneeDropdown";
 import PointsDropdown from "./PointsDropdown";
 import TagDropdown from "./TagDropdown";
@@ -19,29 +19,30 @@ import type {
   GetPointsQuery,
   GetTagsQuery,
   GetUsersQuery,
-  Status,
   TaskTag,
 } from "../../../generated/graphql";
 import ErrorMessage from "../../../components/ErrorMessage/ErrorMessage";
+import type {
+  GetTaskType,
+  TagAction,
+  TaskType,
+  User,
+} from "../../../utils/TaskTypes";
 
 //Types------------
-export type User = GetUsersQuery["users"][number];
-
-export type TagAction =
+type ModalProps =
   | {
-      type: "Add" | "Remove";
-      value: TaskTag;
+      isOpen: boolean;
+      type: "create";
+      task?: GetTaskType;
+      setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
     }
-  | { type: "Reset" };
-
-export type TaskType = {
-  assigneeId: string;
-  dueDate: string;
-  name: string;
-  pointEstimate: string;
-  status: Status;
-  tags: TaskTag[];
-};
+  | {
+      isOpen: boolean;
+      type: "edit";
+      task: GetTaskType;
+      setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    };
 
 //Reducer-----------------
 const tagsReducer = (state: TaskTag[], action: TagAction): TaskTag[] => {
@@ -57,8 +58,7 @@ const tagsReducer = (state: TaskTag[], action: TagAction): TaskTag[] => {
   }
 };
 
-function AddButton() {
-  const [isOpen, setIsOpen] = useState(false);
+function AddModal({ isOpen, type, task, setIsOpen }: ModalProps) {
   //Queries---------------------------------------------------------------------------------
   const { data: dataTags, loading: loadingTags } =
     useQuery<GetTagsQuery>(GET_TAGS);
@@ -69,7 +69,7 @@ function AddButton() {
 
   //Selected states
   const [taskName, setTaskName] = useState<string>("");
-  const [selectedAssignee, setSelectedAssignee] = useState<User | null>(null);
+  const [selectedAssignee, setSelectedAssignee] = useState<User | undefined>();
   const [selectedPoints, setSelectedPoints] = useState<string | undefined>(
     undefined,
   );
@@ -83,7 +83,7 @@ function AddButton() {
   //Event handlers
   const handleSuccess = () => {
     setTaskName("");
-    setSelectedAssignee(null);
+    setSelectedAssignee(undefined);
     setSelectedPoints(undefined);
     setSelectedDate(null);
     dispatch({ type: "Reset" });
@@ -96,7 +96,7 @@ function AddButton() {
 
   const handleError = (error: string) => {
     setTaskName("");
-    setSelectedAssignee(null);
+    setSelectedAssignee(undefined);
     setSelectedPoints(undefined);
     setSelectedDate(null);
     dispatch({ type: "Reset" });
@@ -144,15 +144,45 @@ function AddButton() {
     }
   };
 
+  //UseEffect to map the inputs if in edit mode
+  useEffect(() => {
+    if (type === "edit" && task && isOpen) {
+      setTaskName(task.name || "");
+
+      if (task.assignee) {
+        setSelectedAssignee({
+          __typename: "User",
+          id: task.assignee.id,
+          fullName: task.assignee.fullName,
+        });
+      }
+
+      if (task.pointEstimate) {
+        setSelectedPoints(task.pointEstimate);
+      }
+
+      if (task.dueDate) {
+        setSelectedDate(new Date(task.dueDate));
+      }
+
+      if (task.tags && task.tags.length > 0) {
+        dispatch({ type: "Reset" });
+        task.tags.forEach((tag) => {
+          dispatch({ type: "Add", value: tag });
+        });
+      }
+    } else if (type === "create" && isOpen) {
+      //Reset inputs before each render
+      setTaskName("");
+      setSelectedAssignee(undefined);
+      setSelectedPoints(undefined);
+      setSelectedDate(null);
+      dispatch({ type: "Reset" });
+    }
+  }, [type, task, isOpen]);
+
   return (
     <>
-      <Button
-        variant="neutral"
-        visibility="desktop"
-        onClick={() => setIsOpen(true)}
-      >
-        <RiAddLine className="text-3xl text-font" />
-      </Button>
       <Dialog
         open={isOpen}
         onClose={() => setIsOpen(false)}
@@ -230,4 +260,4 @@ function AddButton() {
   );
 }
 
-export default AddButton;
+export default AddModal;

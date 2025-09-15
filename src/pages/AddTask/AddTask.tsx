@@ -21,12 +21,8 @@ import type {
   GetUsersQuery,
   TaskTag,
 } from "../../generated/graphql";
-import type {
-  TagAction,
-  TaskType,
-  User,
-} from "../../features/AddTask/components/AddButton";
 import MessageModal from "../../components/MessageModal/MessageModal";
+import type { TagAction, TaskType, User } from "../../utils/TaskTypes";
 
 //Reducer-----------------
 const tagsReducer = (state: TaskTag[], action: TagAction): TaskTag[] => {
@@ -54,7 +50,9 @@ function AddTask() {
   //Selected states
   const navigate = useNavigate();
   const [taskName, setTaskName] = useState<string>("");
-  const [selectedAssignee, setSelectedAssignee] = useState<User | null>(null);
+  const [selectedAssignee, setSelectedAssignee] = useState<User | undefined>(
+    undefined,
+  );
   const [selectedPoints, setSelectedPoints] = useState<string | undefined>(
     undefined,
   );
@@ -67,7 +65,7 @@ function AddTask() {
   //Event handlers
   const handleSuccess = () => {
     setTaskName("");
-    setSelectedAssignee(null);
+    setSelectedAssignee(undefined);
     setSelectedPoints(undefined);
     setSelectedDate(null);
     dispatch({ type: "Reset" });
@@ -79,7 +77,7 @@ function AddTask() {
 
   const handleError = (error: string) => {
     setTaskName("");
-    setSelectedAssignee(null);
+    setSelectedAssignee(undefined);
     setSelectedPoints(undefined);
     setSelectedDate(null);
     dispatch({ type: "Reset" });

@@ -7,17 +7,19 @@ import {
 import { MdOutlineAccountTree } from "react-icons/md";
 import Dropdown from "../../../components/Dropdown/Dropdown";
 import Badge from "../../../components/Badge/Badge";
-import { type GetTaskQuery } from "../../../generated/graphql";
 import { colorMap, mapDate, numberMap } from "../../../utils/DataMapper";
 import { useState } from "react";
 import DeleteModal from "./DeleteModal";
+import AddModal from "../../AddTask/components/AddModal";
+import type { GetTaskType } from "../../../utils/TaskTypes";
 
 type CardProps = {
-  task: GetTaskQuery["tasks"][number];
+  task: GetTaskType;
 };
 function Card({ task }: CardProps) {
   //States-----
   const [showConfirm, setShowConfirm] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
   //Date status
   const isActive = (dateString: string) => {
     const date = new Date(dateString);
@@ -38,6 +40,13 @@ function Card({ task }: CardProps) {
           >
             <RiDeleteBin7Line className="text-lg" />
             <p>Delete</p>
+          </button>
+          <button
+            className="data-focus:bg-accent-hover p-2 flex items-center gap-2 cursor-pointer w-full"
+            onClick={() => setShowEdit(true)}
+          >
+            <RiDeleteBin7Line className="text-lg" />
+            <p>Edit</p>
           </button>
         </Dropdown>
       </div>
@@ -86,6 +95,12 @@ function Card({ task }: CardProps) {
         setIsOpen={setShowConfirm}
         taskId={task.id}
         taskName={task.name}
+      />
+      <AddModal
+        isOpen={showEdit}
+        setIsOpen={setShowEdit}
+        type="edit"
+        task={task}
       />
     </div>
   );
