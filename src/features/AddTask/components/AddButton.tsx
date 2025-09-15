@@ -77,7 +77,7 @@ function AddButton() {
   const [tags, dispatch] = useReducer(tagsReducer, [] as TaskTag[]);
   const [createTask] = useMutation(CREATE_TASK);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [error, setError] = useState<string | null>("null");
+  const [error, setError] = useState<string | null>(null);
   const [isMissing, setIsMissing] = useState(false);
 
   //Event handlers

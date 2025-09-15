@@ -74,7 +74,7 @@ function AddTask() {
     setShowSuccess(true);
     setTimeout(() => {
       navigate(-1);
-    }, 3000);
+    }, 2000);
   };
 
   const handleError = (error: string) => {
@@ -86,7 +86,7 @@ function AddTask() {
     setError(error);
     setTimeout(() => {
       setError(null);
-    }, 3000);
+    }, 2000);
   };
 
   const handleNewTask = async () => {
