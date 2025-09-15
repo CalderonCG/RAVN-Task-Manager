@@ -1,28 +1,37 @@
 import { RiCloseLine } from "react-icons/ri";
 import PointsDropdown from "../../features/AddTask/components/PointsDropdown";
-import { useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import AssigneeDropdown from "../../features/AddTask/components/AssigneeDropdown";
 import TagDropdown from "../../features/AddTask/components/TagDropdown";
 import DateButton from "../../features/AddTask/components/DateButton";
 
 import Button from "../../components/Button/Button";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useMutation, useQuery } from "@apollo/client";
 import {
   CREATE_TASK,
   GET_POINTS,
+  GET_STATUS,
   GET_TAGS,
-  GET_TASK,
   GET_USERS,
+  UPDATE_TASK,
 } from "../../queries/task";
 import type {
   GetPointsQuery,
+  GetStatusQuery,
   GetTagsQuery,
   GetUsersQuery,
+  Status,
   TaskTag,
 } from "../../generated/graphql";
 import MessageModal from "../../components/MessageModal/MessageModal";
-import type { TagAction, TaskType, User } from "../../utils/TaskTypes";
+import type {
+  GetTaskType,
+  TagAction,
+  TaskType,
+  User,
+} from "../../utils/TaskTypes";
+import StatusDropdown from "../../features/AddTask/components/StatusDropdown";
 
 //Reducer-----------------
 const tagsReducer = (state: TaskTag[], action: TagAction): TaskTag[] => {
@@ -38,6 +47,8 @@ const tagsReducer = (state: TaskTag[], action: TagAction): TaskTag[] => {
   }
 };
 function AddTask() {
+  //Dynamic id, can be undefined
+  const { id } = useParams<{ id: string }>();
   //Queries---------------------------------------------------------------------------------
   const { data: dataTags, loading: loadingTags } =
     useQuery<GetTagsQuery>(GET_TAGS);
@@ -45,7 +56,18 @@ function AddTask() {
     useQuery<GetPointsQuery>(GET_POINTS);
   const { data: dataUsers, loading: loadingUsers } =
     useQuery<GetUsersQuery>(GET_USERS);
-  const [createTask] = useMutation(CREATE_TASK);
+  const { data: dataStatus, loading: loadingStatus } =
+    useQuery<GetStatusQuery>(GET_STATUS);
+  const [createTask] = useMutation(CREATE_TASK, {
+    onCompleted: () => {
+      handleSuccess();
+    },
+  });
+  const [updateTask] = useMutation(UPDATE_TASK, {
+    onCompleted: () => {
+      handleSuccess();
+    },
+  });
 
   //Selected states
   const navigate = useNavigate();
@@ -57,18 +79,15 @@ function AddTask() {
     undefined,
   );
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<Status>("BACKLOG");
   const [tags, dispatch] = useReducer(tagsReducer, [] as TaskTag[]);
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isMissing, setIsMissing] = useState(false);
+  const [task, setTask] = useState<GetTaskType | undefined>(undefined);
 
   //Event handlers
   const handleSuccess = () => {
-    setTaskName("");
-    setSelectedAssignee(undefined);
-    setSelectedPoints(undefined);
-    setSelectedDate(null);
-    dispatch({ type: "Reset" });
     setShowSuccess(true);
     setTimeout(() => {
       navigate(-1);
@@ -76,18 +95,13 @@ function AddTask() {
   };
 
   const handleError = (error: string) => {
-    setTaskName("");
-    setSelectedAssignee(undefined);
-    setSelectedPoints(undefined);
-    setSelectedDate(null);
-    dispatch({ type: "Reset" });
     setError(error);
     setTimeout(() => {
       setError(null);
     }, 2000);
   };
 
-  const handleNewTask = async () => {
+  const handleTask = async () => {
     if (
       !selectedAssignee ||
       !selectedPoints ||
@@ -99,31 +113,72 @@ function AddTask() {
       setTimeout(() => setIsMissing(false), 2000);
       return;
     }
-    const addedTask: TaskType = {
+    const baseTask: TaskType = {
       assigneeId: selectedAssignee?.id,
       dueDate: selectedDate.toISOString(),
       name: taskName,
       pointEstimate: selectedPoints,
-      status: "BACKLOG",
+      status: selectedStatus,
       tags: tags,
     };
 
-    try {
-      const { data } = await createTask({
-        variables: {
-          input: addedTask,
-        },
-        refetchQueries: [{ query: GET_TASK }],
-        awaitRefetchQueries: true,
-      });
+    const addedTask =
+      task !== undefined ? { ...baseTask, id: task.id } : baseTask;
 
-      if (data) {
-        handleSuccess();
+    try {
+      if (task === undefined) {
+        await createTask({
+          variables: {
+            input: addedTask,
+          },
+        });
+      } else {
+        await updateTask({
+          variables: {
+            input: addedTask,
+          },
+        });
       }
     } catch (error) {
       if (error instanceof Error) handleError(error.message);
     }
   };
+
+  //UseEffect to map the inputs if in edit mode
+  useEffect(() => {
+    if (id !== undefined) {
+      const decodedString = atob(id);
+      const task: GetTaskType = JSON.parse(decodedString);
+
+      setTask(task);
+      setTaskName(task.name || "");
+      setSelectedPoints(task.pointEstimate);
+      setSelectedStatus(task.status);
+      setSelectedDate(new Date(task.dueDate));
+      if (task.assignee) {
+        setSelectedAssignee({
+          __typename: "User",
+          id: task.assignee.id,
+          fullName: task.assignee.fullName,
+        });
+      }
+
+      if (task.tags.length > 0) {
+        dispatch({ type: "Reset" });
+        task.tags.forEach((tag) => {
+          dispatch({ type: "Add", value: tag });
+        });
+      }
+    } else if (id) {
+      //Reset inputs before each render
+      setTaskName("");
+      setSelectedStatus("BACKLOG");
+      setSelectedAssignee(undefined);
+      setSelectedPoints(undefined);
+      setSelectedDate(null);
+      dispatch({ type: "Reset" });
+    }
+  }, [id]);
 
   return (
     <div className="h-full w-full p-4 flex flex-col gap-4">
@@ -131,9 +186,15 @@ function AddTask() {
         <Button variant="neutral" onClick={() => navigate(-1)}>
           <RiCloseLine className="text-3xl text-font" />
         </Button>
-        <Button variant="neutral" onClick={() => handleNewTask()}>
-          <p>Create</p>
-        </Button>
+        {task !== undefined ? (
+          <Button variant="neutral" onClick={() => handleTask()}>
+            <p>Update</p>
+          </Button>
+        ) : (
+          <Button variant="neutral" onClick={() => handleTask()}>
+            <p>Create</p>
+          </Button>
+        )}
       </div>
       <input
         type="text"
@@ -161,9 +222,19 @@ function AddTask() {
         isLoading={loadingUsers}
       />
       <DateButton selectedDate={selectedDate} onChange={setSelectedDate} />
+
+      {task !== undefined && (
+        <StatusDropdown
+          selectedValue={selectedStatus}
+          onSelect={setSelectedStatus}
+          isLoading={loadingStatus}
+          options={dataStatus}
+        />
+      )}
+
       <MessageModal
         type="message"
-        message="Task added successfully"
+        message={`Task ${task !== undefined ? "updated" : "created"} successfully`}
         isOpen={showSuccess}
         setIsOpen={setShowSuccess}
       />

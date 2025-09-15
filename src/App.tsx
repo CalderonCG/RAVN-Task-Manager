@@ -16,6 +16,7 @@ function App() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/MyTasks" element={<Tasks />} />
         <Route path="/New" element={<AddTask />} />
+        <Route path="/Edit/:id" element={<AddTask />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>

@@ -2,6 +2,7 @@ import {
   RiAlarmLine,
   RiChat3Line,
   RiDeleteBin7Line,
+  RiEdit2Line,
   RiLink,
 } from "react-icons/ri";
 import { MdOutlineAccountTree } from "react-icons/md";
@@ -12,6 +13,7 @@ import { useState } from "react";
 import DeleteModal from "./DeleteModal";
 import AddModal from "../../AddTask/components/AddModal";
 import type { GetTaskType } from "../../../utils/TaskTypes";
+import { Link } from "react-router";
 
 type CardProps = {
   task: GetTaskType;
@@ -20,6 +22,7 @@ function Card({ task }: CardProps) {
   //States-----
   const [showConfirm, setShowConfirm] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+  const encodedTask = encodeURIComponent(btoa(JSON.stringify(task)));
   //Date status
   const isActive = (dateString: string) => {
     const date = new Date(dateString);
@@ -35,19 +38,26 @@ function Card({ task }: CardProps) {
         <p className="text-lg">{task.name}</p>
         <Dropdown>
           <button
-            className="data-focus:bg-accent-hover p-2 flex items-center gap-2 cursor-pointer w-full"
+            className="data-focus:bg-accent-hover hover:bg-accent p-2 flex items-center gap-2 cursor-pointer w-full"
             onClick={() => setShowConfirm(true)}
           >
             <RiDeleteBin7Line className="text-lg" />
             <p>Delete</p>
           </button>
           <button
-            className="data-focus:bg-accent-hover p-2 flex items-center gap-2 cursor-pointer w-full"
+            className="data-focus:bg-accent-hover p-2 hover:bg-accent items-center gap-2 cursor-pointer w-full hidden lg:flex"
             onClick={() => setShowEdit(true)}
           >
-            <RiDeleteBin7Line className="text-lg" />
+            <RiEdit2Line className="text-lg" />
             <p>Edit</p>
           </button>
+          <Link
+            to={`/edit/${encodedTask}`}
+            className="data-focus:bg-accent-hover p-2  items-center gap-2 cursor-pointer w-full flex lg:hidden"
+          >
+            <RiEdit2Line className="text-lg" />
+            <p>Edit</p>
+          </Link>
         </Dropdown>
       </div>
       <div className="w-full flex items-center justify-between">

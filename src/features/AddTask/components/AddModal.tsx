@@ -208,7 +208,9 @@ function AddModal(props: ModalProps) {
             flex flex-col items-center justify-center text-center"
             >
               <RiCheckboxCircleLine className="text-6xl" />
-              <p className="text-lg font-bold">Task created successfully</p>
+              <p className="text-lg font-bold">
+                Task {type === "edit" ? "updated" : "created"} successfully
+              </p>
             </DialogPanel>
           ) : error ? (
             <DialogPanel
