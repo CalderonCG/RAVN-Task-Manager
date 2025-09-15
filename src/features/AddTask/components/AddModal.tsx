@@ -11,14 +11,17 @@ import { useMutation, useQuery } from "@apollo/client";
 import {
   CREATE_TASK,
   GET_POINTS,
+  GET_STATUS,
   GET_TAGS,
   GET_TASK,
   GET_USERS,
 } from "../../../queries/task";
 import type {
   GetPointsQuery,
+  GetStatusQuery,
   GetTagsQuery,
   GetUsersQuery,
+  Status,
   TaskTag,
 } from "../../../generated/graphql";
 import ErrorMessage from "../../../components/ErrorMessage/ErrorMessage";
@@ -28,13 +31,13 @@ import type {
   TaskType,
   User,
 } from "../../../utils/TaskTypes";
+import StatusDropdown from "./StatusDropdown";
 
 //Types------------
 type ModalProps =
   | {
       isOpen: boolean;
       type: "create";
-      task?: GetTaskType;
       setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
     }
   | {
@@ -58,7 +61,8 @@ const tagsReducer = (state: TaskTag[], action: TagAction): TaskTag[] => {
   }
 };
 
-function AddModal({ isOpen, type, task, setIsOpen }: ModalProps) {
+function AddModal(props: ModalProps) {
+  const { isOpen, type, setIsOpen } = props;
   //Queries---------------------------------------------------------------------------------
   const { data: dataTags, loading: loadingTags } =
     useQuery<GetTagsQuery>(GET_TAGS);
@@ -66,6 +70,8 @@ function AddModal({ isOpen, type, task, setIsOpen }: ModalProps) {
     useQuery<GetPointsQuery>(GET_POINTS);
   const { data: dataUsers, loading: loadingUsers } =
     useQuery<GetUsersQuery>(GET_USERS);
+  const { data: dataStatus, loading: loadingStatus } =
+    useQuery<GetStatusQuery>(GET_STATUS);
 
   //Selected states
   const [taskName, setTaskName] = useState<string>("");
@@ -74,6 +80,7 @@ function AddModal({ isOpen, type, task, setIsOpen }: ModalProps) {
     undefined,
   );
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<Status>("BACKLOG");
   const [tags, dispatch] = useReducer(tagsReducer, [] as TaskTag[]);
   const [createTask] = useMutation(CREATE_TASK);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -146,9 +153,12 @@ function AddModal({ isOpen, type, task, setIsOpen }: ModalProps) {
 
   //UseEffect to map the inputs if in edit mode
   useEffect(() => {
-    if (type === "edit" && task && isOpen) {
+    if (type === "edit" && isOpen) {
+      const { task } = props;
       setTaskName(task.name || "");
-
+      setSelectedPoints(task.pointEstimate);
+      setSelectedStatus(task.status);
+      setSelectedDate(new Date(task.dueDate));
       if (task.assignee) {
         setSelectedAssignee({
           __typename: "User",
@@ -157,15 +167,7 @@ function AddModal({ isOpen, type, task, setIsOpen }: ModalProps) {
         });
       }
 
-      if (task.pointEstimate) {
-        setSelectedPoints(task.pointEstimate);
-      }
-
-      if (task.dueDate) {
-        setSelectedDate(new Date(task.dueDate));
-      }
-
-      if (task.tags && task.tags.length > 0) {
+      if (task.tags.length > 0) {
         dispatch({ type: "Reset" });
         task.tags.forEach((tag) => {
           dispatch({ type: "Add", value: tag });
@@ -179,7 +181,7 @@ function AddModal({ isOpen, type, task, setIsOpen }: ModalProps) {
       setSelectedDate(null);
       dispatch({ type: "Reset" });
     }
-  }, [type, task, isOpen]);
+  }, [props, type, isOpen]);
 
   return (
     <>
@@ -205,7 +207,7 @@ function AddModal({ isOpen, type, task, setIsOpen }: ModalProps) {
               <ErrorMessage message={error} />
             </DialogPanel>
           ) : (
-            <DialogPanel className="w-2/3 max-w-[50rem] space-y-4 bg-background-modal text-font p-4 rounded-lg">
+            <DialogPanel className="w-2/3 max-w-[52rem] space-y-4 bg-background-modal text-font p-4 rounded-lg">
               <input
                 type="text"
                 placeholder="Task Name..."
@@ -236,6 +238,14 @@ function AddModal({ isOpen, type, task, setIsOpen }: ModalProps) {
                   selectedDate={selectedDate}
                   onChange={setSelectedDate}
                 />
+                {type === "edit" && (
+                  <StatusDropdown
+                    selectedValue={selectedStatus}
+                    onSelect={setSelectedStatus}
+                    isLoading={loadingStatus}
+                    options={dataStatus}
+                  />
+                )}
               </div>
               <div className="w-full flex justify-end items-center">
                 {isMissing && (
@@ -247,9 +257,14 @@ function AddModal({ isOpen, type, task, setIsOpen }: ModalProps) {
                   <Button variant="neutral" onClick={() => setIsOpen(false)}>
                     Cancel
                   </Button>
-                  <Button variant="primary" onClick={() => handleNewTask()}>
-                    Update
-                  </Button>
+
+                  {type === "create" ? (
+                    <Button variant="primary" onClick={() => handleNewTask()}>
+                      Create
+                    </Button>
+                  ) : (
+                    <Button variant="primary">Update</Button>
+                  )}
                 </div>
               </div>
             </DialogPanel>

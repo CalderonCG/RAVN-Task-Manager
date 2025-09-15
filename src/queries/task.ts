@@ -67,6 +67,8 @@ export const DELETE_TASK = gql`
   }
 `;
 
+//Update task
+
 //Enum queries-------------------------------------------
 //Status
 export const GET_STATUS = gql`
