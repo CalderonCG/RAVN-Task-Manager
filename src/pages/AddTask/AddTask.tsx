@@ -7,29 +7,26 @@ import DateButton from "../../features/AddTask/components/DateButton";
 
 import Button from "../../components/Button/Button";
 import { useNavigate } from "react-router";
-import { useQuery } from "@apollo/client";
-import { GET_POINTS, GET_TAGS, GET_USERS } from "../../queries/task";
+import { useMutation, useQuery } from "@apollo/client";
+import {
+  CREATE_TASK,
+  GET_POINTS,
+  GET_TAGS,
+  GET_TASK,
+  GET_USERS,
+} from "../../queries/task";
 import type {
   GetPointsQuery,
   GetTagsQuery,
   GetUsersQuery,
-  Status,
   TaskTag,
 } from "../../generated/graphql";
 import type {
   TagAction,
+  TaskType,
   User,
 } from "../../features/AddTask/components/AddButton";
-
-// types
-type TaskType = {
-  assigneeID: string;
-  dueDate: string;
-  name: string;
-  pointEstimate: string;
-  status: Status;
-  tags: TaskTag[];
-};
+import MessageModal from "../../components/MessageModal/MessageModal";
 
 //Reducer-----------------
 const tagsReducer = (state: TaskTag[], action: TagAction): TaskTag[] => {
@@ -38,12 +35,13 @@ const tagsReducer = (state: TaskTag[], action: TagAction): TaskTag[] => {
       return [...state, action.value];
     case "Remove":
       return state.filter((tag) => tag != action.value);
+    case "Reset":
+      return [];
     default:
       return state;
   }
 };
 function AddTask() {
-  //Queries--------------------------------------
   //Queries---------------------------------------------------------------------------------
   const { data: dataTags, loading: loadingTags } =
     useQuery<GetTagsQuery>(GET_TAGS);
@@ -53,7 +51,7 @@ function AddTask() {
     useQuery<GetUsersQuery>(GET_USERS);
 
   //Selected states
-
+  const navigate = useNavigate();
   const [taskName, setTaskName] = useState<string>("");
   const [selectedAssignee, setSelectedAssignee] = useState<User | null>(null);
   const [selectedPoints, setSelectedPoints] = useState<string | undefined>(
@@ -61,9 +59,37 @@ function AddTask() {
   );
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [tags, dispatch] = useReducer(tagsReducer, [] as TaskTag[]);
-  const [newTask, setNewTask] = useState<TaskType | undefined>(undefined);
+  const [createTask] = useMutation(CREATE_TASK);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isMissing, setIsMissing] = useState(false);
 
-  const handleNewTask = () => {
+  //Event handlers
+  const handleSuccess = () => {
+    setTaskName("");
+    setSelectedAssignee(null);
+    setSelectedPoints(undefined);
+    setSelectedDate(null);
+    dispatch({ type: "Reset" });
+    setShowSuccess(true);
+    setTimeout(() => {
+      navigate(-1);
+    }, 3000);
+  };
+
+  const handleError = (error: string) => {
+    setTaskName("");
+    setSelectedAssignee(null);
+    setSelectedPoints(undefined);
+    setSelectedDate(null);
+    dispatch({ type: "Reset" });
+    setError(error);
+    setTimeout(() => {
+      setError(null);
+    }, 3000);
+  };
+
+  const handleNewTask = async () => {
     if (
       !selectedAssignee ||
       !selectedPoints ||
@@ -71,19 +97,35 @@ function AddTask() {
       !selectedDate ||
       taskName.trim() === ""
     ) {
-      return newTask;
+      setIsMissing(true);
+      setTimeout(() => setIsMissing(false), 2000);
+      return;
     }
-    setNewTask({
-      assigneeID: selectedAssignee?.id,
+    const addedTask: TaskType = {
+      assigneeId: selectedAssignee?.id,
       dueDate: selectedDate.toISOString(),
       name: taskName,
       pointEstimate: selectedPoints,
       status: "BACKLOG",
       tags: tags,
-    });
+    };
+
+    try {
+      const { data } = await createTask({
+        variables: {
+          input: addedTask,
+        },
+        refetchQueries: [{ query: GET_TASK }],
+        awaitRefetchQueries: true,
+      });
+
+      if (data) {
+        handleSuccess();
+      }
+    } catch (error) {
+      if (error instanceof Error) handleError(error.message);
+    }
   };
-  //Consts
-  const navigate = useNavigate();
 
   return (
     <div className="h-full w-full p-4 flex flex-col gap-4">
@@ -91,7 +133,7 @@ function AddTask() {
         <Button variant="neutral" onClick={() => navigate(-1)}>
           <RiCloseLine className="text-3xl text-font" />
         </Button>
-        <Button variant="neutral">
+        <Button variant="neutral" onClick={() => handleNewTask()}>
           <p>Create</p>
         </Button>
       </div>
@@ -121,7 +163,21 @@ function AddTask() {
         isLoading={loadingUsers}
       />
       <DateButton selectedDate={selectedDate} onChange={setSelectedDate} />
-      <button onClick={() => handleNewTask()}>Update</button>
+      <MessageModal
+        type="message"
+        message="Task added successfully"
+        isOpen={showSuccess}
+        setIsOpen={setShowSuccess}
+      />
+      <MessageModal
+        type="error"
+        message={error !== null ? error : ""}
+        isOpen={error !== null}
+        setIsOpen={setError}
+      />
+      {isMissing && (
+        <p className="text-primary flex-1">Please complete all fields</p>
+      )}
     </div>
   );
 }
