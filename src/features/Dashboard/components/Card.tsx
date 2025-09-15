@@ -62,12 +62,12 @@ function Card({ task }: CardProps) {
         </span>
       </div>
       <div className="flex gap-2 w-full">
-        {task.tags.slice(0, 3).map((tag) => (
+        {task.tags.slice(0, 2).map((tag) => (
           <Badge key={tag} label={tag} variant={colorMap[tag]} />
         ))}
-        {task.tags.length > 3 && (
+        {task.tags.length > 2 && (
           <span
-            className="flex items-center justify-center gap-2 bg-modal-card-mobile/10 lg:bg-modal-card/10 py-2 px-2 rounded-sm cursor-default"
+            className="flex items-center justify-center gap-2 bg-modal-card-mobile/10 lg:bg-modal-card/10 py-1 px-2 rounded-sm cursor-default"
             title={task.tags.slice(3).toString()}
           >
             +{task.tags.length - 3}

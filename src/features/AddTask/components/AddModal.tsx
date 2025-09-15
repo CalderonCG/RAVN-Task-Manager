@@ -15,6 +15,7 @@ import {
   GET_TAGS,
   GET_TASK,
   GET_USERS,
+  UPDATE_TASK,
 } from "../../../queries/task";
 import type {
   GetPointsQuery,
@@ -32,6 +33,7 @@ import type {
   User,
 } from "../../../utils/TaskTypes";
 import StatusDropdown from "./StatusDropdown";
+import { client } from "../../../apolloClient";
 
 //Types------------
 type ModalProps =
@@ -72,6 +74,16 @@ function AddModal(props: ModalProps) {
     useQuery<GetUsersQuery>(GET_USERS);
   const { data: dataStatus, loading: loadingStatus } =
     useQuery<GetStatusQuery>(GET_STATUS);
+  const [createTask] = useMutation(CREATE_TASK, {
+    onCompleted: () => {
+      handleSuccess();
+    },
+  });
+  const [updateTask] = useMutation(UPDATE_TASK, {
+    onCompleted: () => {
+      handleSuccess();
+    },
+  });
 
   //Selected states
   const [taskName, setTaskName] = useState<string>("");
@@ -82,30 +94,23 @@ function AddModal(props: ModalProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<Status>("BACKLOG");
   const [tags, dispatch] = useReducer(tagsReducer, [] as TaskTag[]);
-  const [createTask] = useMutation(CREATE_TASK);
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isMissing, setIsMissing] = useState(false);
 
   //Event handlers
   const handleSuccess = () => {
-    setTaskName("");
-    setSelectedAssignee(undefined);
-    setSelectedPoints(undefined);
-    setSelectedDate(null);
-    dispatch({ type: "Reset" });
     setShowSuccess(true);
     setTimeout(() => {
       setShowSuccess(false);
       setIsOpen(false);
+      client.refetchQueries({
+        include: [GET_TASK],
+      });
     }, 1000);
   };
 
   const handleError = (error: string) => {
-    setTaskName("");
-    setSelectedAssignee(undefined);
-    setSelectedPoints(undefined);
-    setSelectedDate(null);
     dispatch({ type: "Reset" });
     setError(error);
     setTimeout(() => {
@@ -113,7 +118,7 @@ function AddModal(props: ModalProps) {
     }, 1000);
   };
 
-  const handleNewTask = async () => {
+  const handleTask = async () => {
     if (
       !selectedAssignee ||
       !selectedPoints ||
@@ -125,26 +130,31 @@ function AddModal(props: ModalProps) {
       setTimeout(() => setIsMissing(false), 2000);
       return;
     }
-    const addedTask: TaskType = {
+    const baseTask: TaskType = {
       assigneeId: selectedAssignee?.id,
       dueDate: selectedDate.toISOString(),
       name: taskName,
       pointEstimate: selectedPoints,
-      status: "BACKLOG",
+      status: selectedStatus,
       tags: tags,
     };
 
-    try {
-      const { data } = await createTask({
-        variables: {
-          input: addedTask,
-        },
-        refetchQueries: [{ query: GET_TASK }],
-        awaitRefetchQueries: true,
-      });
+    const addedTask =
+      type === "edit" ? { ...baseTask, id: props.task.id } : baseTask;
 
-      if (data) {
-        handleSuccess();
+    try {
+      if (type === "create") {
+        await createTask({
+          variables: {
+            input: addedTask,
+          },
+        });
+      } else {
+        await updateTask({
+          variables: {
+            input: addedTask,
+          },
+        });
       }
     } catch (error) {
       if (error instanceof Error) handleError(error.message);
@@ -176,6 +186,7 @@ function AddModal(props: ModalProps) {
     } else if (type === "create" && isOpen) {
       //Reset inputs before each render
       setTaskName("");
+      setSelectedStatus("BACKLOG");
       setSelectedAssignee(undefined);
       setSelectedPoints(undefined);
       setSelectedDate(null);
@@ -207,7 +218,7 @@ function AddModal(props: ModalProps) {
               <ErrorMessage message={error} />
             </DialogPanel>
           ) : (
-            <DialogPanel className="w-2/3 max-w-[52rem] space-y-4 bg-background-modal text-font p-4 rounded-lg">
+            <DialogPanel className="w-2/3 max-w-[54rem] space-y-4 bg-background-modal text-font p-4 rounded-lg">
               <input
                 type="text"
                 placeholder="Task Name..."
@@ -259,11 +270,13 @@ function AddModal(props: ModalProps) {
                   </Button>
 
                   {type === "create" ? (
-                    <Button variant="primary" onClick={() => handleNewTask()}>
+                    <Button variant="primary" onClick={() => handleTask()}>
                       Create
                     </Button>
                   ) : (
-                    <Button variant="primary">Update</Button>
+                    <Button variant="primary" onClick={() => handleTask()}>
+                      Update
+                    </Button>
                   )}
                 </div>
               </div>

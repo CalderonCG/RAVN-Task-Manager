@@ -46,7 +46,7 @@ function DeleteModal({ isOpen, taskId, taskName, setIsOpen }: DeleteProps) {
       client.refetchQueries({
         include: [GET_TASK],
       });
-    }, 2000);
+    }, 1000);
   };
 
   const handleError = (error: string) => {
@@ -54,7 +54,7 @@ function DeleteModal({ isOpen, taskId, taskName, setIsOpen }: DeleteProps) {
     setTimeout(() => {
       setError(null);
       setIsOpen(false);
-    }, 2000);
+    }, 1000);
   };
 
   return (
