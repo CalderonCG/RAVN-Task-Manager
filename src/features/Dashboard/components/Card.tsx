@@ -81,7 +81,12 @@ function Card({ task }: CardProps) {
         </div>
       </div>
 
-      <DeleteModal isOpen={showConfirm} setIsOpen={setShowConfirm} />
+      <DeleteModal
+        isOpen={showConfirm}
+        setIsOpen={setShowConfirm}
+        taskId={task.id}
+        taskName={task.name}
+      />
     </div>
   );
 }

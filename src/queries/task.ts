@@ -1,5 +1,6 @@
 import { gql } from "@apollo/client";
 
+//Queries ----------------------------------------
 //Fetch all task
 export const GET_TASK = gql`
   query GetTask {
@@ -29,10 +30,29 @@ export const GET_USERS = gql`
   }
 `;
 
+//Mutations --------------------------------------------------
 //Create new task
 export const CREATE_TASK = gql`
   mutation CreateTask($input: CreateTaskInput!) {
     createTask(input: $input) {
+      id
+      name
+      status
+      pointEstimate
+      dueDate
+      assignee {
+        id
+        fullName
+      }
+      tags
+    }
+  }
+`;
+
+//Delete task
+export const DELETE_TASK = gql`
+  mutation DeleteTask($input: DeleteTaskInput!) {
+    deleteTask(input: $input) {
       id
       name
       status
