@@ -34,7 +34,7 @@ export type TagAction =
     }
   | { type: "Reset" };
 
-type TaskType = {
+export type TaskType = {
   assigneeId: string;
   dueDate: string;
   name: string;
@@ -162,7 +162,7 @@ function AddButton() {
           {showSuccess ? (
             <DialogPanel
               className="w-2/3 max-w-[42rem] space-y-2 bg-background-modal text-font py-8 px-4 rounded-lg
-            flex flex-col items-center justify-center"
+            flex flex-col items-center justify-center text-center"
             >
               <RiCheckboxCircleLine className="text-6xl" />
               <p className="text-lg font-bold">Task created successfully</p>
