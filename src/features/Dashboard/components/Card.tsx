@@ -1,14 +1,23 @@
-import { RiAlarmLine, RiChat3Line, RiLink } from "react-icons/ri";
+import {
+  RiAlarmLine,
+  RiChat3Line,
+  RiDeleteBin7Line,
+  RiLink,
+} from "react-icons/ri";
 import { MdOutlineAccountTree } from "react-icons/md";
 import Dropdown from "../../../components/Dropdown/Dropdown";
 import Badge from "../../../components/Badge/Badge";
 import { type GetTaskQuery } from "../../../generated/graphql";
 import { colorMap, mapDate, numberMap } from "../../../utils/DataMapper";
+import { useState } from "react";
+import DeleteModal from "./DeleteModal";
 
 type CardProps = {
   task: GetTaskQuery["tasks"][number];
 };
 function Card({ task }: CardProps) {
+  //States-----
+  const [showConfirm, setShowConfirm] = useState(false);
   //Date status
   const isActive = (dateString: string) => {
     const date = new Date(dateString);
@@ -22,7 +31,15 @@ function Card({ task }: CardProps) {
     <div className="w-full bg-background-secondary p-4 flex flex-col gap-4 rounded-lg">
       <div className="w-full flex items-center justify-between">
         <p className="text-lg">{task.name}</p>
-        <Dropdown />
+        <Dropdown>
+          <button
+            className="data-focus:bg-accent-hover p-2 flex items-center gap-2 cursor-pointer w-full"
+            onClick={() => setShowConfirm(true)}
+          >
+            <RiDeleteBin7Line className="text-lg" />
+            <p>Delete</p>
+          </button>
+        </Dropdown>
       </div>
       <div className="w-full flex items-center justify-between">
         <p className="font-normal text-sm">
@@ -63,6 +80,8 @@ function Card({ task }: CardProps) {
           </span>
         </div>
       </div>
+
+      <DeleteModal isOpen={showConfirm} setIsOpen={setShowConfirm} />
     </div>
   );
 }
