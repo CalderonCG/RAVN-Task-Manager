@@ -1,6 +1,6 @@
 import { Dialog, DialogPanel } from "@headlessui/react";
-import { useReducer, useState } from "react";
-import { RiAddLine, RiCheckboxCircleLine } from "react-icons/ri";
+import { useEffect, useReducer, useState } from "react";
+import { RiCheckboxCircleLine } from "react-icons/ri";
 import AssigneeDropdown from "./AssigneeDropdown";
 import PointsDropdown from "./PointsDropdown";
 import TagDropdown from "./TagDropdown";
@@ -11,37 +11,43 @@ import { useMutation, useQuery } from "@apollo/client";
 import {
   CREATE_TASK,
   GET_POINTS,
+  GET_STATUS,
   GET_TAGS,
   GET_TASK,
   GET_USERS,
+  UPDATE_TASK,
 } from "../../../queries/task";
 import type {
   GetPointsQuery,
+  GetStatusQuery,
   GetTagsQuery,
   GetUsersQuery,
   Status,
   TaskTag,
 } from "../../../generated/graphql";
 import ErrorMessage from "../../../components/ErrorMessage/ErrorMessage";
+import type {
+  GetTaskType,
+  TagAction,
+  TaskType,
+  User,
+} from "../../../utils/TaskTypes";
+import StatusDropdown from "./StatusDropdown";
+import { client } from "../../../apolloClient";
 
 //Types------------
-export type User = GetUsersQuery["users"][number];
-
-export type TagAction =
+type ModalProps =
   | {
-      type: "Add" | "Remove";
-      value: TaskTag;
+      isOpen: boolean;
+      type: "create";
+      setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
     }
-  | { type: "Reset" };
-
-export type TaskType = {
-  assigneeId: string;
-  dueDate: string;
-  name: string;
-  pointEstimate: string;
-  status: Status;
-  tags: TaskTag[];
-};
+  | {
+      isOpen: boolean;
+      type: "edit";
+      task: GetTaskType;
+      setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    };
 
 //Reducer-----------------
 const tagsReducer = (state: TaskTag[], action: TagAction): TaskTag[] => {
@@ -57,8 +63,8 @@ const tagsReducer = (state: TaskTag[], action: TagAction): TaskTag[] => {
   }
 };
 
-function AddButton() {
-  const [isOpen, setIsOpen] = useState(false);
+function AddModal(props: ModalProps) {
+  const { isOpen, type, setIsOpen } = props;
   //Queries---------------------------------------------------------------------------------
   const { data: dataTags, loading: loadingTags } =
     useQuery<GetTagsQuery>(GET_TAGS);
@@ -66,39 +72,45 @@ function AddButton() {
     useQuery<GetPointsQuery>(GET_POINTS);
   const { data: dataUsers, loading: loadingUsers } =
     useQuery<GetUsersQuery>(GET_USERS);
+  const { data: dataStatus, loading: loadingStatus } =
+    useQuery<GetStatusQuery>(GET_STATUS);
+  const [createTask] = useMutation(CREATE_TASK, {
+    onCompleted: () => {
+      handleSuccess();
+    },
+  });
+  const [updateTask] = useMutation(UPDATE_TASK, {
+    onCompleted: () => {
+      handleSuccess();
+    },
+  });
 
   //Selected states
   const [taskName, setTaskName] = useState<string>("");
-  const [selectedAssignee, setSelectedAssignee] = useState<User | null>(null);
+  const [selectedAssignee, setSelectedAssignee] = useState<User | undefined>();
   const [selectedPoints, setSelectedPoints] = useState<string | undefined>(
     undefined,
   );
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<Status>("BACKLOG");
   const [tags, dispatch] = useReducer(tagsReducer, [] as TaskTag[]);
-  const [createTask] = useMutation(CREATE_TASK);
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isMissing, setIsMissing] = useState(false);
 
   //Event handlers
   const handleSuccess = () => {
-    setTaskName("");
-    setSelectedAssignee(null);
-    setSelectedPoints(undefined);
-    setSelectedDate(null);
-    dispatch({ type: "Reset" });
     setShowSuccess(true);
     setTimeout(() => {
       setShowSuccess(false);
       setIsOpen(false);
+      client.refetchQueries({
+        include: [GET_TASK],
+      });
     }, 1000);
   };
 
   const handleError = (error: string) => {
-    setTaskName("");
-    setSelectedAssignee(null);
-    setSelectedPoints(undefined);
-    setSelectedDate(null);
     dispatch({ type: "Reset" });
     setError(error);
     setTimeout(() => {
@@ -106,7 +118,7 @@ function AddButton() {
     }, 1000);
   };
 
-  const handleNewTask = async () => {
+  const handleTask = async () => {
     if (
       !selectedAssignee ||
       !selectedPoints ||
@@ -118,41 +130,72 @@ function AddButton() {
       setTimeout(() => setIsMissing(false), 2000);
       return;
     }
-    const addedTask: TaskType = {
+    const baseTask: TaskType = {
       assigneeId: selectedAssignee?.id,
       dueDate: selectedDate.toISOString(),
       name: taskName,
       pointEstimate: selectedPoints,
-      status: "BACKLOG",
+      status: selectedStatus,
       tags: tags,
     };
 
-    try {
-      const { data } = await createTask({
-        variables: {
-          input: addedTask,
-        },
-        refetchQueries: [{ query: GET_TASK }],
-        awaitRefetchQueries: true,
-      });
+    const addedTask =
+      type === "edit" ? { ...baseTask, id: props.task.id } : baseTask;
 
-      if (data) {
-        handleSuccess();
+    try {
+      if (type === "create") {
+        await createTask({
+          variables: {
+            input: addedTask,
+          },
+        });
+      } else {
+        await updateTask({
+          variables: {
+            input: addedTask,
+          },
+        });
       }
     } catch (error) {
       if (error instanceof Error) handleError(error.message);
     }
   };
 
+  //UseEffect to map the inputs if in edit mode
+  useEffect(() => {
+    if (type === "edit" && isOpen) {
+      const { task } = props;
+      setTaskName(task.name || "");
+      setSelectedPoints(task.pointEstimate);
+      setSelectedStatus(task.status);
+      setSelectedDate(new Date(task.dueDate));
+      if (task.assignee) {
+        setSelectedAssignee({
+          __typename: "User",
+          id: task.assignee.id,
+          fullName: task.assignee.fullName,
+        });
+      }
+
+      if (task.tags.length > 0) {
+        dispatch({ type: "Reset" });
+        task.tags.forEach((tag) => {
+          dispatch({ type: "Add", value: tag });
+        });
+      }
+    } else if (type === "create" && isOpen) {
+      //Reset inputs before each render
+      setTaskName("");
+      setSelectedStatus("BACKLOG");
+      setSelectedAssignee(undefined);
+      setSelectedPoints(undefined);
+      setSelectedDate(null);
+      dispatch({ type: "Reset" });
+    }
+  }, [props, type, isOpen]);
+
   return (
     <>
-      <Button
-        variant="neutral"
-        visibility="desktop"
-        onClick={() => setIsOpen(true)}
-      >
-        <RiAddLine className="text-3xl text-font" />
-      </Button>
       <Dialog
         open={isOpen}
         onClose={() => setIsOpen(false)}
@@ -165,7 +208,9 @@ function AddButton() {
             flex flex-col items-center justify-center text-center"
             >
               <RiCheckboxCircleLine className="text-6xl" />
-              <p className="text-lg font-bold">Task created successfully</p>
+              <p className="text-lg font-bold">
+                Task {type === "edit" ? "updated" : "created"} successfully
+              </p>
             </DialogPanel>
           ) : error ? (
             <DialogPanel
@@ -175,7 +220,7 @@ function AddButton() {
               <ErrorMessage message={error} />
             </DialogPanel>
           ) : (
-            <DialogPanel className="w-2/3 max-w-[50rem] space-y-4 bg-background-modal text-font p-4 rounded-lg">
+            <DialogPanel className="w-2/3 max-w-[54rem] space-y-4 bg-background-modal text-font p-4 rounded-lg">
               <input
                 type="text"
                 placeholder="Task Name..."
@@ -206,6 +251,14 @@ function AddButton() {
                   selectedDate={selectedDate}
                   onChange={setSelectedDate}
                 />
+                {type === "edit" && (
+                  <StatusDropdown
+                    selectedValue={selectedStatus}
+                    onSelect={setSelectedStatus}
+                    isLoading={loadingStatus}
+                    options={dataStatus}
+                  />
+                )}
               </div>
               <div className="w-full flex justify-end items-center">
                 {isMissing && (
@@ -217,9 +270,16 @@ function AddButton() {
                   <Button variant="neutral" onClick={() => setIsOpen(false)}>
                     Cancel
                   </Button>
-                  <Button variant="primary" onClick={() => handleNewTask()}>
-                    Update
-                  </Button>
+
+                  {type === "create" ? (
+                    <Button variant="primary" onClick={() => handleTask()}>
+                      Create
+                    </Button>
+                  ) : (
+                    <Button variant="primary" onClick={() => handleTask()}>
+                      Update
+                    </Button>
+                  )}
                 </div>
               </div>
             </DialogPanel>
@@ -230,4 +290,4 @@ function AddButton() {
   );
 }
 
-export default AddButton;
+export default AddModal;
