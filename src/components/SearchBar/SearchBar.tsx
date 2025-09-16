@@ -1,4 +1,5 @@
 import { RiNotification3Line, RiSearchLine } from "react-icons/ri";
+import { Link } from "react-router";
 
 type SearchProps = {
   value: string;
@@ -18,7 +19,13 @@ function SearchBar({ value, onChange }: SearchProps) {
       />
       <div className="flex gap-4 h-full items-center w-fit lg:absolute right-6 ">
         <RiNotification3Line className="text-2xl shrink-0 hover:text-font hover:scale-105" />
-        <img src="/Avatar.png" alt="avatar" className="w-8 h-8 rounded-full" />
+        <Link to={"/profile"}>
+          <img
+            src="/Avatar.png"
+            alt="avatar"
+            className="w-8 h-8 rounded-full"
+          />
+        </Link>
       </div>
     </div>
   );
