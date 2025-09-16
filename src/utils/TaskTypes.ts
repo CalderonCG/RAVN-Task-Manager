@@ -23,4 +23,6 @@ export type TaskType = {
   tags: TaskTag[];
 };
 
+export type FilterType = Partial<Omit<TaskType, "name">>;
+
 export type GetTaskType = GetTaskQuery["tasks"][number];

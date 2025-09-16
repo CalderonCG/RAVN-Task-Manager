@@ -21,15 +21,17 @@ import {
   GET_TAGS,
   GET_USERS,
 } from "../../../queries/task";
-import type { User } from "../../../utils/TaskTypes";
+import type { FilterType, User } from "../../../utils/TaskTypes";
 import Button from "../../../components/Button/Button";
 
 type ModalProps = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  filters: FilterType;
+  setFilters: React.Dispatch<React.SetStateAction<Partial<FilterType>>>;
 };
 
-function FilterModal({ isOpen, setIsOpen }: ModalProps) {
+function FilterModal({ isOpen, setIsOpen, setFilters }: ModalProps) {
   //Selected states
   const [selectedAssignee, setSelectedAssignee] = useState<User | undefined>();
   const [selectedPoints, setSelectedPoints] = useState<string | undefined>(
@@ -49,6 +51,18 @@ function FilterModal({ isOpen, setIsOpen }: ModalProps) {
   const { data: dataStatus, loading: loadingStatus } =
     useQuery<GetStatusQuery>(GET_STATUS);
 
+  //Handlers-------------------------------------------------------------------------------
+  const handleApply = () => {
+    setFilters({
+      assigneeId: selectedAssignee?.id,
+      pointEstimate: selectedPoints,
+      status: selectedStatus,
+      tags: tags,
+      dueDate: selectedDate?.toISOString() || undefined,
+    });
+    setIsOpen(false);
+  };
+
   return (
     <Dialog
       open={isOpen}
@@ -57,7 +71,7 @@ function FilterModal({ isOpen, setIsOpen }: ModalProps) {
     >
       <div className="fixed items-end inset-0 flex w-screen lg:items-center justify-center lg:p-4 bg-black/50">
         <DialogPanel
-          className="w-full lg:w-2/3 lg:max-w-[42rem] space-y-2 bg-background-modal text-font py-8 px-4 rounded-t-lg lg:rounded-lg
+          className="w-full lg:w-2/3 lg:max-w-[50rem] space-y-2 bg-background-modal text-font py-8 px-4 rounded-t-lg lg:rounded-lg
             flex flex-col items-center justify-center gap-4 text-center"
         >
           <DialogTitle className="font-bold">Filter tasks</DialogTitle>
@@ -93,7 +107,7 @@ function FilterModal({ isOpen, setIsOpen }: ModalProps) {
           </div>
           <div className="flex gap-4">
             <Button onClick={() => setIsOpen(false)}>Cancel</Button>
-            <Button variant="primary" onClick={() => setIsOpen(false)}>
+            <Button variant="primary" onClick={() => handleApply()}>
               Apply
             </Button>
           </div>

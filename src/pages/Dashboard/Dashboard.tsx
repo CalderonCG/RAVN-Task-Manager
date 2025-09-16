@@ -11,6 +11,7 @@ import { useState } from "react";
 import { RiAddLine, RiFilterLine } from "react-icons/ri";
 import AddModal from "../../features/AddTask/components/AddModal";
 import FilterModal from "../../features/Dashboard/components/FilterModal";
+import type { FilterType } from "../../utils/TaskTypes";
 
 function Dashboard() {
   //Queries -----------------------------
@@ -22,6 +23,13 @@ function Dashboard() {
   const [isOpen, setIsOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [filters, setFilters] = useState<FilterType>({
+    status: undefined,
+    assigneeId: undefined,
+    tags: undefined,
+    dueDate: undefined,
+    pointEstimate: undefined,
+  });
   const isLoading = loading || statusLoading;
   const statusOrder = ["BACKLOG", "TODO", "IN_PROGRESS", "DONE", "CANCELLED"];
   const status = (statusList?.__type?.enumValues ?? []).slice().sort((a, b) => {
@@ -109,7 +117,12 @@ function Dashboard() {
       )}
 
       <AddModal isOpen={isOpen} setIsOpen={setIsOpen} type="create" />
-      <FilterModal isOpen={isFilterOpen} setIsOpen={setIsFilterOpen} />
+      <FilterModal
+        isOpen={isFilterOpen}
+        setIsOpen={setIsFilterOpen}
+        filters={filters}
+        setFilters={setFilters}
+      />
     </div>
   );
 }
