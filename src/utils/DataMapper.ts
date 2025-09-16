@@ -20,6 +20,28 @@ export const colorMap = {
   REACT: "purple",
 } as const;
 
+export const statusMap = {
+  BACKLOG: "Backlog",
+  TODO: "Todo",
+  IN_PROGRESS: "In Progress",
+  DONE: "Done",
+  CANCELLED: "Cancelled",
+  ALL: "All",
+} as const;
+
+export const tagMap = {
+  REACT: "React",
+  ANDROID: "Android",
+  NODE_JS: "Node.js",
+  IOS: "IOS",
+  RAILS: "Rails",
+};
+
+export const userTypeMap = {
+  CANDIDATE: "Candidate",
+  ADMIN: "Admin",
+};
+
 export const mapDate = (dateString: string | undefined) => {
   if (dateString === undefined) {
     return "unknown";

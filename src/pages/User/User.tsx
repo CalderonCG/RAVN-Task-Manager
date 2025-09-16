@@ -2,8 +2,8 @@ import { useQuery } from "@apollo/client";
 import { GET_PROFILE } from "../../queries/UserQuery";
 import Loader from "../../components/Loader/Loader";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
-import type { GetProfileQuery } from "../../generated/graphql";
-import { mapDate } from "../../utils/DataMapper";
+import type { GetProfileQuery, UserType } from "../../generated/graphql";
+import { mapDate, userTypeMap } from "../../utils/DataMapper";
 
 function User() {
   const { data, loading, error } = useQuery<GetProfileQuery>(GET_PROFILE);
@@ -36,7 +36,7 @@ function User() {
               </div>
               <div className="flex w-full justify-between lg:justify-start lg:gap-4">
                 <p className="font-semibold text-font-secondary">Type:</p>
-                <p>{data?.profile.type}</p>
+                <p>{userTypeMap[data?.profile.type as UserType]}</p>
               </div>
               <div className="flex w-full justify-between lg:justify-start lg:gap-4">
                 <p className="font-semibold text-font-secondary">Created at:</p>
