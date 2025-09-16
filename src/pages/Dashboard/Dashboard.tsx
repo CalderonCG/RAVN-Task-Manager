@@ -17,9 +17,10 @@ function Dashboard() {
   const { data: statusList, loading: statusLoading } =
     useQuery<GetStatusQuery>(GET_STATUS);
 
-  //Consts ---------------------------
-  const isLoading = loading || statusLoading;
+  //Consts and states ---------------------------
   const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const isLoading = loading || statusLoading;
   const statusOrder = ["BACKLOG", "TODO", "IN_PROGRESS", "DONE", "CANCELLED"];
   const status = (statusList?.__type?.enumValues ?? []).slice().sort((a, b) => {
     const indexA = statusOrder.indexOf(a.name);
@@ -31,9 +32,17 @@ function Dashboard() {
     );
   });
 
+  const filteredTasks = data?.tasks.filter((task) => {
+    const nameMatch = task.name
+      .toLowerCase()
+      .startsWith(search.trim().toLowerCase());
+
+    return nameMatch;
+  });
+
   return (
     <div className="w-full h-full flex flex-col p-4 items-center gap-4 text-font overflow-hidden ">
-      <SearchBar />
+      <SearchBar value={search} onChange={setSearch} />
       <div className="w-full flex items-center justify-center lg:justify-between">
         <TabSwitch />
         <Button
@@ -51,21 +60,21 @@ function Dashboard() {
         <ErrorMessage message={error.message} />
       ) : (
         <div
-          className="w-full flex-1 flex gap-4 overflow-x-auto lg:justify-between
+          className="w-full flex-1 flex gap-4 overflow-x-auto 
         [&::-webkit-scrollbar]:w-2
   [&::-webkit-scrollbar-track]:bg-background
   [&::-webkit-scrollbar-thumb]:bg-accent"
         >
           {/* Columns */}
           {status.map((type) => {
-            const columnTasks = data?.tasks.filter(
+            const columnTasks = filteredTasks?.filter(
               (task) => task.status === type.name,
             );
             return (
               <div
                 key={type.name}
                 className="w-11/12 flex flex-col shrink-0 gap-4
-        lg:w-[calc(33.333%-1rem)] "
+        lg:w-[calc(33.333%-1rem)] lg:max-w-100"
               >
                 <h1 className="text-lg font-semibold">
                   {type.name} ({columnTasks?.length})
