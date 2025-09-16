@@ -19,7 +19,7 @@ import {
   GET_STATUS,
   GET_TAGS,
   GET_USERS,
-} from "../../../queries/task";
+} from "../../../queries/TaskQuery";
 import type { FilterType, StatusType, User } from "../../../utils/TaskTypes";
 import Button from "../../../components/Button/Button";
 

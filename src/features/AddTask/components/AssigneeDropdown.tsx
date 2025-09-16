@@ -34,7 +34,7 @@ function AssigneeDropdown({
         ) : (
           <span className="flex gap-2 w-full items-center text-font font-normal cursor-pointer  px-4 py-2">
             <img
-              className="w-6"
+              className="w-6 rounded-full"
               src="/Avatar.png"
               alt={selectedValue.fullName}
             />
@@ -65,7 +65,11 @@ function AssigneeDropdown({
                     })
                   }
                 >
-                  <img className="w-8" src="/Avatar.png" alt={user.fullName} />
+                  <img
+                    className="w-8 rounded-full"
+                    src="/Avatar.png"
+                    alt={user.fullName}
+                  />
                   <p>{user.fullName}</p>
                 </span>
               </MenuItem>

@@ -85,7 +85,7 @@ function Card({ task }: CardProps) {
         )}
       </div>
       <div className="flex items-center w-full justify-between">
-        <img src="/Avatar.png" alt="user" className="w-8 h-8" />
+        <img src="/Avatar.png" alt="user" className="w-8 h-8 rounded-full" />
 
         <div className="flex items-center gap-4">
           <RiLink />

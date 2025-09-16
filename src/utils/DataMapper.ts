@@ -20,7 +20,10 @@ export const colorMap = {
   REACT: "purple",
 } as const;
 
-export const mapDate = (dateString: string) => {
+export const mapDate = (dateString: string | undefined) => {
+  if (dateString === undefined) {
+    return "unknown";
+  }
   const date = new Date(dateString);
   const today = new Date();
   const yesterday = new Date();
