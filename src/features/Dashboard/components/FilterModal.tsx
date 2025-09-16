@@ -113,7 +113,7 @@ function FilterModal({ isOpen, setIsOpen, setFilters }: ModalProps) {
               options={dataStatus}
             />
           </div>
-          <div className="flex gap-4">
+          <div className="flex gap-4 w-full justify-between lg:justify-end">
             <Button onClick={() => setIsOpen(false)}>Cancel</Button>
             <Button onClick={() => handleReset()}>Reset</Button>
             <Button variant="primary" onClick={() => handleApply()}>

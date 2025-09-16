@@ -82,7 +82,7 @@ function Dashboard() {
   return (
     <div className="w-full h-full flex flex-col p-4 items-center gap-4 text-font overflow-hidden ">
       <SearchBar value={search} onChange={setSearch} />
-      <div className="w-full flex items-center justify-center lg:justify-between">
+      <div className="w-full flex items-center justify-between">
         <TabSwitch />
         <div className="flex gap-2">
           <Button variant="neutral" onClick={() => setIsFilterOpen(true)}>
