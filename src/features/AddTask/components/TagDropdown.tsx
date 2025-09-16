@@ -3,6 +3,7 @@ import { RiPriceTag3Fill, RiSquareFill, RiSquareLine } from "react-icons/ri";
 import type { MouseEvent } from "react";
 import type { GetTagsQuery, TaskTag } from "../../../generated/graphql";
 import type { TagAction } from "../../../utils/TaskTypes";
+import { tagMap } from "../../../utils/DataMapper";
 
 type ModalProps = {
   selectedValue: TaskTag[];
@@ -37,12 +38,15 @@ function TagDropdown({
         ) : (
           <div className="flex gap-1 w-full items-center text-font font-normal cursor-pointer ">
             <span className="flex items-center justify-center gap-2 lg:bg-modal-card bg-modal-card-mobile py-2 px-4 rounded-sm ">
-              {selectedValue[0]}
+              {tagMap[selectedValue[0] as TaskTag]}
             </span>
             {selectedValue.length > 1 && (
               <span
                 className="flex items-center justify-center gap-2 bg-modal-card-mobile lg:bg-modal-card py-2 px-2 rounded-sm"
-                title={selectedValue.slice(1).toString()}
+                title={selectedValue
+                  .slice(1)
+                  .map((tag) => tagMap[tag as TaskTag])
+                  .join(", ")}
               >
                 +{selectedValue.length - 1}
               </span>
@@ -74,7 +78,7 @@ function TagDropdown({
                     }
                   >
                     <RiSquareLine />
-                    <p>{tag.name}</p>
+                    <p>{tagMap[tag.name as TaskTag]}</p>
                   </span>
                 ) : (
                   <span
@@ -87,7 +91,7 @@ function TagDropdown({
                     }
                   >
                     <RiSquareFill />
-                    <p>{tag.name}</p>
+                    <p>{tagMap[tag.name as TaskTag]}</p>
                   </span>
                 )}
               </MenuItem>

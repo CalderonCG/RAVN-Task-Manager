@@ -8,7 +8,12 @@ import {
 import { MdOutlineAccountTree } from "react-icons/md";
 import Dropdown from "../../../components/Dropdown/Dropdown";
 import Badge from "../../../components/Badge/Badge";
-import { colorMap, mapDate, numberMap } from "../../../utils/DataMapper";
+import {
+  colorMap,
+  mapDate,
+  numberMap,
+  tagMap,
+} from "../../../utils/DataMapper";
 import { useState } from "react";
 import DeleteModal from "./DeleteModal";
 import AddModal from "../../AddTask/components/AddModal";
@@ -73,7 +78,7 @@ function Card({ task }: CardProps) {
       </div>
       <div className="flex gap-2 w-full">
         {task.tags.slice(0, 2).map((tag) => (
-          <Badge key={tag} label={tag} variant={colorMap[tag]} />
+          <Badge key={tag} label={tagMap[tag]} variant={colorMap[tag]} />
         ))}
         {task.tags.length > 2 && (
           <span

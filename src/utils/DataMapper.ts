@@ -29,6 +29,14 @@ export const statusMap = {
   ALL: "All",
 } as const;
 
+export const tagMap = {
+  REACT: "React",
+  ANDROID: "Android",
+  NODE_JS: "Node.js",
+  IOS: "IOS",
+  RAILS: "Rails",
+};
+
 export const mapDate = (dateString: string | undefined) => {
   if (dateString === undefined) {
     return "unknown";
