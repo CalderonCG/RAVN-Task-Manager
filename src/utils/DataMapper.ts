@@ -20,6 +20,15 @@ export const colorMap = {
   REACT: "purple",
 } as const;
 
+export const statusMap = {
+  BACKLOG: "Backlog",
+  TODO: "Todo",
+  IN_PROGRESS: "In Progress",
+  DONE: "Done",
+  CANCELLED: "Cancelled",
+  ALL: "All",
+} as const;
+
 export const mapDate = (dateString: string | undefined) => {
   if (dateString === undefined) {
     return "unknown";

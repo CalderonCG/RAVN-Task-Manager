@@ -11,7 +11,8 @@ import { useState } from "react";
 import { RiAddLine, RiFilterLine } from "react-icons/ri";
 import AddModal from "../../features/AddTask/components/AddModal";
 import FilterModal from "../../features/Dashboard/components/FilterModal";
-import type { FilterType } from "../../utils/TaskTypes";
+import type { FilterType, StatusType } from "../../utils/TaskTypes";
+import { statusMap } from "../../utils/DataMapper";
 
 function Dashboard() {
   //Queries -----------------------------
@@ -121,7 +122,7 @@ function Dashboard() {
         lg:w-[calc(33.333%-1rem)] lg:max-w-100"
               >
                 <h1 className="text-lg font-semibold">
-                  {type.name} ({columnTasks?.length})
+                  {statusMap[type.name as StatusType]} ({columnTasks?.length})
                 </h1>
                 <div
                   className="w-full flex-1 overflow-y-auto shrink-0 flex flex-col gap-4 scroll-smooth 

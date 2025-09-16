@@ -3,6 +3,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { RiTodoLine } from "react-icons/ri";
 import type { GetStatusQuery, Status } from "../../../generated/graphql";
 import type { StatusType } from "../../../utils/TaskTypes";
+import { statusMap } from "../../../utils/DataMapper";
 
 type ModalProps = {
   selectedValue: StatusType;
@@ -38,7 +39,7 @@ function StatusDropdown({
           <span className="flex gap-2 w-full items-center bg-modal-card-mobile lg:bg-modal-card text-font font-normal cursor-pointer  px-4 py-2">
             <RiTodoLine className="text-xl" />
 
-            <p>{selectedValue}</p>
+            <p>{statusMap[selectedValue as StatusType]}</p>
           </span>
         )}
       </MenuButton>
@@ -71,7 +72,7 @@ function StatusDropdown({
                     className="flex gap-2 items-center text-font font-normal hover:bg-modal-card cursor-pointer  px-4 py-2"
                     onClick={() => handleSelect(status.name as Status)}
                   >
-                    <p>{status.name}</p>
+                    <p>{statusMap[status.name as StatusType]}</p>
                   </span>
                 </MenuItem>
               );
