@@ -37,6 +37,11 @@ export const tagMap = {
   RAILS: "Rails",
 };
 
+export const userTypeMap = {
+  CANDIDATE: "Candidate",
+  ADMIN: "Admin",
+};
+
 export const mapDate = (dateString: string | undefined) => {
   if (dateString === undefined) {
     return "unknown";
