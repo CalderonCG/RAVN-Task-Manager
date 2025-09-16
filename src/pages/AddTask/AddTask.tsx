@@ -13,6 +13,7 @@ import {
   GET_POINTS,
   GET_STATUS,
   GET_TAGS,
+  GET_TASK,
   GET_USERS,
   UPDATE_TASK,
 } from "../../queries/task";
@@ -89,6 +90,7 @@ function AddTask() {
   //Event handlers
   const handleSuccess = () => {
     setShowSuccess(true);
+
     setTimeout(() => {
       navigate(-1);
     }, 2000);
@@ -131,6 +133,8 @@ function AddTask() {
           variables: {
             input: addedTask,
           },
+          refetchQueries: [{ query: GET_TASK }],
+          awaitRefetchQueries: true,
         });
       } else {
         await updateTask({
