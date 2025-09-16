@@ -10,7 +10,6 @@ import type {
   GetStatusQuery,
   GetTagsQuery,
   GetUsersQuery,
-  Status,
   TaskTag,
 } from "../../../generated/graphql";
 import { tagsReducer } from "../../../utils/Reducer";
@@ -21,7 +20,7 @@ import {
   GET_TAGS,
   GET_USERS,
 } from "../../../queries/task";
-import type { FilterType, User } from "../../../utils/TaskTypes";
+import type { FilterType, StatusType, User } from "../../../utils/TaskTypes";
 import Button from "../../../components/Button/Button";
 
 type ModalProps = {
@@ -38,7 +37,7 @@ function FilterModal({ isOpen, setIsOpen, setFilters }: ModalProps) {
     undefined,
   );
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedStatus, setSelectedStatus] = useState<Status>("BACKLOG");
+  const [selectedStatus, setSelectedStatus] = useState<StatusType>("ALL");
   const [tags, dispatch] = useReducer(tagsReducer, [] as TaskTag[]);
 
   //Queries---------------------------------------------------------------------------------
@@ -61,6 +60,14 @@ function FilterModal({ isOpen, setIsOpen, setFilters }: ModalProps) {
       dueDate: selectedDate?.toISOString() || undefined,
     });
     setIsOpen(false);
+  };
+
+  const handleReset = () => {
+    setSelectedAssignee(undefined);
+    setSelectedPoints(undefined);
+    setSelectedDate(null);
+    setSelectedStatus("ALL");
+    dispatch({ type: "Reset" });
   };
 
   return (
@@ -99,6 +106,7 @@ function FilterModal({ isOpen, setIsOpen, setFilters }: ModalProps) {
               onChange={setSelectedDate}
             />
             <StatusDropdown
+              isFilter={true}
               selectedValue={selectedStatus}
               onSelect={setSelectedStatus}
               isLoading={loadingStatus}
@@ -107,6 +115,7 @@ function FilterModal({ isOpen, setIsOpen, setFilters }: ModalProps) {
           </div>
           <div className="flex gap-4">
             <Button onClick={() => setIsOpen(false)}>Cancel</Button>
+            <Button onClick={() => handleReset()}>Reset</Button>
             <Button variant="primary" onClick={() => handleApply()}>
               Apply
             </Button>

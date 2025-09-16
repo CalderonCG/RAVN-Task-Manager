@@ -43,11 +43,40 @@ function Dashboard() {
   });
 
   const filteredTasks = data?.tasks.filter((task) => {
-    const nameMatch = task.name
+    const taskDate = new Date(task.dueDate);
+    const filterDate = filters.dueDate ? new Date(filters.dueDate) : undefined;
+
+    const nameCheck = task.name
       .toLowerCase()
       .startsWith(search.trim().toLowerCase());
 
-    return nameMatch;
+    const statusCheck =
+      task.status === filters.status ||
+      filters.status === undefined ||
+      filters.status === "ALL";
+
+    const assigneeCheck =
+      task.assignee?.id === filters.assigneeId ||
+      filters.assigneeId === undefined;
+
+    const dateCheck = filterDate === undefined || taskDate <= filterDate;
+
+    const pointsCheck =
+      task.pointEstimate === filters.pointEstimate ||
+      filters.pointEstimate === undefined;
+
+    const tagsCheck =
+      filters.tags === undefined ||
+      filters.tags.every((tag) => task.tags.includes(tag));
+
+    return (
+      nameCheck &&
+      statusCheck &&
+      assigneeCheck &&
+      dateCheck &&
+      pointsCheck &&
+      tagsCheck
+    );
   });
 
   return (

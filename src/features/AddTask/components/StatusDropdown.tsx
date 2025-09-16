@@ -2,21 +2,24 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
 import { RiTodoLine } from "react-icons/ri";
 import type { GetStatusQuery, Status } from "../../../generated/graphql";
+import type { StatusType } from "../../../utils/TaskTypes";
 
 type ModalProps = {
-  selectedValue: Status;
+  selectedValue: StatusType;
   options: GetStatusQuery | undefined;
   isLoading: boolean;
-  onSelect: React.Dispatch<React.SetStateAction<Status>>;
+  isFilter?: boolean;
+  onSelect: React.Dispatch<React.SetStateAction<StatusType>>;
 };
 
 function StatusDropdown({
   selectedValue,
   isLoading,
+  isFilter = false,
   options,
   onSelect,
 }: ModalProps) {
-  const handleSelect = (status: Status) => {
+  const handleSelect = (status: StatusType) => {
     onSelect(status);
   };
 
@@ -48,6 +51,17 @@ function StatusDropdown({
             Status
           </span>
         </MenuItem>
+        {isFilter && (
+          <MenuItem>
+            <span
+              className="flex gap-2 items-center text-font font-normal hover:bg-modal-card cursor-pointer  px-4 py-2"
+              onClick={() => handleSelect("ALL" as StatusType)}
+            >
+              <p>All</p>
+            </span>
+          </MenuItem>
+        )}
+
         {isLoading
           ? "Loading..."
           : options?.__type?.enumValues?.map((status) => {

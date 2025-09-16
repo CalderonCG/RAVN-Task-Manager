@@ -22,11 +22,15 @@ import type {
   GetStatusQuery,
   GetTagsQuery,
   GetUsersQuery,
-  Status,
   TaskTag,
 } from "../../../generated/graphql";
 import ErrorMessage from "../../../components/ErrorMessage/ErrorMessage";
-import type { GetTaskType, TaskType, User } from "../../../utils/TaskTypes";
+import type {
+  GetTaskType,
+  StatusType,
+  TaskType,
+  User,
+} from "../../../utils/TaskTypes";
 import StatusDropdown from "./StatusDropdown";
 import { client } from "../../../apolloClient";
 import { tagsReducer } from "../../../utils/Reducer";
@@ -74,7 +78,7 @@ function AddModal(props: ModalProps) {
     undefined,
   );
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedStatus, setSelectedStatus] = useState<Status>("BACKLOG");
+  const [selectedStatus, setSelectedStatus] = useState<StatusType>("BACKLOG");
   const [tags, dispatch] = useReducer(tagsReducer, [] as TaskTag[]);
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);

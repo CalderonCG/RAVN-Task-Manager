@@ -22,11 +22,15 @@ import type {
   GetStatusQuery,
   GetTagsQuery,
   GetUsersQuery,
-  Status,
   TaskTag,
 } from "../../generated/graphql";
 import MessageModal from "../../components/MessageModal/MessageModal";
-import type { GetTaskType, TaskType, User } from "../../utils/TaskTypes";
+import type {
+  GetTaskType,
+  StatusType,
+  TaskType,
+  User,
+} from "../../utils/TaskTypes";
 import StatusDropdown from "../../features/AddTask/components/StatusDropdown";
 import { tagsReducer } from "../../utils/Reducer";
 
@@ -63,7 +67,7 @@ function AddTask() {
     undefined,
   );
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedStatus, setSelectedStatus] = useState<Status>("BACKLOG");
+  const [selectedStatus, setSelectedStatus] = useState<StatusType>("BACKLOG");
   const [tags, dispatch] = useReducer(tagsReducer, [] as TaskTag[]);
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);

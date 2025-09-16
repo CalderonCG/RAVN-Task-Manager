@@ -19,10 +19,12 @@ export type TaskType = {
   dueDate: string;
   name: string;
   pointEstimate: string;
-  status: Status;
+  status: StatusType;
   tags: TaskTag[];
 };
 
 export type FilterType = Partial<Omit<TaskType, "name">>;
 
 export type GetTaskType = GetTaskQuery["tasks"][number];
+
+export type StatusType = Status | "ALL";
