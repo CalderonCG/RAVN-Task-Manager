@@ -1,7 +1,7 @@
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { RiCheckboxCircleLine, RiQuestionLine } from "react-icons/ri";
 import Button from "../../../components/Button/Button";
-import { DELETE_TASK, GET_TASK } from "../../../queries/task";
+import { DELETE_TASK, GET_TASK } from "../../../queries/TaskQuery";
 import { useMutation } from "@apollo/client";
 import { useState } from "react";
 import ErrorMessage from "../../../components/ErrorMessage/ErrorMessage";

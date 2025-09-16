@@ -16,7 +16,7 @@ import {
   GET_TASK,
   GET_USERS,
   UPDATE_TASK,
-} from "../../../queries/task";
+} from "../../../queries/TaskQuery";
 import type {
   GetPointsQuery,
   GetStatusQuery,

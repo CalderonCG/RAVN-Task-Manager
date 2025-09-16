@@ -2,7 +2,7 @@ import SearchBar from "../../components/SearchBar/SearchBar";
 import TabSwitch from "../../components/TabSwitch/TabSwitch";
 import Card from "../../features/Dashboard/components/Card";
 import { useQuery } from "@apollo/client";
-import { GET_STATUS, GET_TASK } from "../../queries/task";
+import { GET_STATUS, GET_TASK } from "../../queries/TaskQuery";
 import type { GetStatusQuery, GetTaskQuery } from "../../generated/graphql";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import Loader from "../../components/Loader/Loader";
