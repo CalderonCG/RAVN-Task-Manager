@@ -26,14 +26,10 @@ import type {
   TaskTag,
 } from "../../../generated/graphql";
 import ErrorMessage from "../../../components/ErrorMessage/ErrorMessage";
-import type {
-  GetTaskType,
-  TagAction,
-  TaskType,
-  User,
-} from "../../../utils/TaskTypes";
+import type { GetTaskType, TaskType, User } from "../../../utils/TaskTypes";
 import StatusDropdown from "./StatusDropdown";
 import { client } from "../../../apolloClient";
+import { tagsReducer } from "../../../utils/Reducer";
 
 //Types------------
 type ModalProps =
@@ -48,20 +44,6 @@ type ModalProps =
       task: GetTaskType;
       setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
     };
-
-//Reducer-----------------
-const tagsReducer = (state: TaskTag[], action: TagAction): TaskTag[] => {
-  switch (action.type) {
-    case "Add":
-      return [...state, action.value];
-    case "Remove":
-      return state.filter((tag) => tag != action.value);
-    case "Reset":
-      return [];
-    default:
-      return state;
-  }
-};
 
 function AddModal(props: ModalProps) {
   const { isOpen, type, setIsOpen } = props;

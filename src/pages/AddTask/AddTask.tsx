@@ -26,27 +26,10 @@ import type {
   TaskTag,
 } from "../../generated/graphql";
 import MessageModal from "../../components/MessageModal/MessageModal";
-import type {
-  GetTaskType,
-  TagAction,
-  TaskType,
-  User,
-} from "../../utils/TaskTypes";
+import type { GetTaskType, TaskType, User } from "../../utils/TaskTypes";
 import StatusDropdown from "../../features/AddTask/components/StatusDropdown";
+import { tagsReducer } from "../../utils/Reducer";
 
-//Reducer-----------------
-const tagsReducer = (state: TaskTag[], action: TagAction): TaskTag[] => {
-  switch (action.type) {
-    case "Add":
-      return [...state, action.value];
-    case "Remove":
-      return state.filter((tag) => tag != action.value);
-    case "Reset":
-      return [];
-    default:
-      return state;
-  }
-};
 function AddTask() {
   //Dynamic id, can be undefined
   const { id } = useParams<{ id: string }>();

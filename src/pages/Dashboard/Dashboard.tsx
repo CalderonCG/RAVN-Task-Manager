@@ -8,8 +8,9 @@ import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import Loader from "../../components/Loader/Loader";
 import Button from "../../components/Button/Button";
 import { useState } from "react";
-import { RiAddLine } from "react-icons/ri";
+import { RiAddLine, RiFilterLine } from "react-icons/ri";
 import AddModal from "../../features/AddTask/components/AddModal";
+import FilterModal from "../../features/Dashboard/components/FilterModal";
 
 function Dashboard() {
   //Queries -----------------------------
@@ -19,6 +20,7 @@ function Dashboard() {
 
   //Consts and states ---------------------------
   const [isOpen, setIsOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [search, setSearch] = useState("");
   const isLoading = loading || statusLoading;
   const statusOrder = ["BACKLOG", "TODO", "IN_PROGRESS", "DONE", "CANCELLED"];
@@ -45,13 +47,18 @@ function Dashboard() {
       <SearchBar value={search} onChange={setSearch} />
       <div className="w-full flex items-center justify-center lg:justify-between">
         <TabSwitch />
-        <Button
-          variant="neutral"
-          visibility="desktop"
-          onClick={() => setIsOpen(true)}
-        >
-          <RiAddLine className="text-3xl text-font" />
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="neutral" onClick={() => setIsFilterOpen(true)}>
+            <RiFilterLine className="text-3xl text-font" />
+          </Button>
+          <Button
+            variant="neutral"
+            visibility="desktop"
+            onClick={() => setIsOpen(true)}
+          >
+            <RiAddLine className="text-3xl text-font" />
+          </Button>
+        </div>
       </div>
       {/* Container */}
       {isLoading ? (
@@ -102,6 +109,7 @@ function Dashboard() {
       )}
 
       <AddModal isOpen={isOpen} setIsOpen={setIsOpen} type="create" />
+      <FilterModal isOpen={isFilterOpen} setIsOpen={setIsFilterOpen} />
     </div>
   );
 }

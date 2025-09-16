@@ -32,7 +32,7 @@ function StatusDropdown({
             <p>Status</p>
           </span>
         ) : (
-          <span className="flex gap-2 w-full items-center text-font font-normal cursor-pointer  px-4 py-2">
+          <span className="flex gap-2 w-full items-center bg-modal-card-mobile lg:bg-modal-card text-font font-normal cursor-pointer  px-4 py-2">
             <RiTodoLine className="text-xl" />
 
             <p>{selectedValue}</p>
@@ -45,7 +45,7 @@ function StatusDropdown({
       >
         <MenuItem>
           <span className="text-font-secondary font-semibold text-lg  px-4 py-2 cursor-default">
-            Estimate
+            Status
           </span>
         </MenuItem>
         {isLoading
