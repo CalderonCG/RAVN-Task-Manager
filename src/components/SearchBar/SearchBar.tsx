@@ -1,11 +1,18 @@
 import { RiNotification3Line, RiSearchLine } from "react-icons/ri";
 
-function SearchBar() {
+type SearchProps = {
+  value: string;
+  onChange: React.Dispatch<React.SetStateAction<string>>;
+};
+
+function SearchBar({ value, onChange }: SearchProps) {
   return (
     <div className="relative flex  w-full h-12 text-font-secondary gap-4 items-center">
       <RiSearchLine className="absolute left-6 top-1/2 -translate-y-1/2 text-2xl" />
       <input
         type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         className="grow w-64 bg-background-secondary pl-16 pr-6 lg:pr-24 rounded-2xl h-full"
         placeholder="Search"
       />

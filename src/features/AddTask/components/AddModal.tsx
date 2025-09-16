@@ -22,18 +22,18 @@ import type {
   GetStatusQuery,
   GetTagsQuery,
   GetUsersQuery,
-  Status,
   TaskTag,
 } from "../../../generated/graphql";
 import ErrorMessage from "../../../components/ErrorMessage/ErrorMessage";
 import type {
   GetTaskType,
-  TagAction,
+  StatusType,
   TaskType,
   User,
 } from "../../../utils/TaskTypes";
 import StatusDropdown from "./StatusDropdown";
 import { client } from "../../../apolloClient";
+import { tagsReducer } from "../../../utils/Reducer";
 
 //Types------------
 type ModalProps =
@@ -48,20 +48,6 @@ type ModalProps =
       task: GetTaskType;
       setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
     };
-
-//Reducer-----------------
-const tagsReducer = (state: TaskTag[], action: TagAction): TaskTag[] => {
-  switch (action.type) {
-    case "Add":
-      return [...state, action.value];
-    case "Remove":
-      return state.filter((tag) => tag != action.value);
-    case "Reset":
-      return [];
-    default:
-      return state;
-  }
-};
 
 function AddModal(props: ModalProps) {
   const { isOpen, type, setIsOpen } = props;
@@ -92,7 +78,7 @@ function AddModal(props: ModalProps) {
     undefined,
   );
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedStatus, setSelectedStatus] = useState<Status>("BACKLOG");
+  const [selectedStatus, setSelectedStatus] = useState<StatusType>("BACKLOG");
   const [tags, dispatch] = useReducer(tagsReducer, [] as TaskTag[]);
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
