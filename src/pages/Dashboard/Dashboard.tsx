@@ -1,7 +1,7 @@
 import SearchBar from "../../components/SearchBar/SearchBar";
 import TabSwitch from "../../components/TabSwitch/TabSwitch";
-import { useQuery } from "@apollo/client";
-import { GET_STATUS, GET_TASK } from "../../queries/TaskQuery";
+import { useMutation, useQuery } from "@apollo/client";
+import { GET_STATUS, GET_TASK, UPDATE_TASK } from "../../queries/TaskQuery";
 import type {
   GetProfileQuery,
   GetStatusQuery,
@@ -37,6 +37,7 @@ function Dashboard() {
   } = useQuery<GetProfileQuery>(GET_PROFILE);
   const { data: statusList, loading: statusLoading } =
     useQuery<GetStatusQuery>(GET_STATUS);
+  const [updateTask] = useMutation(UPDATE_TASK);
 
   //Consts and states ---------------------------
   const [activeTask, setActiveTask] = useState<GetTaskType | null>(null);
@@ -50,8 +51,9 @@ function Dashboard() {
     dueDate: undefined,
     pointEstimate: undefined,
   });
+  const [updateError, setUpdateError] = useState<string | null>(null);
   const isLoading = loading || statusLoading || userLoading;
-  const errorMessage = error?.message || userError?.message;
+  const errorMessage = error?.message || userError?.message || updateError;
 
   //Media query hook
   const isDesktop = useMediaQuery("(min-width: 1024px)");
@@ -120,6 +122,7 @@ function Dashboard() {
   function handleDragStart(event: DragStartEvent) {
     const { active } = event;
     const task = filteredTasks?.find((task) => task.id === active.id) || null;
+
     setActiveTask(task);
   }
 
@@ -133,8 +136,20 @@ function Dashboard() {
 
     const taskId = active.id as string;
     const newStatus = over.id as Status;
-
-    console.warn(taskId, newStatus);
+    if (newStatus !== (active.data.current?.status as Status)) {
+      try {
+        updateTask({
+          variables: {
+            input: {
+              id: taskId,
+              status: newStatus,
+            },
+          },
+        });
+      } catch (error) {
+        if (error instanceof Error) setUpdateError(error.message);
+      }
+    }
   }
 
   return (

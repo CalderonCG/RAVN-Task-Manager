@@ -35,6 +35,7 @@ function Card({ task }: CardProps) {
   //DnD setup---------------
   const { attributes, listeners, setNodeRef } = useDraggable({
     id: task.id,
+    data: { status: task.status },
   });
 
   return (
