@@ -4,7 +4,7 @@
 
 @theme {
 --color-background: #f5f6f7;
---color-background-secondary: #d7d9dc;
+--color-background-secondary: #dcdcdc;
 --color-background-modal: #ffffff;
 --color-modal-card: #f2f3f5;
 --color-modal-card-mobile: #f0f1f3;
@@ -16,8 +16,8 @@
 --color-primary-hover: #c64638;
 --color-accent: #dfe2e6;
 --color-accent-hover: #5a5d61;
---color-secondary: #70b252;
---color-tertiary: #e5b454;
+--color-secondary: #4f7e3a;
+--color-tertiary: #aa924f;
 --color-tag-blue: #5265b2;
 --color-tag-purple: #a154e5;
 
