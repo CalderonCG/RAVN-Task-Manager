@@ -86,7 +86,7 @@ function FilterModal({ isOpen, setIsOpen, setFilters }: ModalProps) {
     >
       <div className="fixed items-end inset-0 flex w-screen lg:items-center justify-center lg:p-4 bg-black/50">
         <DialogPanel
-          className="w-full lg:w-2/3 lg:max-w-[50rem] space-y-2 bg-background-modal text-font py-8 px-4 rounded-t-lg lg:rounded-lg
+          className="w-full lg:min-w-160 lg:w-fit lg:max-w-[50rem] space-y-2 bg-background-modal text-font py-8 px-4 rounded-t-lg lg:rounded-lg
             flex flex-col items-center justify-center gap-4 text-center"
         >
           <DialogTitle className="font-bold">Filter tasks</DialogTitle>

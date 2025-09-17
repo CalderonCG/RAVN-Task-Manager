@@ -190,7 +190,7 @@ function AddModal(props: ModalProps) {
         <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-black/50">
           {showSuccess ? (
             <DialogPanel
-              className="w-2/3 max-w-[42rem] space-y-2 bg-background-modal text-font py-8 px-4 rounded-lg
+              className="min-w-160 w-fit space-y-2 bg-background-modal text-font py-8 px-4 rounded-lg
             flex flex-col items-center justify-center text-center"
             >
               <RiCheckboxCircleLine className="text-6xl" />
@@ -200,13 +200,13 @@ function AddModal(props: ModalProps) {
             </DialogPanel>
           ) : error ? (
             <DialogPanel
-              className="w-2/3 max-w-[42rem] space-y-2 bg-background-modal text-font py-8 px-4 rounded-lg
+              className="min-w-160 w-fit space-y-2 bg-background-modal text-font py-8 px-4 rounded-lg
             flex flex-col items-center justify-center"
             >
               <ErrorMessage message={error} />
             </DialogPanel>
           ) : (
-            <DialogPanel className="w-2/3 max-w-[54rem] space-y-4 bg-background-modal text-font p-4 rounded-lg">
+            <DialogPanel className=" min-w-160 w-fit space-y-4 bg-background-modal text-font p-4 rounded-lg">
               <input
                 type="text"
                 placeholder="Task Name..."
