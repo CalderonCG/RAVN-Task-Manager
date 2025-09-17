@@ -1,12 +1,12 @@
 import SearchBar from "../../components/SearchBar/SearchBar";
 import TabSwitch from "../../components/TabSwitch/TabSwitch";
-import Card from "../../features/Dashboard/components/Card";
 import { useQuery } from "@apollo/client";
 import { GET_STATUS, GET_TASK } from "../../queries/TaskQuery";
 import type {
   GetProfileQuery,
   GetStatusQuery,
   GetTaskQuery,
+  Status,
 } from "../../generated/graphql";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import Loader from "../../components/Loader/Loader";
@@ -15,10 +15,17 @@ import { useState } from "react";
 import { RiAddLine, RiFilterLine, RiUserStarLine } from "react-icons/ri";
 import AddModal from "../../features/AddTask/components/AddModal";
 import FilterModal from "../../features/Dashboard/components/FilterModal";
-import type { FilterType, StatusType } from "../../utils/TaskTypes";
-import { statusMap } from "../../utils/DataMapper";
+import type { FilterType, GetTaskType } from "../../utils/TaskTypes";
 import { GET_PROFILE } from "../../queries/UserQuery";
 import { useMediaQuery } from "../../utils/CustomHooks";
+import Column from "../../features/Dashboard/components/Column";
+import {
+  DndContext,
+  DragOverlay,
+  type DragEndEvent,
+  type DragStartEvent,
+} from "@dnd-kit/core";
+import Card from "../../features/Dashboard/components/Card";
 
 function Dashboard() {
   //Queries -----------------------------
@@ -32,6 +39,7 @@ function Dashboard() {
     useQuery<GetStatusQuery>(GET_STATUS);
 
   //Consts and states ---------------------------
+  const [activeTask, setActiveTask] = useState<GetTaskType | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -108,6 +116,27 @@ function Dashboard() {
     }));
   };
 
+  //Drag start function-----------
+  function handleDragStart(event: DragStartEvent) {
+    const { active } = event;
+    const task = filteredTasks?.find((task) => task.id === active.id) || null;
+    setActiveTask(task);
+  }
+
+  //Drag end function------------------
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+
+    if (!over) {
+      return;
+    }
+
+    const taskId = active.id as string;
+    const newStatus = over.id as Status;
+
+    console.warn(taskId, newStatus);
+  }
+
   return (
     <div className="w-full h-full flex flex-col p-4 items-center gap-4 text-font overflow-hidden ">
       <SearchBar
@@ -146,38 +175,21 @@ function Dashboard() {
   [&::-webkit-scrollbar-thumb]:bg-accent"
         >
           {/* Columns */}
-          {status.map((type) => {
-            const columnTasks = filteredTasks?.filter(
-              (task) => task.status === type.name,
-            );
-            return (
-              <div
-                key={type.name}
-                className="w-11/12 flex flex-col shrink-0 gap-4
-        lg:w-[calc(33.333%-1rem)] lg:max-w-100"
-              >
-                <h1 className="text-lg font-semibold">
-                  {statusMap[type.name as StatusType]} ({columnTasks?.length})
-                </h1>
-                <div
-                  className="w-full flex-1 overflow-y-auto shrink-0 flex flex-col gap-4 scroll-smooth 
-                  [&::-webkit-scrollbar]:w-2
-  [&::-webkit-scrollbar-track]:bg-background
-  [&::-webkit-scrollbar-thumb]:bg-accent"
-                >
-                  {columnTasks?.length === 0 ? (
-                    <div className="flex w-full justify-center font-bold text-font-secondary text-xl">
-                      <p>Empty</p>
-                    </div>
-                  ) : (
-                    columnTasks
-                      ?.filter((task) => task.status === type.name)
-                      .map((task) => <Card task={task} key={task.id} />)
-                  )}
+          <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
+            {status.map((type) => {
+              const columnTasks = filteredTasks?.filter(
+                (task) => task.status === type.name,
+              );
+              return <Column key={type.name} type={type} tasks={columnTasks} />;
+            })}
+            <DragOverlay>
+              {activeTask ? (
+                <div style={{ opacity: 0.8, transform: "scale(1.05)" }}>
+                  <Card task={activeTask} />
                 </div>
-              </div>
-            );
-          })}
+              ) : null}
+            </DragOverlay>
+          </DndContext>
         </div>
       )}
 
