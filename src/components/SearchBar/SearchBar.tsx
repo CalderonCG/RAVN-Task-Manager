@@ -1,6 +1,7 @@
 import { RiNotification3Line, RiSearchLine } from "react-icons/ri";
 import { Link } from "react-router";
 import { avatarGenerator } from "../../utils/AvatarGenerator";
+import ThemeButton from "../ThemeButton/ThemeButton";
 
 type SearchProps = {
   value: string;
@@ -16,12 +17,13 @@ function SearchBar({ value, onChange, avatar }: SearchProps) {
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="grow w-64 bg-background-secondary pl-16 pr-6 lg:pr-24 rounded-2xl h-full"
+        className="grow w-32 bg-background-secondary pl-16 pr-6 lg:pr-24 rounded-2xl h-full"
         placeholder="Search"
       />
       <div className="flex gap-4 h-full items-center w-fit lg:absolute right-6 ">
+        <ThemeButton />
         <RiNotification3Line className="text-2xl shrink-0 hover:text-font hover:scale-105" />
-        <Link to={"/profile"}>
+        <Link to={"/profile"} className="shrink-0">
           <img
             src={avatarGenerator(avatar)}
             alt="avatar"
