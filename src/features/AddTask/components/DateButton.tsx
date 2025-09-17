@@ -8,7 +8,7 @@ import {
   RiArrowRightDoubleLine,
 } from "react-icons/ri";
 import { format } from "date-fns";
-import "./DateButton.module.css";
+import "./DateButton.css";
 
 //types---------------------------------------------
 type CustomInputProps = {
