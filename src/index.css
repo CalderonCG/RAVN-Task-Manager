@@ -5,9 +5,10 @@
 @theme {
   --color-background: #ffffff;
   --color-background-secondary: #f4f4f5;
-  --color-background-modal: #393D41;
+  --color-background-modal: #393d41;
   --color-modal-card: #42464a;
   --color-modal-card-mobile: #2e3033;
+  --color-modal-dropdown-mobile: #393d41;
   --color-font: #1f2937;
   --color-font-secondary: #94979a;
   --color-primary: #da584b;
@@ -23,9 +24,10 @@
 .dark {
   --color-background: #222528;
   --color-background-secondary: #2c2f33;
-  --color-background-modal: #393D41;
+  --color-background-modal: #393d41;
   --color-modal-card: #42464a;
   --color-modal-card-mobile: #2e3033;
+  --color-modal-dropdown-mobile: #393d41;
   --color-font: #ffffff;
   --color-font-secondary: #94979a;
   --color-primary: #da584b;
@@ -33,7 +35,7 @@
   --color-accent: #37393d;
   --color-accent-hover: #94979a;
   --color-secondary: #70b252;
-  --color-tertiary: #E5B454;
+  --color-tertiary: #e5b454;
   --color-tag-blue: #5265b2;
   --color-tag-purple: #a154e5;
 }

@@ -3,6 +3,7 @@ import { RiUser3Fill } from "react-icons/ri";
 import type { GetUsersQuery } from "../../../generated/graphql";
 import type { User } from "../../../utils/TaskTypes";
 import { useState } from "react";
+import { useMediaQuery } from "../../../utils/CustomHooks";
 
 type ModalProps = {
   selectedValue: User | undefined;
@@ -17,6 +18,8 @@ function AssigneeDropdown({
   options,
   onSelect,
 }: ModalProps) {
+  //Media query hook
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
   //States
   const [search, setSearch] = useState("");
 
@@ -51,8 +54,8 @@ function AssigneeDropdown({
         )}
       </MenuButton>
       <MenuItems
-        anchor="bottom start"
-        className="bg-modal-card-mobile w-[calc(100%-2rem)] lg:w-auto lg:bg-background-modal border-1 border-accent-hover rounded-lg text-font mt-2 flex flex-col
+        anchor={isDesktop ? "bottom start" : undefined}
+        className="absolute z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 lg:translate-none bg-modal-dropdown-mobile w-2/3 lg:w-auto lg:bg-background-modal border-1 border-accent-hover rounded-lg text-font mt-2 flex flex-col
 "
       >
         <MenuItem>

@@ -233,10 +233,7 @@ function AddModal(props: ModalProps) {
                   isLoading={loadingTags}
                   options={dataTags}
                 />
-                <DateButton
-                  selectedDate={selectedDate}
-                  onChange={setSelectedDate}
-                />
+
                 {type === "edit" && (
                   <StatusDropdown
                     selectedValue={selectedStatus}
@@ -245,6 +242,10 @@ function AddModal(props: ModalProps) {
                     options={dataStatus}
                   />
                 )}
+                <DateButton
+                  selectedDate={selectedDate}
+                  onChange={setSelectedDate}
+                />
               </div>
               <div className="w-full flex justify-end items-center">
                 {isMissing && (

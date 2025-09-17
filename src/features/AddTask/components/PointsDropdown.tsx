@@ -3,6 +3,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { RiAddBoxFill } from "react-icons/ri";
 import type { GetPointsQuery } from "../../../generated/graphql";
 import { numberMap } from "../../../utils/DataMapper";
+import { useMediaQuery } from "../../../utils/CustomHooks";
 
 type ModalProps = {
   selectedValue: string | undefined;
@@ -17,9 +18,13 @@ function PointsDropdown({
   options,
   onSelect,
 }: ModalProps) {
+  //Handlers---------------------------------
   const handleSelect = (number: string) => {
     onSelect(number);
   };
+
+  //Media query hook
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   return (
     <Menu>
@@ -41,8 +46,8 @@ function PointsDropdown({
         )}
       </MenuButton>
       <MenuItems
-        anchor="bottom start"
-        className="bg-modal-card-mobile w-[calc(100%-2rem)] lg:w-auto lg:bg-background-modal border-1 border-accent-hover rounded-lg text-font mt-2 flex flex-col"
+        anchor={isDesktop ? "bottom start" : undefined}
+        className=" absolute z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 lg:translate-none bg-modal-dropdown-mobile w-2/3 lg:w-auto lg:bg-background-modal border-1 border-accent-hover rounded-lg text-font mt-2 flex flex-col"
       >
         <MenuItem>
           <span className="text-font-secondary font-semibold text-lg  px-4 py-2 cursor-default">
