@@ -68,6 +68,14 @@ function FilterModal({ isOpen, setIsOpen, setFilters }: ModalProps) {
     setSelectedDate(null);
     setSelectedStatus("ALL");
     dispatch({ type: "Reset" });
+    setFilters({
+      assigneeId: selectedAssignee?.id,
+      pointEstimate: selectedPoints,
+      status: selectedStatus,
+      tags: tags,
+      dueDate: selectedDate?.toISOString() || undefined,
+    });
+    setIsOpen(false);
   };
 
   return (

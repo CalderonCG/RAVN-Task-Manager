@@ -110,12 +110,14 @@ function Card({ task }: CardProps) {
         taskId={task.id}
         taskName={task.name}
       />
-      <AddModal
-        isOpen={showEdit}
-        setIsOpen={setShowEdit}
-        type="edit"
-        task={task}
-      />
+      {showEdit && (
+        <AddModal
+          isOpen={showEdit}
+          setIsOpen={setShowEdit}
+          type="edit"
+          task={task}
+        />
+      )}
     </div>
   );
 }

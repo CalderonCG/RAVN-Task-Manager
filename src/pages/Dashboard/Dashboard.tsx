@@ -18,6 +18,7 @@ import FilterModal from "../../features/Dashboard/components/FilterModal";
 import type { FilterType, StatusType } from "../../utils/TaskTypes";
 import { statusMap } from "../../utils/DataMapper";
 import { GET_PROFILE } from "../../queries/UserQuery";
+import { useMediaQuery } from "../../utils/CustomHooks";
 
 function Dashboard() {
   //Queries -----------------------------
@@ -43,6 +44,9 @@ function Dashboard() {
   });
   const isLoading = loading || statusLoading || userLoading;
   const errorMessage = error?.message || userError?.message;
+
+  //Media query hook
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   //Status sorting-------------------------------
   const statusOrder = ["BACKLOG", "TODO", "IN_PROGRESS", "DONE", "CANCELLED"];
@@ -177,13 +181,17 @@ function Dashboard() {
         </div>
       )}
 
-      <AddModal isOpen={isOpen} setIsOpen={setIsOpen} type="create" />
-      <FilterModal
-        isOpen={isFilterOpen}
-        setIsOpen={setIsFilterOpen}
-        filters={filters}
-        setFilters={setFilters}
-      />
+      {isDesktop && (
+        <AddModal isOpen={isOpen} setIsOpen={setIsOpen} type="create" />
+      )}
+      {isFilterOpen && (
+        <FilterModal
+          isOpen={isFilterOpen}
+          setIsOpen={setIsFilterOpen}
+          filters={filters}
+          setFilters={setFilters}
+        />
+      )}
     </div>
   );
 }
