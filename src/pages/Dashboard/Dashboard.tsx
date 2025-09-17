@@ -3,20 +3,30 @@ import TabSwitch from "../../components/TabSwitch/TabSwitch";
 import Card from "../../features/Dashboard/components/Card";
 import { useQuery } from "@apollo/client";
 import { GET_STATUS, GET_TASK } from "../../queries/TaskQuery";
-import type { GetStatusQuery, GetTaskQuery } from "../../generated/graphql";
+import type {
+  GetProfileQuery,
+  GetStatusQuery,
+  GetTaskQuery,
+} from "../../generated/graphql";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import Loader from "../../components/Loader/Loader";
 import Button from "../../components/Button/Button";
 import { useState } from "react";
-import { RiAddLine, RiFilterLine } from "react-icons/ri";
+import { RiAddLine, RiFilterLine, RiUserStarLine } from "react-icons/ri";
 import AddModal from "../../features/AddTask/components/AddModal";
 import FilterModal from "../../features/Dashboard/components/FilterModal";
 import type { FilterType, StatusType } from "../../utils/TaskTypes";
 import { statusMap } from "../../utils/DataMapper";
+import { GET_PROFILE } from "../../queries/UserQuery";
 
 function Dashboard() {
   //Queries -----------------------------
   const { data, loading, error } = useQuery<GetTaskQuery>(GET_TASK);
+  const {
+    data: userData,
+    loading: userLoading,
+    error: userError,
+  } = useQuery<GetProfileQuery>(GET_PROFILE);
   const { data: statusList, loading: statusLoading } =
     useQuery<GetStatusQuery>(GET_STATUS);
 
@@ -31,7 +41,10 @@ function Dashboard() {
     dueDate: undefined,
     pointEstimate: undefined,
   });
-  const isLoading = loading || statusLoading;
+  const isLoading = loading || statusLoading || userLoading;
+  const errorMessage = error?.message || userError?.message;
+
+  //Status sorting-------------------------------
   const statusOrder = ["BACKLOG", "TODO", "IN_PROGRESS", "DONE", "CANCELLED"];
   const status = (statusList?.__type?.enumValues ?? []).slice().sort((a, b) => {
     const indexA = statusOrder.indexOf(a.name);
@@ -43,6 +56,7 @@ function Dashboard() {
     );
   });
 
+  //Task filtering---------------------------------------------------------
   const filteredTasks = data?.tasks.filter((task) => {
     const taskDate = new Date(task.dueDate);
     const filterDate = filters.dueDate ? new Date(filters.dueDate) : undefined;
@@ -80,12 +94,29 @@ function Dashboard() {
     );
   });
 
+  //Handle my task filter-----------------
+  const handleMyTask = () => {
+    const isSet = filters.assigneeId === userData?.profile.id;
+
+    setFilters((prev) => ({
+      ...prev,
+      assigneeId: isSet ? undefined : userData?.profile.id,
+    }));
+  };
+
   return (
     <div className="w-full h-full flex flex-col p-4 items-center gap-4 text-font overflow-hidden ">
-      <SearchBar value={search} onChange={setSearch} />
+      <SearchBar
+        value={search}
+        onChange={setSearch}
+        avatar={userData?.profile.id}
+      />
       <div className="w-full flex items-center justify-between">
         <TabSwitch />
         <div className="flex gap-2">
+          <Button variant="neutral" onClick={() => handleMyTask()}>
+            <RiUserStarLine className="text-3xl text-font" />
+          </Button>
           <Button variant="neutral" onClick={() => setIsFilterOpen(true)}>
             <RiFilterLine className="text-3xl text-font" />
           </Button>
@@ -101,8 +132,8 @@ function Dashboard() {
       {/* Container */}
       {isLoading ? (
         <Loader />
-      ) : error ? (
-        <ErrorMessage message={error.message} />
+      ) : errorMessage ? (
+        <ErrorMessage message={errorMessage} />
       ) : (
         <div
           className="w-full flex-1 flex gap-4 overflow-x-auto 

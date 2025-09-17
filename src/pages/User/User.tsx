@@ -4,6 +4,7 @@ import Loader from "../../components/Loader/Loader";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import type { GetProfileQuery, UserType } from "../../generated/graphql";
 import { mapDate, userTypeMap } from "../../utils/DataMapper";
+import { avatarGenerator } from "../../utils/AvatarGenerator";
 
 function User() {
   const { data, loading, error } = useQuery<GetProfileQuery>(GET_PROFILE);
@@ -19,9 +20,9 @@ function User() {
           <ErrorMessage message={error.message} />
         ) : (
           <>
-            <div className="w-full flex flex-col items-center gap-4">
+            <div className="w-full flex flex-col items-center gap-4 text-center">
               <img
-                src="/Avatar.png"
+                src={avatarGenerator(data?.profile.id)}
                 alt="Avatar"
                 className="w-50 lg:w-64 lg:object-contain rounded-full"
               />

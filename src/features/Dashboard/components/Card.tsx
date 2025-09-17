@@ -19,6 +19,7 @@ import DeleteModal from "./DeleteModal";
 import AddModal from "../../AddTask/components/AddModal";
 import type { GetTaskType } from "../../../utils/TaskTypes";
 import { Link } from "react-router";
+import { avatarGenerator } from "../../../utils/AvatarGenerator";
 
 type CardProps = {
   task: GetTaskType;
@@ -90,7 +91,12 @@ function Card({ task }: CardProps) {
         )}
       </div>
       <div className="flex items-center w-full justify-between">
-        <img src="/Avatar.png" alt="user" className="w-8 h-8 rounded-full" />
+        <img
+          src={avatarGenerator(task.assignee?.id)}
+          alt="user"
+          title={task.assignee?.fullName}
+          className="w-8 h-8 rounded-full"
+        />
 
         <div className="flex items-center gap-4">
           <RiLink />

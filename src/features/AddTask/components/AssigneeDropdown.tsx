@@ -4,6 +4,7 @@ import type { GetUsersQuery } from "../../../generated/graphql";
 import type { User } from "../../../utils/TaskTypes";
 import { useState } from "react";
 import { useMediaQuery } from "../../../utils/CustomHooks";
+import { avatarGenerator } from "../../../utils/AvatarGenerator";
 
 type ModalProps = {
   selectedValue: User | undefined;
@@ -46,7 +47,7 @@ function AssigneeDropdown({
           <span className="flex gap-2 w-full items-center text-font font-normal cursor-pointer  px-4 py-2">
             <img
               className="w-6 rounded-full"
-              src="/Avatar.png"
+              src={avatarGenerator(selectedValue.id)}
               alt={selectedValue.fullName}
             />
             <p>{selectedValue.fullName}</p>
@@ -93,7 +94,7 @@ function AssigneeDropdown({
                   >
                     <img
                       className="w-8 rounded-full"
-                      src="/Avatar.png"
+                      src={avatarGenerator(user.id)}
                       alt={user.fullName}
                     />
                     <p>{user.fullName}</p>
