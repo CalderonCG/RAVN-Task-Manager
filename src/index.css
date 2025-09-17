@@ -3,22 +3,24 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-background: #ffffff;
-  --color-background-secondary: #f4f4f5;
-  --color-background-modal: #393d41;
-  --color-modal-card: #42464a;
-  --color-modal-card-mobile: #2e3033;
-  --color-modal-dropdown-mobile: #393d41;
-  --color-font: #1f2937;
-  --color-font-secondary: #94979a;
-  --color-primary: #da584b;
-  --color-primary-hover: #c64638;
-  --color-accent: #37393d;
-  --color-accent-hover: #94979a;
-  --color-secondary: #70b252;
-  --color-tertiary: #70b252;
-  --color-tag-blue: #5265b2;
-  --color-tag-purple: #a154e5;
+--color-background: #f5f6f7;
+--color-background-secondary: #dcdcdc;
+--color-background-modal: #ffffff;
+--color-modal-card: #f2f3f5;
+--color-modal-card-mobile: #f0f1f3;
+--color-modal-dropdown-mobile: #ffffff;
+--color-font: #1c1e21;
+--color-font-secondary: #5a5d61;
+--color-button: #ffffff;
+--color-primary: #da584b;
+--color-primary-hover: #c64638;
+--color-accent: #dfe2e6;
+--color-accent-hover: #5a5d61;
+--color-secondary: #4f7e3a;
+--color-tertiary: #aa924f;
+--color-tag-blue: #5265b2;
+--color-tag-purple: #a154e5;
+
 }
 
 .dark {
@@ -30,6 +32,7 @@
   --color-modal-dropdown-mobile: #393d41;
   --color-font: #ffffff;
   --color-font-secondary: #94979a;
+  --color-button: #ffffff;
   --color-primary: #da584b;
   --color-primary-hover: #c64638;
   --color-accent: #37393d;

@@ -56,21 +56,28 @@ function PointsDropdown({
         </MenuItem>
         {isLoading
           ? "Loading..."
-          : options?.__type?.enumValues?.map((number) => {
-              const value = number.name;
-              const numberValue = numberMap[value as keyof typeof numberMap];
-              return (
-                <MenuItem key={numberValue}>
-                  <span
-                    className="flex gap-2 items-center text-font font-normal hover:bg-modal-card cursor-pointer  px-4 py-2"
-                    onClick={() => handleSelect(number.name)}
-                  >
-                    <RiAddBoxFill />
-                    <p>{numberValue} Points</p>
-                  </span>
-                </MenuItem>
-              );
-            })}
+          : options?.__type?.enumValues
+              ?.slice()
+              .sort((a, b) => {
+                const valueA = numberMap[a.name as keyof typeof numberMap];
+                const valueB = numberMap[b.name as keyof typeof numberMap];
+                return Number(valueB) - Number(valueA);
+              })
+              .map((number) => {
+                const value = number.name;
+                const numberValue = numberMap[value as keyof typeof numberMap];
+                return (
+                  <MenuItem key={numberValue}>
+                    <span
+                      className="flex gap-2 items-center text-font font-normal hover:bg-modal-card cursor-pointer  px-4 py-2"
+                      onClick={() => handleSelect(number.name)}
+                    >
+                      <RiAddBoxFill />
+                      <p>{numberValue} Points</p>
+                    </span>
+                  </MenuItem>
+                );
+              })}
       </MenuItems>
     </Menu>
   );

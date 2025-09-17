@@ -10,6 +10,7 @@ import Dropdown from "../../../components/Dropdown/Dropdown";
 import Badge from "../../../components/Badge/Badge";
 import {
   colorMap,
+  getDateStatus,
   mapDate,
   numberMap,
   tagMap,
@@ -19,6 +20,7 @@ import DeleteModal from "./DeleteModal";
 import AddModal from "../../AddTask/components/AddModal";
 import type { GetTaskType } from "../../../utils/TaskTypes";
 import { Link } from "react-router";
+import { avatarGenerator } from "../../../utils/AvatarGenerator";
 
 type CardProps = {
   task: GetTaskType;
@@ -28,14 +30,6 @@ function Card({ task }: CardProps) {
   const [showConfirm, setShowConfirm] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const encodedTask = encodeURIComponent(btoa(JSON.stringify(task)));
-  //Date status
-  const isActive = (dateString: string) => {
-    const date = new Date(dateString);
-    const today = new Date();
-    date.setHours(0, 0, 0, 0);
-    today.setHours(0, 0, 0, 0);
-    return date >= today;
-  };
 
   return (
     <div className="w-full bg-background-secondary p-4 flex flex-col gap-4 rounded-lg">
@@ -70,7 +64,7 @@ function Card({ task }: CardProps) {
           {numberMap[task.pointEstimate]} Pts
         </p>
         <span
-          className={`flex items-center bg-accent  py-1 px-4 rounded-sm gap-2 ${!isActive(task.dueDate) ? "bg-primary/10 text-primary" : ""}`}
+          className={`flex items-center bg-accent  py-1 px-4 rounded-sm gap-2 ${getDateStatus(task.dueDate)}`}
         >
           <RiAlarmLine className="text-lg" />
           <p className="font-normal text-sm ">{mapDate(task.dueDate)}</p>
@@ -90,7 +84,12 @@ function Card({ task }: CardProps) {
         )}
       </div>
       <div className="flex items-center w-full justify-between">
-        <img src="/Avatar.png" alt="user" className="w-8 h-8 rounded-full" />
+        <img
+          src={avatarGenerator(task.assignee?.id)}
+          alt="user"
+          title={task.assignee?.fullName}
+          className="w-8 h-8 rounded-full"
+        />
 
         <div className="flex items-center gap-4">
           <RiLink />
@@ -111,12 +110,14 @@ function Card({ task }: CardProps) {
         taskId={task.id}
         taskName={task.name}
       />
-      <AddModal
-        isOpen={showEdit}
-        setIsOpen={setShowEdit}
-        type="edit"
-        task={task}
-      />
+      {showEdit && (
+        <AddModal
+          isOpen={showEdit}
+          setIsOpen={setShowEdit}
+          type="edit"
+          task={task}
+        />
+      )}
     </div>
   );
 }

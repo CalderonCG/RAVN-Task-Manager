@@ -27,7 +27,8 @@ function Button({
   return (
     <button
       onClick={onClick}
-      className={`p-2 rounded-lg items-center justify-center  text-font ${visibilityStyles[visibility]} ${variantStyles[variant]}`}
+      className={`p-2 rounded-lg items-center justify-center   ${variant !== "neutral" ? "text-button" : "text-font"}
+        ${visibilityStyles[visibility]} ${variantStyles[variant]}`}
     >
       {children}
     </button>

@@ -65,3 +65,19 @@ export const mapDate = (dateString: string | undefined) => {
     year: "numeric",
   }).format(date);
 };
+
+export const getDateStatus = (dateString: string) => {
+  const date = new Date(dateString);
+  const today = new Date();
+  date.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
+
+  const daysLeft = date.getDate() - today.getDate();
+  return daysLeft < 0
+    ? "text-primary bg-primary/10"
+    : daysLeft == 0
+      ? "text-secondary bg-secondary/10"
+      : daysLeft <= 2
+        ? "text-tertiary bg-tertiary/10"
+        : "text-font";
+};

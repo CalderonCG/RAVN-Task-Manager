@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@apollo/client": "^3.14.0",
+    "@dicebear/collection": "^9.2.4",
+    "@dicebear/core": "^9.2.4",
     "@headlessui/react": "^2.2.7",
     "@tailwindcss/vite": "^4.1.13",
     "graphql": "^16.11.0",

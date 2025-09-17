@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useContext } from "react";
+import { ThemeContext } from "./ThemeHandler/ThemeContext";
 
 export function useMediaQuery(query: string) {
   const [matches, setMatches] = useState(false);
@@ -15,3 +17,5 @@ export function useMediaQuery(query: string) {
 
   return matches;
 }
+
+export const useTheme = () => useContext(ThemeContext);

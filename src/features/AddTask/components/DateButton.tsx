@@ -1,6 +1,14 @@
 import { forwardRef } from "react";
 import DatePicker from "react-datepicker";
-import { RiCalendarCheckLine } from "react-icons/ri";
+import {
+  RiCalendarCheckLine,
+  RiArrowLeftDoubleLine,
+  RiArrowLeftSLine,
+  RiArrowRightSLine,
+  RiArrowRightDoubleLine,
+} from "react-icons/ri";
+import { format } from "date-fns";
+import "./DateButton.module.css";
 
 //types---------------------------------------------
 type CustomInputProps = {
@@ -36,10 +44,10 @@ function DateButton({ selectedDate, onChange }: DateProps) {
       selected={selectedDate}
       onChange={(date: Date | null) => onChange(date)}
       customInput={<ExampleCustomInput selectedDate={selectedDate} />}
-      dateFormat="MMM. dd yyyy" // Add this format
+      dateFormat="MMM. dd yyyy"
       popperClassName=""
       todayButton="Today"
-      calendarClassName="!bg-background !border !border-font !rounded-sm"
+      calendarClassName="!bg-background !border !border-font !rounded-sm custom-datepicker-no-header-padding"
       dayClassName={(date: Date) => {
         const isSelected =
           selectedDate && date.toDateString() === selectedDate.toDateString();
@@ -49,6 +57,61 @@ function DateButton({ selectedDate, onChange }: DateProps) {
       }}
       monthClassName={() => "!text-font"}
       weekDayClassName={() => "!text-font"}
+      renderCustomHeader={({
+        monthDate,
+        decreaseMonth,
+        increaseMonth,
+        decreaseYear,
+        increaseYear,
+        prevMonthButtonDisabled,
+        nextMonthButtonDisabled,
+        prevYearButtonDisabled,
+        nextYearButtonDisabled,
+      }) => (
+        <div className="flex items-center justify-between px-4 py-0 w-full">
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={decreaseYear}
+              disabled={prevYearButtonDisabled}
+              className="p-1 hover:bg-primary rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <RiArrowLeftDoubleLine className="text-font text-lg" />
+            </button>
+            <button
+              type="button"
+              onClick={decreaseMonth}
+              disabled={prevMonthButtonDisabled}
+              className="p-1 hover:bg-primary rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <RiArrowLeftSLine className="text-font text-lg" />
+            </button>
+          </div>
+
+          <span className="text-font font-semibold text-lg">
+            {format(monthDate, "MMMM yyyy")}
+          </span>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={increaseMonth}
+              disabled={nextMonthButtonDisabled}
+              className="p-1 hover:bg-primary rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <RiArrowRightSLine className="text-font text-lg" />
+            </button>
+            <button
+              type="button"
+              onClick={increaseYear}
+              disabled={nextYearButtonDisabled}
+              className="p-1 hover:bg-primary rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <RiArrowRightDoubleLine className="text-font text-lg" />
+            </button>
+          </div>
+        </div>
+      )}
     />
   );
 }
