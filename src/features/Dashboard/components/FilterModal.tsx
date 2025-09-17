@@ -101,16 +101,17 @@ function FilterModal({ isOpen, setIsOpen, setFilters }: ModalProps) {
               isLoading={loadingTags}
               options={dataTags}
             />
-            <DateButton
-              selectedDate={selectedDate}
-              onChange={setSelectedDate}
-            />
+
             <StatusDropdown
               isFilter={true}
               selectedValue={selectedStatus}
               onSelect={setSelectedStatus}
               isLoading={loadingStatus}
               options={dataStatus}
+            />
+            <DateButton
+              selectedDate={selectedDate}
+              onChange={setSelectedDate}
             />
           </div>
           <div className="flex gap-4 w-full justify-between lg:justify-end">
