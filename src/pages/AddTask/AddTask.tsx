@@ -1,10 +1,9 @@
 import { RiCloseLine } from "react-icons/ri";
 import PointsDropdown from "../../features/AddTask/components/PointsDropdown";
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useState } from "react";
 import AssigneeDropdown from "../../features/AddTask/components/AssigneeDropdown";
 import TagDropdown from "../../features/AddTask/components/TagDropdown";
 import DateButton from "../../features/AddTask/components/DateButton";
-
 import Button from "../../components/Button/Button";
 import { useNavigate, useParams } from "react-router";
 import { useMutation, useQuery } from "@apollo/client";
@@ -33,10 +32,38 @@ import type {
 } from "../../utils/TaskTypes";
 import StatusDropdown from "../../features/AddTask/components/StatusDropdown";
 import { tagsReducer } from "../../utils/Reducer";
+import { useForm, Controller } from "react-hook-form";
+
+interface TaskFormData {
+  taskName: string;
+  selectedAssignee: User | undefined;
+  selectedPoints: string | undefined;
+  selectedDate: Date | null;
+  selectedStatus: StatusType;
+  tags: TaskTag[];
+}
 
 function AddTask() {
   //Dynamic id, can be undefined
   const { id } = useParams<{ id: string }>();
+
+  // React Hook Form---------------------------------------
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<TaskFormData>({
+    defaultValues: {
+      taskName: "",
+      selectedAssignee: undefined,
+      selectedPoints: undefined,
+      selectedDate: null,
+      selectedStatus: "BACKLOG",
+      tags: [],
+    },
+  });
+
   //Queries---------------------------------------------------------------------------------
   const { data: dataTags, loading: loadingTags } =
     useQuery<GetTagsQuery>(GET_TAGS);
@@ -57,27 +84,15 @@ function AddTask() {
     },
   });
 
-  //Selected states
+  //States
   const navigate = useNavigate();
-  const [taskName, setTaskName] = useState<string>("");
-  const [selectedAssignee, setSelectedAssignee] = useState<User | undefined>(
-    undefined,
-  );
-  const [selectedPoints, setSelectedPoints] = useState<string | undefined>(
-    undefined,
-  );
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedStatus, setSelectedStatus] = useState<StatusType>("BACKLOG");
-  const [tags, dispatch] = useReducer(tagsReducer, [] as TaskTag[]);
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isMissing, setIsMissing] = useState(false);
   const [task, setTask] = useState<GetTaskType | undefined>(undefined);
 
   //Event handlers
   const handleSuccess = () => {
     setShowSuccess(true);
-
     setTimeout(() => {
       navigate(-1);
     }, 2000);
@@ -90,25 +105,14 @@ function AddTask() {
     }, 2000);
   };
 
-  const handleTask = async () => {
-    if (
-      !selectedAssignee ||
-      !selectedPoints ||
-      tags.length === 0 ||
-      !selectedDate ||
-      taskName.trim() === ""
-    ) {
-      setIsMissing(true);
-      setTimeout(() => setIsMissing(false), 2000);
-      return;
-    }
+  const onSubmit = async (data: TaskFormData) => {
     const baseTask: TaskType = {
-      assigneeId: selectedAssignee?.id,
-      dueDate: selectedDate.toISOString(),
-      name: taskName,
-      pointEstimate: selectedPoints,
-      status: selectedStatus,
-      tags: tags,
+      assigneeId: data.selectedAssignee!.id,
+      dueDate: data.selectedDate!.toISOString(),
+      name: data.taskName,
+      pointEstimate: data.selectedPoints!,
+      status: data.selectedStatus,
+      tags: data.tags,
     };
 
     const addedTask =
@@ -120,7 +124,7 @@ function AddTask() {
           variables: {
             input: addedTask,
           },
-          refetchQueries: [{ query: GET_TASK }],
+          refetchQueries: [{ query: GET_TASK, variables: { input: {} } }],
           awaitRefetchQueries: true,
         });
       } else {
@@ -128,6 +132,8 @@ function AddTask() {
           variables: {
             input: addedTask,
           },
+          refetchQueries: [{ query: GET_TASK, variables: { input: {} } }],
+          awaitRefetchQueries: true,
         });
       }
     } catch (error) {
@@ -139,90 +145,159 @@ function AddTask() {
   useEffect(() => {
     if (id !== undefined) {
       const decodedString = atob(id);
-      const task: GetTaskType = JSON.parse(decodedString);
+      const taskData: GetTaskType = JSON.parse(decodedString);
 
-      setTask(task);
-      setTaskName(task.name || "");
-      setSelectedPoints(task.pointEstimate);
-      setSelectedStatus(task.status);
-      setSelectedDate(new Date(task.dueDate));
-      if (task.assignee) {
-        setSelectedAssignee({
-          __typename: "User",
-          id: task.assignee.id,
-          fullName: task.assignee.fullName,
-        });
-      }
-
-      if (task.tags.length > 0) {
-        dispatch({ type: "Reset" });
-        task.tags.forEach((tag) => {
-          dispatch({ type: "Add", value: tag });
-        });
-      }
-    } else if (id) {
-      //Reset inputs before each render
-      setTaskName("");
-      setSelectedStatus("BACKLOG");
-      setSelectedAssignee(undefined);
-      setSelectedPoints(undefined);
-      setSelectedDate(null);
-      dispatch({ type: "Reset" });
+      setTask(taskData);
+      reset({
+        taskName: taskData.name || "",
+        selectedPoints: taskData.pointEstimate,
+        selectedStatus: taskData.status,
+        selectedDate: new Date(taskData.dueDate),
+        selectedAssignee: taskData.assignee
+          ? {
+              __typename: "User",
+              id: taskData.assignee.id,
+              fullName: taskData.assignee.fullName,
+            }
+          : undefined,
+        tags: taskData.tags || [],
+      });
+    } else {
+      // Reset inputs for create mode
+      setTask(undefined);
+      reset({
+        taskName: "",
+        selectedStatus: "BACKLOG",
+        selectedAssignee: undefined,
+        selectedPoints: undefined,
+        selectedDate: null,
+        tags: [],
+      });
     }
-  }, [id]);
+  }, [id, reset]);
 
   return (
     <div className="h-full w-full p-4 flex flex-col gap-4">
-      <div className="flex justify-between items-center text-font-secondary">
-        <Button variant="neutral" onClick={() => navigate(-1)}>
-          <RiCloseLine className="text-3xl text-font" />
-        </Button>
-        {task !== undefined ? (
-          <Button variant="neutral" onClick={() => handleTask()}>
-            <p>Update</p>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="h-full flex flex-col gap-4"
+      >
+        <div className="flex justify-between items-center text-font-secondary">
+          <Button variant="neutral" onClick={() => navigate(-1)} type="button">
+            <RiCloseLine className="text-3xl text-font" />
           </Button>
-        ) : (
-          <Button variant="neutral" onClick={() => handleTask()}>
-            <p>Create</p>
-          </Button>
-        )}
-      </div>
-      <input
-        type="text"
-        placeholder="Task Name..."
-        className="w-full p-2 text-xl font-semibold"
-        value={taskName}
-        onChange={(e) => setTaskName(e.target.value)}
-      />
-      <PointsDropdown
-        selectedValue={selectedPoints}
-        onSelect={setSelectedPoints}
-        options={dataPoints}
-        isLoading={loadingPoints}
-      />
-      <TagDropdown
-        selectedValue={tags}
-        onSelect={dispatch}
-        options={dataTags}
-        isLoading={loadingTags}
-      />
-      <AssigneeDropdown
-        selectedValue={selectedAssignee}
-        onSelect={setSelectedAssignee}
-        options={dataUsers}
-        isLoading={loadingUsers}
-      />
-      <DateButton selectedDate={selectedDate} onChange={setSelectedDate} />
 
-      {task !== undefined && (
-        <StatusDropdown
-          selectedValue={selectedStatus}
-          onSelect={setSelectedStatus}
-          isLoading={loadingStatus}
-          options={dataStatus}
+          <Button variant="neutral" type="submit">
+            <p>{task !== undefined ? "Update" : "Create"}</p>
+          </Button>
+        </div>
+
+        <Controller
+          name="taskName"
+          control={control}
+          rules={{
+            required: "Task name is required",
+            maxLength: {
+              value: 15,
+              message: "Task name must be 15 characters or less",
+            },
+          }}
+          render={({ field }) => (
+            <input
+              {...field}
+              type="text"
+              placeholder="Task Name..."
+              className="w-full p-2 text-xl font-semibold"
+            />
+          )}
         />
-      )}
 
+        {/* Points Dropdown */}
+        <Controller
+          name="selectedPoints"
+          control={control}
+          rules={{ required: "Points estimate is required" }}
+          render={({ field }) => (
+            <PointsDropdown
+              selectedValue={field.value}
+              onSelect={field.onChange}
+              options={dataPoints}
+              isLoading={loadingPoints}
+            />
+          )}
+        />
+
+        {/* Tag Dropdown */}
+        <Controller
+          name="tags"
+          control={control}
+          rules={{
+            validate: (value) =>
+              value.length > 0 || "At least one tag is required",
+          }}
+          render={({ field }) => (
+            <TagDropdown
+              selectedValue={field.value}
+              onSelect={(action) => {
+                const newTags = tagsReducer(field.value, action);
+                field.onChange(newTags);
+              }}
+              options={dataTags}
+              isLoading={loadingTags}
+            />
+          )}
+        />
+
+        {/* Assignee Dropdown */}
+        <Controller
+          name="selectedAssignee"
+          control={control}
+          rules={{ required: "Assignee is required" }}
+          render={({ field }) => (
+            <AssigneeDropdown
+              selectedValue={field.value}
+              onSelect={field.onChange}
+              options={dataUsers}
+              isLoading={loadingUsers}
+            />
+          )}
+        />
+
+        {/* Date Button */}
+        <Controller
+          name="selectedDate"
+          control={control}
+          rules={{ required: "Due date is required" }}
+          render={({ field }) => (
+            <DateButton selectedDate={field.value} onChange={field.onChange} />
+          )}
+        />
+
+        {/* Status Dropdown */}
+        {task !== undefined && (
+          <Controller
+            name="selectedStatus"
+            control={control}
+            render={({ field }) => (
+              <StatusDropdown
+                selectedValue={field.value}
+                onSelect={field.onChange}
+                isLoading={loadingStatus}
+                options={dataStatus}
+              />
+            )}
+          />
+        )}
+
+        {/* Validation errors */}
+        {Object.keys(errors).length > 0 && (
+          <p className="text-primary flex-1">
+            {Object.values(errors)[0]?.message}
+          </p>
+        )}
+      </form>
+
+      {/* Message modals */}
       <MessageModal
         type="message"
         message={`Task ${task !== undefined ? "updated" : "created"} successfully`}
@@ -235,9 +310,6 @@ function AddTask() {
         isOpen={error !== null}
         setIsOpen={setError}
       />
-      {isMissing && (
-        <p className="text-primary flex-1">Please complete all fields</p>
-      )}
     </div>
   );
 }

@@ -3,13 +3,14 @@ import type { PropsWithChildren } from "react";
 type ButtonProps = {
   variant?: "primary" | "secondary" | "tertiary" | "neutral";
   visibility?: "mobile" | "desktop" | "all";
-
+  type?: "button" | "submit" | "reset";
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
 
 function Button({
   variant = "neutral",
   visibility = "all",
+  type = "button",
   onClick,
   children,
 }: PropsWithChildren<ButtonProps>) {
@@ -27,6 +28,7 @@ function Button({
   return (
     <button
       onClick={onClick}
+      type={type}
       className={`p-2 rounded-lg items-center justify-center   ${variant !== "neutral" ? "text-button" : "text-font"}
         ${visibilityStyles[visibility]} ${variantStyles[variant]}`}
     >
