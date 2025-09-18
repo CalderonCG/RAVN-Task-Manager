@@ -21,6 +21,7 @@ import AddModal from "../../AddTask/components/AddModal";
 import type { GetTaskType } from "../../../utils/TaskTypes";
 import { Link } from "react-router";
 import { avatarGenerator } from "../../../utils/AvatarGenerator";
+import { useDraggable } from "@dnd-kit/core";
 
 type CardProps = {
   task: GetTaskType;
@@ -31,8 +32,19 @@ function Card({ task }: CardProps) {
   const [showEdit, setShowEdit] = useState(false);
   const encodedTask = encodeURIComponent(btoa(JSON.stringify(task)));
 
+  //DnD setup---------------
+  const { attributes, listeners, setNodeRef } = useDraggable({
+    id: task.id,
+    data: { status: task.status },
+  });
+
   return (
-    <div className="w-full bg-background-secondary p-4 flex flex-col gap-4 rounded-lg">
+    <div
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+      className="w-full bg-background-secondary p-4 flex flex-col gap-4 rounded-lg"
+    >
       <div className="w-full flex items-center justify-between">
         <p className="text-lg">{task.name}</p>
         <Dropdown>
