@@ -262,7 +262,9 @@ export const __TypeKind = {
 } as const;
 
 export type __TypeKind = (typeof __TypeKind)[keyof typeof __TypeKind];
-export type GetTaskQueryVariables = Exact<{ [key: string]: never }>;
+export type GetTaskQueryVariables = Exact<{
+  input: FilterTaskInput;
+}>;
 
 export type GetTaskQuery = {
   __typename: "Query";
@@ -393,8 +395,8 @@ export type GetProfileQuery = {
 };
 
 export const GetTaskDocument = gql`
-  query GetTask {
-    tasks(input: {}) {
+  query GetTask($input: FilterTaskInput!) {
+    tasks(input: $input) {
       id
       name
       status
@@ -422,11 +424,13 @@ export const GetTaskDocument = gql`
  * @example
  * const { data, loading, error } = useGetTaskQuery({
  *   variables: {
+ *      input: // value for 'input'
  *   },
  * });
  */
 export function useGetTaskQuery(
-  baseOptions?: Apollo.QueryHookOptions<GetTaskQuery, GetTaskQueryVariables>,
+  baseOptions: Apollo.QueryHookOptions<GetTaskQuery, GetTaskQueryVariables> &
+    ({ variables: GetTaskQueryVariables; skip?: boolean } | { skip: boolean }),
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetTaskQuery, GetTaskQueryVariables>(

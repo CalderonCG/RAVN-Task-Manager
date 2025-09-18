@@ -3,8 +3,8 @@ import { gql } from "@apollo/client";
 //Queries ----------------------------------------
 //Fetch all task
 export const GET_TASK = gql`
-  query GetTask {
-    tasks(input: {}) {
+  query GetTask($input: FilterTaskInput!) {
+    tasks(input: $input) {
       id
       name
       status
