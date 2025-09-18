@@ -14,7 +14,12 @@ import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import Loader from "../../components/Loader/Loader";
 import Button from "../../components/Button/Button";
 import { useState } from "react";
-import { RiAddLine, RiFilterLine, RiUserStarLine } from "react-icons/ri";
+import {
+  RiAddLine,
+  RiFilterLine,
+  RiUserStarLine,
+  RiZoomOutLine,
+} from "react-icons/ri";
 import AddModal from "../../features/AddTask/components/AddModal";
 import FilterModal from "../../features/Dashboard/components/FilterModal";
 import type { FilterType, GetTaskType } from "../../utils/TaskTypes";
@@ -69,7 +74,13 @@ function Dashboard() {
   const [updateTask] = useMutation(UPDATE_TASK);
 
   //Consts---------------------------
-
+  const isFiltering = Object.entries(filters).some(([key, value]) => {
+    if (value === undefined) return false;
+    if (key === "status" && value === "ALL") return false;
+    if (key === "tags" && Array.isArray(value) && value.length === 0)
+      return false;
+    return true;
+  });
   const isLoading = loading || statusLoading || userLoading;
   const errorMessage = error?.message || userError?.message;
 
@@ -181,22 +192,33 @@ function Dashboard() {
   [&::-webkit-scrollbar-track]:bg-background
   [&::-webkit-scrollbar-thumb]:bg-accent"
         >
+          {data?.tasks.length === 0 && (isFiltering || search.trim() !== "") ? (
+            <div className="w-full flex-1 flex flex-col items-center justify-center font-bold text-font-secondary text-xl">
+              <RiZoomOutLine className="text-4xl" />
+              <p className="font-normal text-center">
+                No task matches those filters
+              </p>
+            </div>
+          ) : (
+            <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
+              {status.map((type) => {
+                const columnTasks = data?.tasks?.filter(
+                  (task) => task.status === type.name,
+                );
+                return (
+                  <Column key={type.name} type={type} tasks={columnTasks} />
+                );
+              })}
+              <DragOverlay>
+                {activeTask ? (
+                  <div style={{ opacity: 0.8, transform: "scale(1.05)" }}>
+                    <Card task={activeTask} />
+                  </div>
+                ) : null}
+              </DragOverlay>
+            </DndContext>
+          )}
           {/* Columns */}
-          <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
-            {status.map((type) => {
-              const columnTasks = data?.tasks?.filter(
-                (task) => task.status === type.name,
-              );
-              return <Column key={type.name} type={type} tasks={columnTasks} />;
-            })}
-            <DragOverlay>
-              {activeTask ? (
-                <div style={{ opacity: 0.8, transform: "scale(1.05)" }}>
-                  <Card task={activeTask} />
-                </div>
-              ) : null}
-            </DragOverlay>
-          </DndContext>
         </div>
       )}
 
