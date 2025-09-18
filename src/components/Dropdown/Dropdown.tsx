@@ -9,12 +9,12 @@ type DropdownType = {
 
 function Dropdown({ setIsOpen, children }: PropsWithChildren<DropdownType>) {
   return (
-    <Menu as="div" className="relative inline-block">
+    <Menu as="div" className="relative inline-block touch-none">
       {({ open }) => (
         <DropdownWrapper open={open} setIsOpen={setIsOpen}>
           <>
             <MenuButton>
-              <BsThreeDots className="text-2xl text-font-secondary" />
+              <BsThreeDots className="text-2xl text-font-secondary touch-none" />
             </MenuButton>
 
             <MenuItems

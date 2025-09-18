@@ -22,6 +22,7 @@ import type { GetTaskType } from "../../../utils/TaskTypes";
 import { Link } from "react-router";
 import { avatarGenerator } from "../../../utils/AvatarGenerator";
 import { useDraggable } from "@dnd-kit/core";
+import { useMediaQuery } from "../../../utils/CustomHooks";
 
 type CardProps = {
   task: GetTaskType;
@@ -31,6 +32,7 @@ function Card({ task }: CardProps) {
   const [showConfirm, setShowConfirm] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
   const encodedTask = encodeURIComponent(btoa(JSON.stringify(task)));
 
   //DnD setup---------------
@@ -45,7 +47,7 @@ function Card({ task }: CardProps) {
       tags: task.tags,
     },
   });
-  const dragDisabled = showConfirm || showEdit || isOpen;
+  const dragDisabled = showConfirm || showEdit || isOpen || !isDesktop;
 
   return (
     <div
