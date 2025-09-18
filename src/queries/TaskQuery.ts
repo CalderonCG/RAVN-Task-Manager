@@ -10,6 +10,7 @@ export const GET_TASK = gql`
       status
       pointEstimate
       dueDate
+      position
       assignee {
         id
         fullName

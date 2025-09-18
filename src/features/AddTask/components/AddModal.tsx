@@ -1,5 +1,5 @@
 import { Dialog, DialogPanel } from "@headlessui/react";
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useState } from "react";
 import { RiCheckboxCircleLine } from "react-icons/ri";
 import AssigneeDropdown from "./AssigneeDropdown";
 import PointsDropdown from "./PointsDropdown";
@@ -34,6 +34,7 @@ import type {
 import StatusDropdown from "./StatusDropdown";
 import { client } from "../../../apolloClient";
 import { tagsReducer } from "../../../utils/Reducer";
+import { useForm, Controller } from "react-hook-form";
 
 //Types------------
 type ModalProps =
@@ -49,8 +50,34 @@ type ModalProps =
       setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
     };
 
+interface TaskFormData {
+  taskName: string;
+  selectedAssignee: User | undefined;
+  selectedPoints: string | undefined;
+  selectedDate: Date | null;
+  selectedStatus: StatusType;
+  tags: TaskTag[];
+}
+
 function AddModal(props: ModalProps) {
   const { isOpen, type, setIsOpen } = props;
+
+  //ReactHook Form--------------------------------------------------
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<TaskFormData>({
+    defaultValues: {
+      taskName: "",
+      selectedAssignee: undefined,
+      selectedPoints: undefined,
+      selectedDate: null,
+      selectedStatus: "BACKLOG",
+      tags: [],
+    },
+  });
   //Queries---------------------------------------------------------------------------------
   const { data: dataTags, loading: loadingTags } =
     useQuery<GetTagsQuery>(GET_TAGS);
@@ -72,17 +99,8 @@ function AddModal(props: ModalProps) {
   });
 
   //Selected states
-  const [taskName, setTaskName] = useState<string>("");
-  const [selectedAssignee, setSelectedAssignee] = useState<User | undefined>();
-  const [selectedPoints, setSelectedPoints] = useState<string | undefined>(
-    undefined,
-  );
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedStatus, setSelectedStatus] = useState<StatusType>("BACKLOG");
-  const [tags, dispatch] = useReducer(tagsReducer, [] as TaskTag[]);
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isMissing, setIsMissing] = useState(false);
 
   //Event handlers
   const handleSuccess = () => {
@@ -90,6 +108,7 @@ function AddModal(props: ModalProps) {
     setTimeout(() => {
       setShowSuccess(false);
       setIsOpen(false);
+      reset();
       client.refetchQueries({
         include: [GET_TASK],
       });
@@ -97,32 +116,23 @@ function AddModal(props: ModalProps) {
   };
 
   const handleError = (error: string) => {
-    dispatch({ type: "Reset" });
     setError(error);
     setTimeout(() => {
       setError(null);
     }, 1000);
   };
 
-  const handleTask = async () => {
-    if (
-      !selectedAssignee ||
-      !selectedPoints ||
-      tags.length === 0 ||
-      !selectedDate ||
-      taskName.trim() === ""
-    ) {
-      setIsMissing(true);
-      setTimeout(() => setIsMissing(false), 2000);
+  const onSubmit = async (data: TaskFormData) => {
+    if (!data.selectedAssignee || !data.selectedDate || !data.selectedPoints) {
       return;
     }
     const baseTask: TaskType = {
-      assigneeId: selectedAssignee?.id,
-      dueDate: selectedDate.toISOString(),
-      name: taskName,
-      pointEstimate: selectedPoints,
-      status: selectedStatus,
-      tags: tags,
+      assigneeId: data.selectedAssignee!.id,
+      dueDate: data.selectedDate!.toISOString(),
+      name: data.taskName,
+      pointEstimate: data.selectedPoints!,
+      status: data.selectedStatus,
+      tags: data.tags,
     };
 
     const addedTask =
@@ -130,17 +140,9 @@ function AddModal(props: ModalProps) {
 
     try {
       if (type === "create") {
-        await createTask({
-          variables: {
-            input: addedTask,
-          },
-        });
+        await createTask({ variables: { input: addedTask } });
       } else {
-        await updateTask({
-          variables: {
-            input: addedTask,
-          },
-        });
+        await updateTask({ variables: { input: addedTask } });
       }
     } catch (error) {
       if (error instanceof Error) handleError(error.message);
@@ -149,131 +151,184 @@ function AddModal(props: ModalProps) {
 
   //UseEffect to map the inputs if in edit mode
   useEffect(() => {
-    if (type === "edit" && isOpen) {
+    if (type === "edit" && isOpen && props.task) {
       const { task } = props;
-      setTaskName(task.name || "");
-      setSelectedPoints(task.pointEstimate);
-      setSelectedStatus(task.status);
-      setSelectedDate(new Date(task.dueDate));
-      if (task.assignee) {
-        setSelectedAssignee({
-          __typename: "User",
-          id: task.assignee.id,
-          fullName: task.assignee.fullName,
-        });
-      }
-
-      if (task.tags.length > 0) {
-        dispatch({ type: "Reset" });
-        task.tags.forEach((tag) => {
-          dispatch({ type: "Add", value: tag });
-        });
-      }
+      reset({
+        taskName: task.name || "",
+        selectedPoints: task.pointEstimate,
+        selectedStatus: task.status,
+        selectedDate: new Date(task.dueDate),
+        selectedAssignee: task.assignee
+          ? {
+              __typename: "User",
+              id: task.assignee.id,
+              fullName: task.assignee.fullName,
+            }
+          : undefined,
+        tags: task.tags || [],
+      });
     } else if (type === "create" && isOpen) {
-      //Reset inputs before each render
-      setTaskName("");
-      setSelectedStatus("BACKLOG");
-      setSelectedAssignee(undefined);
-      setSelectedPoints(undefined);
-      setSelectedDate(null);
-      dispatch({ type: "Reset" });
+      reset({
+        taskName: "",
+        selectedStatus: "BACKLOG",
+        selectedAssignee: undefined,
+        selectedPoints: undefined,
+        selectedDate: null,
+        tags: [],
+      });
     }
-  }, [props, type, isOpen]);
+  }, [props, type, isOpen, reset]);
 
   return (
-    <>
-      <Dialog
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
-        className="relative z-50 "
-      >
-        <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-black/50">
-          {showSuccess ? (
-            <DialogPanel
-              className="min-w-160 w-fit space-y-2 bg-background-modal text-font py-8 px-4 rounded-lg
-            flex flex-col items-center justify-center text-center"
-            >
-              <RiCheckboxCircleLine className="text-6xl" />
-              <p className="text-lg font-bold">
-                Task {type === "edit" ? "updated" : "created"} successfully
-              </p>
-            </DialogPanel>
-          ) : error ? (
-            <DialogPanel
-              className="min-w-160 w-fit space-y-2 bg-background-modal text-font py-8 px-4 rounded-lg
-            flex flex-col items-center justify-center"
-            >
-              <ErrorMessage message={error} />
-            </DialogPanel>
-          ) : (
-            <DialogPanel className=" min-w-160 w-fit space-y-4 bg-background-modal text-font p-4 rounded-lg">
-              <input
-                type="text"
-                placeholder="Task Name..."
-                className="w-full p-2 text-xl font-semibold"
-                value={taskName}
-                onChange={(e) => setTaskName(e.target.value)}
-              />
-              <div className="flex gap-4">
-                <PointsDropdown
-                  selectedValue={selectedPoints}
-                  onSelect={setSelectedPoints}
-                  isLoading={loadingPoints}
-                  options={dataPoints}
-                />
-                <AssigneeDropdown
-                  selectedValue={selectedAssignee}
-                  onSelect={setSelectedAssignee}
-                  isLoading={loadingUsers}
-                  options={dataUsers}
-                />
-                <TagDropdown
-                  selectedValue={tags}
-                  onSelect={dispatch}
-                  isLoading={loadingTags}
-                  options={dataTags}
-                />
-
-                {type === "edit" && (
-                  <StatusDropdown
-                    selectedValue={selectedStatus}
-                    onSelect={setSelectedStatus}
-                    isLoading={loadingStatus}
-                    options={dataStatus}
+    <Dialog
+      open={isOpen}
+      onClose={() => setIsOpen(false)}
+      className="relative z-50"
+    >
+      <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-black/50">
+        {showSuccess ? (
+          <DialogPanel className="min-w-160 w-fit space-y-2 bg-background-modal text-font py-8 px-4 rounded-lg flex flex-col items-center justify-center text-center">
+            <RiCheckboxCircleLine className="text-6xl" />
+            <p className="text-lg font-bold">
+              Task {type === "edit" ? "updated" : "created"} successfully
+            </p>
+          </DialogPanel>
+        ) : error ? (
+          <DialogPanel className="min-w-160 w-fit space-y-2 bg-background-modal text-font py-8 px-4 rounded-lg flex flex-col items-center justify-center">
+            <ErrorMessage message={error} />
+          </DialogPanel>
+        ) : (
+          <DialogPanel className="min-w-160 w-fit space-y-4 bg-background-modal text-font p-4 rounded-lg">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <Controller
+                name="taskName"
+                control={control}
+                rules={{
+                  required: "Task name is required",
+                  maxLength: {
+                    value: 15,
+                    message: "Task name must be 15 characters or less",
+                  },
+                }}
+                render={({ field }) => (
+                  <input
+                    {...field}
+                    type="text"
+                    placeholder="Task Name..."
+                    className="w-full p-2 text-xl font-semibold"
                   />
                 )}
-                <DateButton
-                  selectedDate={selectedDate}
-                  onChange={setSelectedDate}
+              />
+
+              <div className="flex gap-4">
+                {/* Points Dropdown */}
+                <Controller
+                  name="selectedPoints"
+                  control={control}
+                  rules={{ required: "Points estimate is required" }}
+                  render={({ field }) => (
+                    <PointsDropdown
+                      selectedValue={field.value}
+                      onSelect={field.onChange}
+                      isLoading={loadingPoints}
+                      options={dataPoints}
+                    />
+                  )}
+                />
+
+                {/* Assignee Dropdown */}
+                <Controller
+                  name="selectedAssignee"
+                  control={control}
+                  rules={{ required: "Assignee is required" }}
+                  render={({ field }) => (
+                    <AssigneeDropdown
+                      selectedValue={field.value}
+                      onSelect={field.onChange}
+                      isLoading={loadingUsers}
+                      options={dataUsers}
+                    />
+                  )}
+                />
+
+                {/* Tag Dropdown */}
+                <Controller
+                  name="tags"
+                  control={control}
+                  rules={{
+                    validate: (value) =>
+                      value.length > 0 || "At least one tag is required",
+                  }}
+                  render={({ field }) => (
+                    <TagDropdown
+                      selectedValue={field.value}
+                      onSelect={(action) => {
+                        const newTags = tagsReducer(field.value, action);
+                        field.onChange(newTags);
+                      }}
+                      isLoading={loadingTags}
+                      options={dataTags}
+                    />
+                  )}
+                />
+
+                {/* Status Dropdown */}
+                {type === "edit" && (
+                  <Controller
+                    name="selectedStatus"
+                    control={control}
+                    render={({ field }) => (
+                      <StatusDropdown
+                        selectedValue={field.value}
+                        onSelect={field.onChange}
+                        isLoading={loadingStatus}
+                        options={dataStatus}
+                      />
+                    )}
+                  />
+                )}
+
+                {/* Date Button */}
+                <Controller
+                  name="selectedDate"
+                  control={control}
+                  rules={{ required: "Due date is required" }}
+                  render={({ field }) => (
+                    <DateButton
+                      selectedDate={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
                 />
               </div>
+
               <div className="w-full flex justify-end items-center">
-                {isMissing && (
+                {/* Validation errors */}
+                {Object.keys(errors).length > 0 && (
                   <p className="text-primary flex-1">
-                    Please complete all fields
+                    {Object.values(errors)[0]?.message}
                   </p>
                 )}
+
                 <div className="flex gap-8">
-                  <Button variant="neutral" onClick={() => setIsOpen(false)}>
+                  <Button
+                    variant="neutral"
+                    onClick={() => setIsOpen(false)}
+                    type="button"
+                  >
                     Cancel
                   </Button>
 
-                  {type === "create" ? (
-                    <Button variant="primary" onClick={() => handleTask()}>
-                      Create
-                    </Button>
-                  ) : (
-                    <Button variant="primary" onClick={() => handleTask()}>
-                      Update
-                    </Button>
-                  )}
+                  <Button variant="primary" type="submit">
+                    {type === "create" ? "Create" : "Update"}
+                  </Button>
                 </div>
               </div>
-            </DialogPanel>
-          )}
-        </div>
-      </Dialog>
-    </>
+            </form>
+          </DialogPanel>
+        )}
+      </div>
+    </Dialog>
   );
 }
 

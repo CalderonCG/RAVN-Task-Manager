@@ -14,6 +14,8 @@ function Column({ type, tasks }: ColumnProps) {
     id: type.name,
   });
 
+  const sortedTask = tasks?.sort((a, b) => a.position - b.position);
+
   return (
     <div
       key={type.name}
@@ -35,9 +37,7 @@ function Column({ type, tasks }: ColumnProps) {
             <p>Empty</p>
           </div>
         ) : (
-          tasks
-            ?.filter((task) => task.status === type.name)
-            .map((task) => <Card task={task} key={task.id} />)
+          sortedTask?.map((task) => <Card task={task} key={task.id} />)
         )}
       </div>
     </div>

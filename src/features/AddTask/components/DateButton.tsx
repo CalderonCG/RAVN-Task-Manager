@@ -25,6 +25,7 @@ type DateProps = {
 const ExampleCustomInput = forwardRef<HTMLButtonElement, CustomInputProps>(
   ({ value, selectedDate, onClick }, ref) => (
     <button
+      type="button" // 👈 Asegurar que es type="button"
       className="flex items-center justify-start gap-2 bg-modal-card-mobile py-2 px-4 rounded-sm w-full 
           lg:w-fit lg:justify-center lg:bg-modal-card"
       onClick={onClick}
@@ -72,7 +73,11 @@ function DateButton({ selectedDate, onChange }: DateProps) {
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={decreaseYear}
+              onClick={(e) => {
+                e.preventDefault(); // 👈 Prevenir comportamiento por defecto
+                e.stopPropagation(); // 👈 Detener propagación del evento
+                decreaseYear();
+              }}
               disabled={prevYearButtonDisabled}
               className="p-1 hover:bg-primary rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -80,7 +85,11 @@ function DateButton({ selectedDate, onChange }: DateProps) {
             </button>
             <button
               type="button"
-              onClick={decreaseMonth}
+              onClick={(e) => {
+                e.preventDefault(); // 👈 Prevenir comportamiento por defecto
+                e.stopPropagation(); // 👈 Detener propagación del evento
+                decreaseMonth();
+              }}
               disabled={prevMonthButtonDisabled}
               className="p-1 hover:bg-primary rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -95,7 +104,11 @@ function DateButton({ selectedDate, onChange }: DateProps) {
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={increaseMonth}
+              onClick={(e) => {
+                e.preventDefault(); // 👈 Prevenir comportamiento por defecto
+                e.stopPropagation(); // 👈 Detener propagación del evento
+                increaseMonth();
+              }}
               disabled={nextMonthButtonDisabled}
               className="p-1 hover:bg-primary rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -103,7 +116,11 @@ function DateButton({ selectedDate, onChange }: DateProps) {
             </button>
             <button
               type="button"
-              onClick={increaseYear}
+              onClick={(e) => {
+                e.preventDefault(); // 👈 Prevenir comportamiento por defecto
+                e.stopPropagation(); // 👈 Detener propagación del evento
+                increaseYear();
+              }}
               disabled={nextYearButtonDisabled}
               className="p-1 hover:bg-primary rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >

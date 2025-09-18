@@ -19,3 +19,12 @@ export function useMediaQuery(query: string) {
 }
 
 export const useTheme = () => useContext(ThemeContext);
+
+export function useDropdown(
+  open: boolean,
+  setIsOpen: (value: React.SetStateAction<boolean>) => void,
+) {
+  useEffect(() => {
+    setIsOpen(open);
+  }, [open, setIsOpen]);
+}
