@@ -51,9 +51,8 @@ function Dashboard() {
     dueDate: undefined,
     pointEstimate: undefined,
   });
-  const [updateError, setUpdateError] = useState<string | null>(null);
   const isLoading = loading || statusLoading || userLoading;
-  const errorMessage = error?.message || userError?.message || updateError;
+  const errorMessage = error?.message || userError?.message;
 
   //Media query hook
   const isDesktop = useMediaQuery("(min-width: 1024px)");
@@ -127,29 +126,41 @@ function Dashboard() {
   }
 
   //Drag end function------------------
+  //Drag end function con Apollo optimisticResponse
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
 
     if (!over) {
+      setActiveTask(null);
       return;
     }
 
     const taskId = active.id as string;
     const newStatus = over.id as Status;
-    if (newStatus !== (active.data.current?.status as Status)) {
-      try {
-        updateTask({
-          variables: {
-            input: {
-              id: taskId,
-              status: newStatus,
-            },
+    const currentStatus = active.data.current?.status as Status;
+
+    if (newStatus !== currentStatus) {
+      //Calls the mutation from the query
+      updateTask({
+        variables: {
+          input: {
+            id: taskId,
+            status: newStatus,
           },
-        });
-      } catch (error) {
-        if (error instanceof Error) setUpdateError(error.message);
-      }
+        },
+        //Optimistically mutates the cache with the same update
+        optimisticResponse: {
+          updateTask: {
+            __typename: "Task",
+            id: taskId,
+            status: newStatus,
+          },
+        },
+      });
     }
+
+    // Limpiar el activeTask
+    setActiveTask(null);
   }
 
   return (
