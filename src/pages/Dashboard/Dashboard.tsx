@@ -6,13 +6,20 @@ import type {
   GetProfileQuery,
   GetStatusQuery,
   GetTaskQuery,
+  GetTaskQueryVariables,
+  PointEstimate,
   Status,
 } from "../../generated/graphql";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import Loader from "../../components/Loader/Loader";
 import Button from "../../components/Button/Button";
 import { useState } from "react";
-import { RiAddLine, RiFilterLine, RiUserStarLine } from "react-icons/ri";
+import {
+  RiAddLine,
+  RiFilterLine,
+  RiUserStarLine,
+  RiZoomOutLine,
+} from "react-icons/ri";
 import AddModal from "../../features/AddTask/components/AddModal";
 import FilterModal from "../../features/Dashboard/components/FilterModal";
 import type { FilterType, GetTaskType } from "../../utils/TaskTypes";
@@ -28,18 +35,7 @@ import {
 import Card from "../../features/Dashboard/components/Card";
 
 function Dashboard() {
-  //Queries -----------------------------
-  const { data, loading, error } = useQuery<GetTaskQuery>(GET_TASK);
-  const {
-    data: userData,
-    loading: userLoading,
-    error: userError,
-  } = useQuery<GetProfileQuery>(GET_PROFILE);
-  const { data: statusList, loading: statusLoading } =
-    useQuery<GetStatusQuery>(GET_STATUS);
-  const [updateTask] = useMutation(UPDATE_TASK);
-
-  //Consts and states ---------------------------
+  //Consts---------------------------
   const [activeTask, setActiveTask] = useState<GetTaskType | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -50,6 +46,40 @@ function Dashboard() {
     tags: undefined,
     dueDate: undefined,
     pointEstimate: undefined,
+  });
+  //Queries -----------------------------
+  const { data, loading, error } = useQuery<
+    GetTaskQuery,
+    GetTaskQueryVariables
+  >(GET_TASK, {
+    variables: {
+      input: {
+        ...(search !== "" && { name: search }),
+        ...(filters.status !== "ALL" && { status: filters.status }),
+        ...(filters.assigneeId && { assigneeId: filters.assigneeId }),
+        ...(filters.dueDate && { dueDate: filters.dueDate }),
+        ...(filters.pointEstimate && {
+          pointEstimate: filters.pointEstimate as PointEstimate,
+        }),
+      },
+    },
+  });
+  const {
+    data: userData,
+    loading: userLoading,
+    error: userError,
+  } = useQuery<GetProfileQuery>(GET_PROFILE);
+  const { data: statusList, loading: statusLoading } =
+    useQuery<GetStatusQuery>(GET_STATUS);
+  const [updateTask] = useMutation(UPDATE_TASK);
+
+  //Consts---------------------------
+  const isFiltering = Object.entries(filters).some(([key, value]) => {
+    if (value === undefined) return false;
+    if (key === "status" && value === "ALL") return false;
+    if (key === "tags" && Array.isArray(value) && value.length === 0)
+      return false;
+    return true;
   });
   const isLoading = loading || statusLoading || userLoading;
   const errorMessage = error?.message || userError?.message;
@@ -69,44 +99,6 @@ function Dashboard() {
     );
   });
 
-  //Task filtering---------------------------------------------------------
-  const filteredTasks = data?.tasks.filter((task) => {
-    const taskDate = new Date(task.dueDate);
-    const filterDate = filters.dueDate ? new Date(filters.dueDate) : undefined;
-
-    const nameCheck = task.name
-      .toLowerCase()
-      .startsWith(search.trim().toLowerCase());
-
-    const statusCheck =
-      task.status === filters.status ||
-      filters.status === undefined ||
-      filters.status === "ALL";
-
-    const assigneeCheck =
-      task.assignee?.id === filters.assigneeId ||
-      filters.assigneeId === undefined;
-
-    const dateCheck = filterDate === undefined || taskDate <= filterDate;
-
-    const pointsCheck =
-      task.pointEstimate === filters.pointEstimate ||
-      filters.pointEstimate === undefined;
-
-    const tagsCheck =
-      filters.tags === undefined ||
-      filters.tags.every((tag) => task.tags.includes(tag));
-
-    return (
-      nameCheck &&
-      statusCheck &&
-      assigneeCheck &&
-      dateCheck &&
-      pointsCheck &&
-      tagsCheck
-    );
-  });
-
   //Handle my task filter-----------------
   const handleMyTask = () => {
     const isSet = filters.assigneeId === userData?.profile.id;
@@ -120,7 +112,7 @@ function Dashboard() {
   //Drag start function-----------
   function handleDragStart(event: DragStartEvent) {
     const { active } = event;
-    const task = filteredTasks?.find((task) => task.id === active.id) || null;
+    const task = data?.tasks?.find((task) => task.id === active.id) || null;
 
     setActiveTask(task);
   }
@@ -200,22 +192,33 @@ function Dashboard() {
   [&::-webkit-scrollbar-track]:bg-background
   [&::-webkit-scrollbar-thumb]:bg-accent"
         >
+          {data?.tasks.length === 0 && (isFiltering || search.trim() !== "") ? (
+            <div className="w-full flex-1 flex flex-col items-center justify-center font-bold text-font-secondary text-xl">
+              <RiZoomOutLine className="text-4xl" />
+              <p className="font-normal text-center">
+                No task matches those filters
+              </p>
+            </div>
+          ) : (
+            <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
+              {status.map((type) => {
+                const columnTasks = data?.tasks?.filter(
+                  (task) => task.status === type.name,
+                );
+                return (
+                  <Column key={type.name} type={type} tasks={columnTasks} />
+                );
+              })}
+              <DragOverlay>
+                {activeTask ? (
+                  <div style={{ opacity: 0.8, transform: "scale(1.05)" }}>
+                    <Card task={activeTask} />
+                  </div>
+                ) : null}
+              </DragOverlay>
+            </DndContext>
+          )}
           {/* Columns */}
-          <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
-            {status.map((type) => {
-              const columnTasks = filteredTasks?.filter(
-                (task) => task.status === type.name,
-              );
-              return <Column key={type.name} type={type} tasks={columnTasks} />;
-            })}
-            <DragOverlay>
-              {activeTask ? (
-                <div style={{ opacity: 0.8, transform: "scale(1.05)" }}>
-                  <Card task={activeTask} />
-                </div>
-              ) : null}
-            </DragOverlay>
-          </DndContext>
         </div>
       )}
 
