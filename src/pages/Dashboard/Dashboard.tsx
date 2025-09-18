@@ -146,6 +146,11 @@ function Dashboard() {
             __typename: "Task",
             id: taskId,
             status: newStatus,
+            name: active.data.current?.name || "",
+            assignee: active.data.current?.assignee || null,
+            dueDate: active.data.current?.dueDate || "",
+            pointEstimate: active.data.current?.pointEstimate || "ZERO",
+            tags: active.data.current?.tags || [],
           },
         },
       });

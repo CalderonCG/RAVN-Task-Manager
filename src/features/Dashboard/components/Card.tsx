@@ -35,7 +35,14 @@ function Card({ task }: CardProps) {
   //DnD setup---------------
   const { attributes, listeners, setNodeRef } = useDraggable({
     id: task.id,
-    data: { status: task.status },
+    data: {
+      status: task.status,
+      name: task.name,
+      assignee: task.assignee,
+      dueDate: task.dueDate,
+      pointEstimate: task.pointEstimate,
+      tags: task.tags,
+    },
   });
 
   return (
@@ -43,7 +50,7 @@ function Card({ task }: CardProps) {
       ref={setNodeRef}
       {...listeners}
       {...attributes}
-      className="w-full bg-background-secondary p-4 flex flex-col gap-4 rounded-lg"
+      className="w-full bg-background-secondary p-4 flex flex-col gap-4 rounded-lg touch-none"
     >
       <div className="w-full flex items-center justify-between">
         <p className="text-lg">{task.name}</p>
