@@ -29,6 +29,7 @@ type CardProps = {
 function Card({ task }: CardProps) {
   //States-----
   const [showConfirm, setShowConfirm] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const encodedTask = encodeURIComponent(btoa(JSON.stringify(task)));
 
@@ -44,27 +45,34 @@ function Card({ task }: CardProps) {
       tags: task.tags,
     },
   });
+  const dragDisabled = showConfirm || showEdit || isOpen;
 
   return (
     <div
-      ref={setNodeRef}
-      {...listeners}
-      {...attributes}
+      ref={dragDisabled ? null : setNodeRef}
+      {...(!dragDisabled ? listeners : undefined)}
+      {...(!dragDisabled ? attributes : undefined)}
       className="w-full bg-background-secondary p-4 flex flex-col gap-4 rounded-lg touch-none"
     >
       <div className="w-full flex items-center justify-between">
         <p className="text-lg">{task.name}</p>
-        <Dropdown>
+        <Dropdown setIsOpen={setIsOpen}>
           <button
             className="data-focus:bg-accent-hover hover:bg-accent p-2 flex items-center gap-2 cursor-pointer w-full"
-            onClick={() => setShowConfirm(true)}
+            onClick={() => {
+              setIsOpen(false);
+              setShowConfirm(true);
+            }}
           >
             <RiDeleteBin7Line className="text-lg" />
             <p>Delete</p>
           </button>
           <button
-            className="data-focus:bg-accent-hover p-2 hover:bg-accent items-center gap-2 cursor-pointer w-full hidden lg:flex"
-            onClick={() => setShowEdit(true)}
+            className="data-focus:bg-accent-hover z-50 p-2 hover:bg-accent items-center gap-2 cursor-pointer w-full hidden lg:flex"
+            onClick={() => {
+              setIsOpen(false);
+              setShowEdit(true);
+            }}
           >
             <RiEdit2Line className="text-lg" />
             <p>Edit</p>
