@@ -61,6 +61,7 @@ function Dashboard() {
         ...(filters.pointEstimate && {
           pointEstimate: filters.pointEstimate as PointEstimate,
         }),
+        ...(filters.tags && { tags: filters.tags }),
       },
     },
   });

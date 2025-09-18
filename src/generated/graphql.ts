@@ -275,6 +275,7 @@ export type GetTaskQuery = {
     status: Status;
     pointEstimate: PointEstimate;
     dueDate: string;
+    position: number;
     tags: Array<TaskTag>;
     assignee: {
       __typename: "User";
@@ -402,6 +403,7 @@ export const GetTaskDocument = gql`
       status
       pointEstimate
       dueDate
+      position
       assignee {
         id
         fullName
