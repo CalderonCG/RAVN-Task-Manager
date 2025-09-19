@@ -65,6 +65,9 @@ function Dashboard() {
         ...(filters.tags && { tags: filters.tags }),
       },
     },
+    context: {
+      debounceKey: "search-tasks",
+    },
   });
   const {
     data: userData,
