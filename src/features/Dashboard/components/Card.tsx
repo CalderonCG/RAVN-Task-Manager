@@ -93,10 +93,10 @@ function Card({ task }: CardProps) {
           {numberMap[task.pointEstimate]} Pts
         </p>
         <span
-          className={`flex items-center bg-accent  py-1 px-4 rounded-sm gap-2 ${getDateStatus(task.dueDate)}`}
+          className={`flex items-center bg-accent  py-1 px-4 rounded-sm gap-2 ${getDateStatus(task.dueDate, true)}/10`}
         >
           <RiAlarmLine className="text-lg" />
-          <p className="font-normal text-sm ">{mapDate(task.dueDate)}</p>
+          <p className="font-normal text-sm ">{mapDate(task.dueDate, true)}</p>
         </span>
       </div>
       <div className="flex gap-2 w-full">
