@@ -29,7 +29,10 @@ function ListContainer({ type, tasks }: ListProps) {
         </p>
       </div>
       <div
-        className={`w-full  transition-all duration-200 overflow-auto ${isOpen ? "max-h-200" : "max-h-0"}`}
+        className={`w-full  transition-all duration-200 overflow-auto ${isOpen ? "max-h-200" : "max-h-0"}
+        [&::-webkit-scrollbar]:w-2
+  [&::-webkit-scrollbar-track]:bg-background
+  [&::-webkit-scrollbar-thumb]:bg-accent`}
       >
         {tasks?.length === 0 ? (
           <div className="flex w-full justify-center font-bold text-font-secondary text-xl">

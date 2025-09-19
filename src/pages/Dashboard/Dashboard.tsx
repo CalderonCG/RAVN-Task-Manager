@@ -50,7 +50,7 @@ function Dashboard() {
     dueDate: undefined,
     pointEstimate: undefined,
   });
-  const [isList, setIsList] = useState(true);
+  const [isList, setIsList] = useState(false);
   //Queries -----------------------------
   const { data, loading, error } = useQuery<
     GetTaskQuery,
@@ -262,6 +262,7 @@ function Dashboard() {
           setIsOpen={setIsFilterOpen}
           filters={filters}
           setFilters={setFilters}
+          showAssignee={true}
         />
       )}
     </div>

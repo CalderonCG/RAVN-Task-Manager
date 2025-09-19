@@ -25,12 +25,18 @@ import Button from "../../../components/Button/Button";
 
 type ModalProps = {
   isOpen: boolean;
+  showAssignee: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   filters: FilterType;
   setFilters: React.Dispatch<React.SetStateAction<Partial<FilterType>>>;
 };
 
-function FilterModal({ isOpen, setIsOpen, setFilters }: ModalProps) {
+function FilterModal({
+  isOpen,
+  showAssignee,
+  setIsOpen,
+  setFilters,
+}: ModalProps) {
   //Selected states
   const [selectedAssignee, setSelectedAssignee] = useState<User | undefined>();
   const [selectedPoints, setSelectedPoints] = useState<string | undefined>(
@@ -97,12 +103,15 @@ function FilterModal({ isOpen, setIsOpen, setFilters }: ModalProps) {
               isLoading={loadingPoints}
               options={dataPoints}
             />
-            <AssigneeDropdown
-              selectedValue={selectedAssignee}
-              onSelect={setSelectedAssignee}
-              isLoading={loadingUsers}
-              options={dataUsers}
-            />
+            {showAssignee && (
+              <AssigneeDropdown
+                selectedValue={selectedAssignee}
+                onSelect={setSelectedAssignee}
+                isLoading={loadingUsers}
+                options={dataUsers}
+              />
+            )}
+
             <TagDropdown
               selectedValue={tags}
               onSelect={dispatch}
