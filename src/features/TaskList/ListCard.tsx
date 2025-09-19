@@ -1,10 +1,11 @@
-function TableHeader() {
+function ListCard() {
   return (
     <div
-      className="w-full h-14 items-center font-normal text-font bg-background-secondary px-4 gap-4 rounded-lg border-1 border-background-modal
-    grid grid-cols-20"
+      className="w-full h-14 items-center font-normal text-font bg-background-secondary gap-4 border-1 border-background-modal
+    grid grid-cols-20 py-0.5 "
     >
-      <div className="h-full w-full flex items-center border-r-2 border-background-modal col-span-8">
+      <div className="h-full w-full relative flex items-center border-r-2 border-background-modal col-span-8 gap-6">
+        <div className="bg-primary w-1 h-full left-0" />
         <p># Task Name</p>
       </div>
       <div className="h-full w-full flex items-center border-r-2 border-background-modal col-span-3">
@@ -23,4 +24,4 @@ function TableHeader() {
   );
 }
 
-export default TableHeader;
+export default ListCard;
