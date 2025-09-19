@@ -17,6 +17,7 @@ import { useState } from "react";
 import {
   RiAddLine,
   RiFilterLine,
+  RiUserStarFill,
   RiUserStarLine,
   RiZoomOutLine,
 } from "react-icons/ri";
@@ -84,6 +85,7 @@ function Dashboard() {
   });
   const isLoading = loading || statusLoading || userLoading;
   const errorMessage = error?.message || userError?.message;
+  const isMyTask = filters.assigneeId === userData?.profile.id;
 
   //Media query hook
   const isDesktop = useMediaQuery("(min-width: 1024px)");
@@ -102,11 +104,9 @@ function Dashboard() {
 
   //Handle my task filter-----------------
   const handleMyTask = () => {
-    const isSet = filters.assigneeId === userData?.profile.id;
-
     setFilters((prev) => ({
       ...prev,
-      assigneeId: isSet ? undefined : userData?.profile.id,
+      assigneeId: isMyTask ? undefined : userData?.profile.id,
     }));
   };
 
@@ -172,7 +172,11 @@ function Dashboard() {
         <TabSwitch />
         <div className="flex gap-2">
           <Button variant="neutral" onClick={() => handleMyTask()}>
-            <RiUserStarLine className="text-3xl text-font" />
+            {isMyTask ? (
+              <RiUserStarFill className="text-3xl text-font" />
+            ) : (
+              <RiUserStarLine className="text-3xl text-font" />
+            )}
           </Button>
           <Button variant="neutral" onClick={() => setIsFilterOpen(true)}>
             <RiFilterLine className="text-3xl text-font" />

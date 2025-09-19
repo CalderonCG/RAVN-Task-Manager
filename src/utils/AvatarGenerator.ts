@@ -1,10 +1,10 @@
-import { micah } from "@dicebear/collection";
+import { micah, thumbs } from "@dicebear/collection";
 import { createAvatar } from "@dicebear/core";
 
 //Avatar generator
 export const avatarGenerator = (seed: string | undefined) => {
   if (seed === undefined) {
-    const avatar = createAvatar(micah, { seed: "1" });
+    const avatar = createAvatar(thumbs, { seed: "1" });
     return avatar.toDataUri();
   }
   const avatar = createAvatar(micah, {

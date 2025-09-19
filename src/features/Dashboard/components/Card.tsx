@@ -106,9 +106,9 @@ function Card({ task }: CardProps) {
         {task.tags.length > 2 && (
           <span
             className="flex items-center justify-center gap-2 bg-modal-card-mobile/10 lg:bg-modal-card/10 py-1 px-2 rounded-sm cursor-default"
-            title={task.tags.slice(3).toString()}
+            title={task.tags.slice(2).toString()}
           >
-            +{task.tags.length - 3}
+            +{task.tags.length - 2}
           </span>
         )}
       </div>
