@@ -4,6 +4,7 @@ type ButtonProps = {
   variant?: "primary" | "secondary" | "tertiary" | "neutral";
   visibility?: "mobile" | "desktop" | "all";
   type?: "button" | "submit" | "reset";
+  disabled?: boolean;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
 
@@ -11,6 +12,7 @@ function Button({
   variant = "neutral",
   visibility = "all",
   type = "button",
+  disabled = false,
   onClick,
   children,
 }: PropsWithChildren<ButtonProps>) {
@@ -29,6 +31,7 @@ function Button({
     <button
       onClick={onClick}
       type={type}
+      disabled={disabled}
       className={`p-2 rounded-lg items-center justify-center   ${variant !== "neutral" ? "text-button" : "text-font"}
         ${visibilityStyles[visibility]} ${variantStyles[variant]}`}
     >

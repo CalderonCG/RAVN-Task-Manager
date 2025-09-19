@@ -101,6 +101,7 @@ function AddModal(props: ModalProps) {
   //Selected states
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isDisabled, setIsDisabled] = useState(false);
 
   //Event handlers
   const handleSuccess = () => {
@@ -126,6 +127,8 @@ function AddModal(props: ModalProps) {
     if (!data.selectedAssignee || !data.selectedDate || !data.selectedPoints) {
       return;
     }
+
+    setIsDisabled(true);
     const baseTask: TaskType = {
       assigneeId: data.selectedAssignee!.id,
       dueDate: data.selectedDate!.toISOString(),
@@ -151,6 +154,7 @@ function AddModal(props: ModalProps) {
 
   //UseEffect to map the inputs if in edit mode
   useEffect(() => {
+    setIsDisabled(false);
     if (type === "edit" && isOpen && props.task) {
       const { task } = props;
       reset({
@@ -319,7 +323,7 @@ function AddModal(props: ModalProps) {
                     Cancel
                   </Button>
 
-                  <Button variant="primary" type="submit">
+                  <Button variant="primary" type="submit" disabled={isDisabled}>
                     {type === "create" ? "Create" : "Update"}
                   </Button>
                 </div>
