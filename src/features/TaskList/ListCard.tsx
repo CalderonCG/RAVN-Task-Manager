@@ -11,6 +11,7 @@ import {
 import type { GetTaskType } from "../../utils/TaskTypes";
 import { MdOutlineAccountTree } from "react-icons/md";
 
+//Types------------------------------
 type CardProps = {
   task: GetTaskType;
 };

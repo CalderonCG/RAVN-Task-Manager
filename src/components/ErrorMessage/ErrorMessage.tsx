@@ -1,5 +1,6 @@
 import { RiErrorWarningLine } from "react-icons/ri";
 
+//Types-------------------------
 type ErrorProps = {
   message: string;
 };

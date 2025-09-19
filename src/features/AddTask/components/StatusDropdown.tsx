@@ -1,11 +1,11 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-
 import { RiTodoLine } from "react-icons/ri";
 import type { GetStatusQuery, Status } from "../../../generated/graphql";
 import type { StatusType } from "../../../utils/TaskTypes";
 import { statusMap } from "../../../utils/DataMapper";
 import { useMediaQuery } from "../../../utils/CustomHooks";
 
+//Types-----------------------------------------
 type ModalProps = {
   selectedValue: StatusType;
   options: GetStatusQuery | undefined;

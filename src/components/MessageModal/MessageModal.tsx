@@ -6,6 +6,8 @@ import {
 } from "@headlessui/react";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 
+//Types---------------------------
+//It can be either an error or a message
 type MessageProps =
   | {
       type: "message";

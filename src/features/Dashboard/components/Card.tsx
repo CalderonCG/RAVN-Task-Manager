@@ -24,16 +24,17 @@ import { avatarGenerator } from "../../../utils/AvatarGenerator";
 import { useDraggable } from "@dnd-kit/core";
 import { useMediaQuery } from "../../../utils/CustomHooks";
 
+//Types------------------------------
 type CardProps = {
   task: GetTaskType;
 };
 function Card({ task }: CardProps) {
-  //States-----
+  //States-------------------------------------
   const [showConfirm, setShowConfirm] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const encodedTask = encodeURIComponent(btoa(JSON.stringify(task)));
+  const encodedTask = encodeURIComponent(btoa(JSON.stringify(task))); //Encodes the task to send it to the edit page
 
   //DnD setup---------------
   const { attributes, listeners, setNodeRef } = useDraggable({
@@ -47,6 +48,7 @@ function Card({ task }: CardProps) {
       tags: task.tags,
     },
   });
+  //If a dropdown or a modal is open, or the app is in mobile, the drag and drop is disabled
   const dragDisabled = showConfirm || showEdit || isOpen || !isDesktop;
 
   return (

@@ -1,10 +1,10 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-
 import { RiAddBoxFill } from "react-icons/ri";
 import type { GetPointsQuery } from "../../../generated/graphql";
 import { numberMap } from "../../../utils/DataMapper";
 import { useMediaQuery } from "../../../utils/CustomHooks";
 
+//Types---------------------------------
 type ModalProps = {
   selectedValue: string | undefined;
   options: GetPointsQuery | undefined;

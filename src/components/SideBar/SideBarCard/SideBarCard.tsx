@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router";
 
+//Types---------------------------------------
 type CardProps = {
   label: string;
   route: string;
@@ -12,6 +13,7 @@ function SideBarCard({
   isDesktopHidden = false,
   children,
 }: React.PropsWithChildren<CardProps>) {
+  //Checks for the active route
   const location = useLocation();
   const isActive: boolean = location.pathname === route;
   return (

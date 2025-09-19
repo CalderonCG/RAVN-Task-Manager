@@ -3,6 +3,7 @@ import { type PropsWithChildren } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import DropdownWrapper from "./DropdownWrapper";
 
+//Types-------------------------------------
 type DropdownType = {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };

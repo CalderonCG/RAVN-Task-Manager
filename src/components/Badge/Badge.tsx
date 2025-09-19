@@ -1,9 +1,11 @@
+//Types-------------------------
 type BadgeProps = {
   variant?: "red" | "green" | "yellow" | "blue" | "purple";
   label: string;
 };
 
 function Badge({ variant = "red", label }: BadgeProps) {
+  //Variants color definition
   const variantStyles = {
     red: "bg-primary/10 text-primary",
     green: "bg-secondary/10 text-secondary",

@@ -7,6 +7,8 @@ import { mapDate, userTypeMap } from "../../utils/DataMapper";
 import { avatarGenerator } from "../../utils/AvatarGenerator";
 
 function User() {
+  //Queries--------------------------
+  //Get user data query
   const { data, loading, error } = useQuery<GetProfileQuery>(GET_PROFILE);
   return (
     <div

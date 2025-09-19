@@ -34,6 +34,7 @@ import StatusDropdown from "../../features/AddTask/components/StatusDropdown";
 import { tagsReducer } from "../../utils/Reducer";
 import { useForm, Controller } from "react-hook-form";
 
+//Form interface
 interface TaskFormData {
   taskName: string;
   selectedAssignee: User | undefined;
@@ -45,6 +46,7 @@ interface TaskFormData {
 
 function AddTask() {
   //Dynamic id, can be undefined
+  //Contains the token of the edited task, this token decodes all the info of the task
   const { id } = useParams<{ id: string }>();
 
   // React Hook Form---------------------------------------
@@ -65,6 +67,7 @@ function AddTask() {
   });
 
   //Queries---------------------------------------------------------------------------------
+  //Queries to map the dropdown options
   const { data: dataTags, loading: loadingTags } =
     useQuery<GetTagsQuery>(GET_TAGS);
   const { data: dataPoints, loading: loadingPoints } =
@@ -73,6 +76,7 @@ function AddTask() {
     useQuery<GetUsersQuery>(GET_USERS);
   const { data: dataStatus, loading: loadingStatus } =
     useQuery<GetStatusQuery>(GET_STATUS);
+  //Mutations--------------------------------------------------------------------------
   const [createTask] = useMutation(CREATE_TASK, {
     onCompleted: () => {
       handleSuccess();
@@ -106,6 +110,7 @@ function AddTask() {
   };
 
   const onSubmit = async (data: TaskFormData) => {
+    //Creates the task to be added
     const baseTask: TaskType = {
       assigneeId: data.selectedAssignee!.id,
       dueDate: data.selectedDate!.toISOString(),
@@ -115,24 +120,27 @@ function AddTask() {
       tags: data.tags,
     };
 
+    //If there is a decoded tasks, then sets that task id in the query parameters
     const addedTask =
       task !== undefined ? { ...baseTask, id: task.id } : baseTask;
 
     try {
+      //If there isnt a decoded task, then goes for the create mutation
       if (task === undefined) {
         await createTask({
           variables: {
             input: addedTask,
           },
-          refetchQueries: [{ query: GET_TASK, variables: { input: {} } }],
+          refetchQueries: [{ query: GET_TASK, variables: { input: {} } }], //Refetch the queries
           awaitRefetchQueries: true,
         });
       } else {
+        //If there is a decoded task, then goes for the update mutation
         await updateTask({
           variables: {
             input: addedTask,
           },
-          refetchQueries: [{ query: GET_TASK, variables: { input: {} } }],
+          refetchQueries: [{ query: GET_TASK, variables: { input: {} } }], //Refetch the queries
           awaitRefetchQueries: true,
         });
       }

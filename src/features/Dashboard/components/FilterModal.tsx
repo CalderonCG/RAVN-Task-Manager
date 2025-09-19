@@ -23,6 +23,7 @@ import {
 import type { FilterType, StatusType, User } from "../../../utils/TaskTypes";
 import Button from "../../../components/Button/Button";
 
+//Types----------------------------------------
 type ModalProps = {
   isOpen: boolean;
   showAssignee: boolean;
@@ -37,7 +38,7 @@ function FilterModal({
   setIsOpen,
   setFilters,
 }: ModalProps) {
-  //Selected states
+  //Selected states-------------------------------------------------------
   const [selectedAssignee, setSelectedAssignee] = useState<User | undefined>();
   const [selectedPoints, setSelectedPoints] = useState<string | undefined>(
     undefined,

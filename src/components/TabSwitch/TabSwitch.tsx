@@ -1,6 +1,7 @@
 import { HiMiniBars3 } from "react-icons/hi2";
 import { RiFunctionLine } from "react-icons/ri";
 
+//Types-----------------------------------------------------
 type SwitchProps = {
   value: boolean;
   onClick: React.Dispatch<React.SetStateAction<boolean>>;

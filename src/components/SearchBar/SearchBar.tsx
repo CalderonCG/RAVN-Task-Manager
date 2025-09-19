@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { avatarGenerator } from "../../utils/AvatarGenerator";
 import ThemeButton from "../ThemeButton/ThemeButton";
 
+//Types----------------------------------------
 type SearchProps = {
   value: string;
   avatar: string | undefined;

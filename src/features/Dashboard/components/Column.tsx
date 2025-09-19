@@ -3,6 +3,7 @@ import { statusMap } from "../../../utils/DataMapper";
 import type { GetTaskType, StatusType } from "../../../utils/TaskTypes";
 import Card from "./Card";
 
+//Types-----------------------
 type ColumnProps = {
   type: { __typename: "__EnumValue"; name: string };
   tasks: GetTaskType[] | undefined;
@@ -13,7 +14,7 @@ function Column({ type, tasks }: ColumnProps) {
   const { setNodeRef } = useDroppable({
     id: type.name,
   });
-
+  //Sorts the tasks with the position value
   const sortedTask = tasks?.sort((a, b) => a.position - b.position);
 
   return (

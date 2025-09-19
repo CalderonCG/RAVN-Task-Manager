@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useContext } from "react";
 import { ThemeContext } from "./ThemeHandler/ThemeContext";
 
+//Hook to check size of the screen
 export function useMediaQuery(query: string) {
   const [matches, setMatches] = useState(false);
 
@@ -18,8 +19,10 @@ export function useMediaQuery(query: string) {
   return matches;
 }
 
+//Hook to set the theme
 export const useTheme = () => useContext(ThemeContext);
 
+//Hook to notify if dropdown is open
 export function useDropdown(
   open: boolean,
   setIsOpen: (value: React.SetStateAction<boolean>) => void,

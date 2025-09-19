@@ -6,6 +6,7 @@ import type { TagAction } from "../../../utils/TaskTypes";
 import { tagMap } from "../../../utils/DataMapper";
 import { useMediaQuery } from "../../../utils/CustomHooks";
 
+//Types---------------------------------------------
 type ModalProps = {
   selectedValue: TaskTag[];
   isLoading: boolean;

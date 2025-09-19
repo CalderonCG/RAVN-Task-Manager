@@ -3,13 +3,16 @@ import ListCard from "./ListCard";
 import type { GetTaskType } from "../../utils/TaskTypes";
 import { useState } from "react";
 
+//Types------------------------------------
 type ListProps = {
   type: { __typename: "__EnumValue"; name: string };
   tasks: GetTaskType[] | undefined;
 };
 
 function ListContainer({ type, tasks }: ListProps) {
+  //Open state
   const [isOpen, setIsOpen] = useState(false);
+  //Sorts the task with the position value
   const sortedTask = tasks?.sort((a, b) => a.position - b.position);
 
   return (

@@ -1,3 +1,4 @@
+//Maps number string to number
 export const numberMap = {
   ZERO: 0,
   ONE: 1,
@@ -12,6 +13,7 @@ export const numberMap = {
   TEN: 10,
 } as const;
 
+//Assigns a tag color depending on the
 export const colorMap = {
   ANDROID: "yellow",
   IOS: "green",
@@ -20,6 +22,7 @@ export const colorMap = {
   REACT: "purple",
 } as const;
 
+//Maps the enum string of the status
 export const statusMap = {
   BACKLOG: "Backlog",
   TODO: "Todo",
@@ -29,6 +32,7 @@ export const statusMap = {
   ALL: "All",
 } as const;
 
+//Maps the enum string of the tags
 export const tagMap = {
   REACT: "React",
   ANDROID: "Android",
@@ -37,11 +41,13 @@ export const tagMap = {
   RAILS: "Rails",
 };
 
+//Maps the enum string of the user type
 export const userTypeMap = {
   CANDIDATE: "Candidate",
   ADMIN: "Admin",
 };
 
+//Transform the date into a readable format, and assigns 'today' or 'yesterday' if applies
 export const mapDate = (
   dateString: string | undefined,
   capitalize: boolean,
@@ -70,6 +76,7 @@ export const mapDate = (
   }).format(date);
 };
 
+//Sends date status compared to the actual date
 export const getDateStatus = (dateString: string, background: boolean) => {
   const date = new Date(dateString);
   const today = new Date();

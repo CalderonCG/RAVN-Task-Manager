@@ -39,10 +39,11 @@ import ListContainer from "../../features/TaskList/ListContainer";
 
 function Dashboard() {
   //Consts---------------------------
-  const [activeTask, setActiveTask] = useState<GetTaskType | null>(null);
+  const [activeTask, setActiveTask] = useState<GetTaskType | null>(null); //Stores the dragged task
+  const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [search, setSearch] = useState("");
+  const [isList, setIsList] = useState(false);
   const [filters, setFilters] = useState<FilterType>({
     status: undefined,
     assigneeId: undefined,
@@ -50,13 +51,14 @@ function Dashboard() {
     dueDate: undefined,
     pointEstimate: undefined,
   });
-  const [isList, setIsList] = useState(false);
   //Queries -----------------------------
+  //Get all task query
   const { data, loading, error } = useQuery<
     GetTaskQuery,
     GetTaskQueryVariables
   >(GET_TASK, {
     variables: {
+      //Sends the filter parameters to the query
       input: {
         ...(search !== "" && { name: search }),
         ...(filters.status !== "ALL" && { status: filters.status }),
@@ -67,21 +69,24 @@ function Dashboard() {
         }),
         ...(filters.tags && { tags: filters.tags }),
       },
-    },
+    }, //Context for rebounce to avoid multiple queries
     context: {
       debounceKey: "search-tasks",
     },
   });
+  //Get user data query
   const {
     data: userData,
     loading: userLoading,
     error: userError,
   } = useQuery<GetProfileQuery>(GET_PROFILE);
+  //Get all status options query, for the columns
   const { data: statusList, loading: statusLoading } =
     useQuery<GetStatusQuery>(GET_STATUS);
   const [updateTask] = useMutation(UPDATE_TASK);
 
   //Consts---------------------------
+  //Checks if filters are being applied
   const isFiltering = Object.entries(filters).some(([key, value]) => {
     if (value === undefined) return false;
     if (key === "status" && value === "ALL") return false;
@@ -89,10 +94,12 @@ function Dashboard() {
       return false;
     return true;
   });
+  //Checks if any query is loading
   const isLoading = loading || statusLoading || userLoading;
+  //Checks if any query threw an error
   const errorMessage = error?.message || userError?.message;
+  //Checks if the user tasks are being filtered
   const isMyTask = filters.assigneeId === userData?.profile.id;
-
   //Media query hook
   const isDesktop = useMediaQuery("(min-width: 1024px)");
 
@@ -108,6 +115,7 @@ function Dashboard() {
     );
   });
 
+  //Handlers-----------------------------------
   //Handle my task filter-----------------
   const handleMyTask = () => {
     setFilters((prev) => ({
@@ -163,7 +171,7 @@ function Dashboard() {
       });
     }
 
-    // Limpiar el activeTask
+    // Cleans the active task
     setActiveTask(null);
   }
 

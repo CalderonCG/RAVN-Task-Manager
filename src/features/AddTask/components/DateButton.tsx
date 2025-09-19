@@ -22,10 +22,11 @@ type DateProps = {
   onChange: React.Dispatch<React.SetStateAction<Date | null>>;
 };
 
+//Custom input label
 const ExampleCustomInput = forwardRef<HTMLButtonElement, CustomInputProps>(
   ({ value, selectedDate, onClick }, ref) => (
     <button
-      type="button" // 👈 Asegurar que es type="button"
+      type="button"
       className="flex items-center justify-start gap-2 bg-modal-card-mobile py-2 px-4 rounded-sm w-full 
           lg:w-fit lg:justify-center lg:bg-modal-card"
       onClick={onClick}
@@ -36,7 +37,6 @@ const ExampleCustomInput = forwardRef<HTMLButtonElement, CustomInputProps>(
     </button>
   ),
 );
-
 ExampleCustomInput.displayName = "ExampleCustomInput";
 
 function DateButton({ selectedDate, onChange }: DateProps) {
@@ -74,8 +74,8 @@ function DateButton({ selectedDate, onChange }: DateProps) {
             <button
               type="button"
               onClick={(e) => {
-                e.preventDefault(); // 👈 Prevenir comportamiento por defecto
-                e.stopPropagation(); // 👈 Detener propagación del evento
+                e.preventDefault();
+                e.stopPropagation();
                 decreaseYear();
               }}
               disabled={prevYearButtonDisabled}
@@ -86,8 +86,8 @@ function DateButton({ selectedDate, onChange }: DateProps) {
             <button
               type="button"
               onClick={(e) => {
-                e.preventDefault(); // 👈 Prevenir comportamiento por defecto
-                e.stopPropagation(); // 👈 Detener propagación del evento
+                e.preventDefault();
+                e.stopPropagation();
                 decreaseMonth();
               }}
               disabled={prevMonthButtonDisabled}
@@ -105,8 +105,8 @@ function DateButton({ selectedDate, onChange }: DateProps) {
             <button
               type="button"
               onClick={(e) => {
-                e.preventDefault(); // 👈 Prevenir comportamiento por defecto
-                e.stopPropagation(); // 👈 Detener propagación del evento
+                e.preventDefault();
+                e.stopPropagation();
                 increaseMonth();
               }}
               disabled={nextMonthButtonDisabled}
@@ -117,8 +117,8 @@ function DateButton({ selectedDate, onChange }: DateProps) {
             <button
               type="button"
               onClick={(e) => {
-                e.preventDefault(); // 👈 Prevenir comportamiento por defecto
-                e.stopPropagation(); // 👈 Detener propagación del evento
+                e.preventDefault();
+                e.stopPropagation();
                 increaseYear();
               }}
               disabled={nextYearButtonDisabled}

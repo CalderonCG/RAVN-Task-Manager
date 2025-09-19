@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useMediaQuery } from "../../../utils/CustomHooks";
 import { avatarGenerator } from "../../../utils/AvatarGenerator";
 
+//Types-------------------------------------------
 type ModalProps = {
   selectedValue: User | undefined;
   isLoading: boolean;
@@ -23,11 +24,11 @@ function AssigneeDropdown({
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   //States
   const [search, setSearch] = useState("");
-
+  //Applies the search of the users
   const filteredUsers = options?.users.filter((user) =>
     user.fullName.toLowerCase().startsWith(search.toLowerCase().trim()),
   );
-
+  //User selection handler
   const handleSelect = (user: User) => {
     onSelect(user);
   };

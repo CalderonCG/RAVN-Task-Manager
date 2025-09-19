@@ -50,6 +50,7 @@ type ModalProps =
       setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
     };
 
+//Form interface
 interface TaskFormData {
   taskName: string;
   selectedAssignee: User | undefined;
@@ -79,6 +80,7 @@ function AddModal(props: ModalProps) {
     },
   });
   //Queries---------------------------------------------------------------------------------
+  //Queries to map the dropdown options
   const { data: dataTags, loading: loadingTags } =
     useQuery<GetTagsQuery>(GET_TAGS);
   const { data: dataPoints, loading: loadingPoints } =
@@ -87,6 +89,7 @@ function AddModal(props: ModalProps) {
     useQuery<GetUsersQuery>(GET_USERS);
   const { data: dataStatus, loading: loadingStatus } =
     useQuery<GetStatusQuery>(GET_STATUS);
+  //Mutations--------------------------------------------------------------------------
   const [createTask] = useMutation(CREATE_TASK, {
     onCompleted: () => {
       handleSuccess();
@@ -124,11 +127,13 @@ function AddModal(props: ModalProps) {
   };
 
   const onSubmit = async (data: TaskFormData) => {
+    //Checks if any field is empty
     if (!data.selectedAssignee || !data.selectedDate || !data.selectedPoints) {
       return;
     }
-
+    //Disables to avoid multiple mutations
     setIsDisabled(true);
+    //Creates the task to be added
     const baseTask: TaskType = {
       assigneeId: data.selectedAssignee!.id,
       dueDate: data.selectedDate!.toISOString(),
@@ -138,13 +143,16 @@ function AddModal(props: ModalProps) {
       tags: data.tags,
     };
 
+    //If there is a decoded tasks, then sets that task id in the query parameters
     const addedTask =
       type === "edit" ? { ...baseTask, id: props.task.id } : baseTask;
 
     try {
+      //If there isnt a decoded task, then goes for the create mutation
       if (type === "create") {
         await createTask({ variables: { input: addedTask } });
       } else {
+        //If there is a decoded task, then goes for the update mutation
         await updateTask({ variables: { input: addedTask } });
       }
     } catch (error) {

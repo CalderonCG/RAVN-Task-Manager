@@ -1,5 +1,6 @@
 import type { PropsWithChildren } from "react";
 
+//Types---------------------------------------
 type ButtonProps = {
   variant?: "primary" | "secondary" | "tertiary" | "neutral";
   visibility?: "mobile" | "desktop" | "all";
@@ -16,12 +17,14 @@ function Button({
   onClick,
   children,
 }: PropsWithChildren<ButtonProps>) {
+  //Variant color definition--------------------------------
   const variantStyles = {
     primary: "bg-primary hover:bg-primary/90",
     secondary: "bg-secondary hover:bg-secondary/90",
     tertiary: "bg-tertiary hover:bg-tertiary/90",
     neutral: "bg-inherit hover:bg-accent",
   };
+  //Visibility styles------------------------------------
   const visibilityStyles = {
     mobile: "flex lg:hidden",
     desktop: "lg:flex hidden",

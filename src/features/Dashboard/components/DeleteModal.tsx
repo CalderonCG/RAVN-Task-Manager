@@ -7,6 +7,7 @@ import { useState } from "react";
 import ErrorMessage from "../../../components/ErrorMessage/ErrorMessage";
 import { client } from "../../../apolloClient";
 
+//Types----------------------
 type DeleteProps = {
   isOpen: boolean;
   taskId: string;

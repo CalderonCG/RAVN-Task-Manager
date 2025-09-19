@@ -52,11 +52,13 @@ function Tasks() {
   });
   const [isList, setIsList] = useState(false);
   //Queries -----------------------------
+  //Get all task query
   const { data, loading, error } = useQuery<
     GetTaskQuery,
     GetTaskQueryVariables
   >(GET_TASK, {
     variables: {
+      //Sends the filter parameters to the query
       input: {
         assigneeId: userData?.profile.id,
         ...(search !== "" && { name: search }),
@@ -67,17 +69,18 @@ function Tasks() {
         }),
         ...(filters.tags && { tags: filters.tags }),
       },
-    },
+    }, //Context for rebounce to avoid multiple queries
     context: {
       debounceKey: "search-tasks",
     },
   });
-
+  //Get all status options query, for the columns
   const { data: statusList, loading: statusLoading } =
     useQuery<GetStatusQuery>(GET_STATUS);
   const [updateTask] = useMutation(UPDATE_TASK);
 
   //Consts---------------------------
+  //Checks if filters are being applied
   const isFiltering = Object.entries(filters).some(([key, value]) => {
     if (value === undefined) return false;
     if (key === "status" && value === "ALL") return false;
@@ -85,9 +88,10 @@ function Tasks() {
       return false;
     return true;
   });
+  //Checks if any query is loading
   const isLoading = loading || statusLoading || userLoading;
+  //Checks if any query threw an error
   const errorMessage = error?.message || userError?.message;
-
   //Media query hook
   const isDesktop = useMediaQuery("(min-width: 1024px)");
 
@@ -150,7 +154,7 @@ function Tasks() {
       });
     }
 
-    // Limpiar el activeTask
+    // Cleans the active task
     setActiveTask(null);
   }
 
