@@ -205,6 +205,11 @@ function AddTask() {
           control={control}
           rules={{
             required: "Task name is required",
+            validate: {
+              notEmpty: (value) =>
+                value.trim().length > 0 ||
+                "Task name cannot be empty or only spaces",
+            },
             maxLength: {
               value: 15,
               message: "Task name must be 15 characters or less",
