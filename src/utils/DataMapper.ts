@@ -42,7 +42,10 @@ export const userTypeMap = {
   ADMIN: "Admin",
 };
 
-export const mapDate = (dateString: string | undefined) => {
+export const mapDate = (
+  dateString: string | undefined,
+  capitalize: boolean,
+) => {
   if (dateString === undefined) {
     return "unknown";
   }
@@ -56,8 +59,9 @@ export const mapDate = (dateString: string | undefined) => {
     date1.getMonth() === date2.getMonth() &&
     date1.getDate() === date2.getDate();
 
-  if (isSameDay(date, today)) return "TODAY";
-  if (isSameDay(date, yesterday)) return "YESTERDAY";
+  if (isSameDay(date, today)) return `${capitalize ? "TODAY" : "Today"}`;
+  if (isSameDay(date, yesterday))
+    return `${capitalize ? "YESTERDAY" : "Yesterday"}`;
 
   return new Intl.DateTimeFormat("en-GB", {
     day: "numeric",
@@ -66,7 +70,7 @@ export const mapDate = (dateString: string | undefined) => {
   }).format(date);
 };
 
-export const getDateStatus = (dateString: string) => {
+export const getDateStatus = (dateString: string, background: boolean) => {
   const date = new Date(dateString);
   const today = new Date();
   date.setHours(0, 0, 0, 0);
@@ -74,10 +78,10 @@ export const getDateStatus = (dateString: string) => {
 
   const daysLeft = date.getDate() - today.getDate();
   return daysLeft < 0
-    ? "text-primary bg-primary/10"
+    ? `text-primary  ${background && "bg-primary"}`
     : daysLeft == 0
-      ? "text-secondary bg-secondary/10"
+      ? `text-secondary  ${background && "bg-secondary"}`
       : daysLeft <= 2
-        ? "text-tertiary bg-tertiary/10"
+        ? `text-tertiary  ${background && "bg-tertiary"}`
         : "text-font";
 };

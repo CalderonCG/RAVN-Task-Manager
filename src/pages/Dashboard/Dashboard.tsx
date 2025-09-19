@@ -34,6 +34,8 @@ import {
   type DragStartEvent,
 } from "@dnd-kit/core";
 import Card from "../../features/Dashboard/components/Card";
+import ListHeader from "../../features/TaskList/ListHeader";
+import ListContainer from "../../features/TaskList/ListContainer";
 
 function Dashboard() {
   //Consts---------------------------
@@ -48,6 +50,7 @@ function Dashboard() {
     dueDate: undefined,
     pointEstimate: undefined,
   });
+  const [isList, setIsList] = useState(false);
   //Queries -----------------------------
   const { data, loading, error } = useQuery<
     GetTaskQuery,
@@ -172,7 +175,7 @@ function Dashboard() {
         avatar={userData?.profile.id}
       />
       <div className="w-full flex items-center justify-between">
-        <TabSwitch />
+        <TabSwitch value={isList} onClick={setIsList} />
         <div className="flex gap-2">
           <Button variant="neutral" onClick={() => handleMyTask()}>
             {isMyTask ? (
@@ -212,7 +215,7 @@ function Dashboard() {
                 No task matches those filters
               </p>
             </div>
-          ) : (
+          ) : !isList ? (
             <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
               {status.map((type) => {
                 const columnTasks = data?.tasks?.filter(
@@ -230,8 +233,23 @@ function Dashboard() {
                 ) : null}
               </DragOverlay>
             </DndContext>
+          ) : (
+            <div className="w-full h-full flex flex-col gap-4 ">
+              <ListHeader />
+              {status.map((type) => {
+                const columnTasks = data?.tasks?.filter(
+                  (task) => task.status === type.name,
+                );
+                return (
+                  <ListContainer
+                    key={type.name}
+                    type={type}
+                    tasks={columnTasks}
+                  />
+                );
+              })}
+            </div>
           )}
-          {/* Columns */}
         </div>
       )}
 
@@ -244,6 +262,7 @@ function Dashboard() {
           setIsOpen={setIsFilterOpen}
           filters={filters}
           setFilters={setFilters}
+          showAssignee={true}
         />
       )}
     </div>
