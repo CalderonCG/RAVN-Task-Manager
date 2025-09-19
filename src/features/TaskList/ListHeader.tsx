@@ -1,7 +1,7 @@
 function ListHeader() {
   return (
     <div
-      className="w-full h-14 items-center font-normal text-font bg-background-secondary  rounded-lg border-1 border-background-modal
+      className="w-220 lg:w-full h-14 shrink-0 items-center font-normal text-font bg-background-secondary  rounded-lg border-1 border-background-modal
     grid grid-cols-20"
     >
       <div className="h-full w-full flex items-center border-r-2 border-background-modal col-span-8 px-4">

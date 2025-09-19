@@ -41,11 +41,11 @@ function User() {
               </div>
               <div className="flex w-full justify-between lg:justify-start lg:gap-4">
                 <p className="font-semibold text-font-secondary">Created at:</p>
-                <p>{mapDate(data?.profile.createdAt)}</p>
+                <p>{mapDate(data?.profile.createdAt, false)}</p>
               </div>
               <div className="flex w-full justify-between lg:justify-start lg:gap-4">
                 <p className="font-semibold text-font-secondary">Updated at:</p>
-                <p>{mapDate(data?.profile.updatedAt)}</p>
+                <p>{mapDate(data?.profile.updatedAt, false)}</p>
               </div>
             </div>
           </>
