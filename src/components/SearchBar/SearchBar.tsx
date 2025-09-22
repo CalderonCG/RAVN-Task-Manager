@@ -28,7 +28,7 @@ function SearchBar({ value, onChange, avatar }: SearchProps) {
           <img
             src={avatarGenerator(avatar)}
             alt="avatar"
-            className="w-8 h-8 rounded-full"
+            className="w-8 h-8 rounded-full hover:scale-110"
           />
         </Link>
       </div>

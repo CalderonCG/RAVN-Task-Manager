@@ -69,22 +69,6 @@ function FilterModal({
     setIsOpen(false);
   };
 
-  const handleReset = () => {
-    setSelectedAssignee(undefined);
-    setSelectedPoints(undefined);
-    setSelectedDate(null);
-    setSelectedStatus("ALL");
-    dispatch({ type: "Reset" });
-    setFilters({
-      assigneeId: selectedAssignee?.id,
-      pointEstimate: selectedPoints,
-      status: selectedStatus,
-      tags: tags,
-      dueDate: selectedDate?.toISOString() || undefined,
-    });
-    setIsOpen(false);
-  };
-
   return (
     <Dialog
       open={isOpen}
@@ -134,7 +118,6 @@ function FilterModal({
           </div>
           <div className="flex gap-4 w-full justify-between lg:justify-end">
             <Button onClick={() => setIsOpen(false)}>Cancel</Button>
-            <Button onClick={() => handleReset()}>Reset</Button>
             <Button variant="primary" onClick={() => handleApply()}>
               Apply
             </Button>
