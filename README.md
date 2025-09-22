@@ -8,9 +8,9 @@ A modern task management application inspired by Trello, Kanban, and Jira. Built
 
 - **📋 Complete Task Management**: Create, read, update, and delete tasks with full CRUD operations
 - **🔄 Drag & Drop Interface**: Intuitive status updates by dragging tasks between columns
-- **🗄️ Persistent Storage**: Tasks are stored in an external database for data persistence across sessions
+- **🗄️ Persistent Storage**: Tasks are stored in an external database through API implementation for data persistence across sessions
 - **🔍 Advanced Filtering**: Search and filter tasks by status, due date, tags, and other parameters
-- **📱 Responsive Design**: Optimized for desktop, tablet, and mobile devices
+- **📱 Responsive Design**: Optimized for desktop and mobile devices
 - **🏷️ Task Details**: Comprehensive task information including status, due dates, and assignable tags
 
 ## 🚀 Quick Start
@@ -101,11 +101,9 @@ The application automatically adapts to different screen sizes and devices, prov
 - **🚀 Apollo Client** 
   - Simplified GraphQL integration with React
   - Built-in request debouncing for optimized performance
-  - Intelligent caching and state management
-  - Real-time data synchronization capabilities
+  - Intelligent caching and optimistic fuctionality
 
 - **📝 React Hook Form** 
-  - Comprehensive form validation with minimal re-renders
   - Seamless integration of validation rules and error handling
   - Enhanced user experience with real-time validation feedback
 
@@ -124,7 +122,7 @@ RAVN-Task-Manager/
 │   │   ├── Dashboard         # Kanban board visualization components
 │   │   └── TaskList          # List view visualization components
 │   ├── 📄 pages/             # Top-level page components and routing
-│   ├── 🔍 queries/           # GraphQL queries, mutations, and subscriptions
+│   ├── 🔍 queries/           # GraphQL queries and mutationo
 │   │   ├── TasksQuery        # Task-related GraphQL operations
 │   │   └── UseQuery          # User-related GraphQL operations
 │   └── 🛠️ utils/             # Helper functions and utilities
