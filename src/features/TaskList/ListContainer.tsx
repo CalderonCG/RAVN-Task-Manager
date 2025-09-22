@@ -1,7 +1,8 @@
 import { RiArrowDownSFill, RiArrowUpSFill } from "react-icons/ri";
 import ListCard from "./ListCard";
-import type { GetTaskType } from "../../utils/TaskTypes";
+import type { GetTaskType, StatusType } from "../../utils/TaskTypes";
 import { useState } from "react";
+import { statusMap } from "../../utils/DataMapper";
 
 //Types------------------------------------
 type ListProps = {
@@ -28,7 +29,8 @@ function ListContainer({ type, tasks }: ListProps) {
           <RiArrowDownSFill className="text-font-secondary  text-2xl" />
         )}
         <p className="font-semibold">
-          {type.name} <a className="text-font-secondary">({tasks?.length})</a>
+          {statusMap[type.name as StatusType]}{" "}
+          <a className="text-font-secondary">({tasks?.length})</a>
         </p>
       </div>
       <div
