@@ -323,7 +323,25 @@ function AddModal(props: ModalProps) {
                 <Controller
                   name="selectedDate"
                   control={control}
-                  rules={{ required: "Due date is required" }}
+                  rules={{
+                    required: "Due date is required",
+                    validate: {
+                      notPastDate: (value) => {
+                        if (!value) return true;
+
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0); // Ignores the time and only compares the day
+
+                        const selectedDate = new Date(value);
+                        selectedDate.setHours(0, 0, 0, 0);
+
+                        return (
+                          selectedDate >= today ||
+                          "Due date cannot be in the past"
+                        );
+                      },
+                    },
+                  }}
                   render={({ field }) => (
                     <DateButton
                       selectedDate={field.value}
