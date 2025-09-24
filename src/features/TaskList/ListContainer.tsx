@@ -1,7 +1,7 @@
 import { RiArrowDownSFill, RiArrowUpSFill } from "react-icons/ri";
-import ListCard from "./ListCard";
 import type { GetTaskType } from "../../utils/TaskTypes";
 import { useState } from "react";
+import Card from "../Dashboard/components/Card";
 
 //Types------------------------------------
 type ListProps = {
@@ -47,7 +47,9 @@ function ListContainer({ type, tasks }: ListProps) {
             </div>
           </div>
         ) : (
-          sortedTask?.map((task) => <ListCard task={task} key={task.id} />)
+          sortedTask?.map((task) => (
+            <Card variant="list" task={task} key={task.id} />
+          ))
         )}
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { RiChat3Line } from "react-icons/ri";
+import { RiChat3Line, RiDeleteBin7Line, RiEdit2Line } from "react-icons/ri";
 import Badge from "../../components/Badge/Badge";
 import { avatarGenerator } from "../../utils/AvatarGenerator";
 import {
@@ -10,6 +10,11 @@ import {
 } from "../../utils/DataMapper";
 import type { GetTaskType } from "../../utils/TaskTypes";
 import { MdOutlineAccountTree } from "react-icons/md";
+import Dropdown from "../../components/Dropdown/Dropdown";
+import { Link } from "react-router";
+import { useState } from "react";
+import DeleteModal from "../Dashboard/components/DeleteModal";
+import AddModal from "../AddTask/components/AddModal";
 
 //Types------------------------------
 type CardProps = {
@@ -17,10 +22,16 @@ type CardProps = {
 };
 
 function ListCard({ task }: CardProps) {
+  //States-------------------------------------
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+  const encodedTask = encodeURIComponent(btoa(JSON.stringify(task))); //Encodes the task to send it to the edit page
+
   return (
     <div
-      className="w-full h-14 items-center font-normal text-font bg-background-secondary  border-1 border-background-modal
-    grid grid-cols-20 py-0.5 "
+      className={`w-full h-14 items-center font-normal text-font bg-background-secondary  border-1 border-background-modal
+    grid grid-cols-20 py-0.5 ${isOpen && ""}`}
     >
       <div className="h-full w-full relative flex items-center justify-between px-4 border-r-2 border-background-modal col-span-8 gap-6 ">
         <div
@@ -71,13 +82,56 @@ function ListCard({ task }: CardProps) {
             : ""}{" "}
         </p>
       </div>
-      <div className="h-full w-full flex items-center col-span-3 px-2">
+      <div className="h-full w-full flex items-center justify-between col-span-3 px-2">
         <p
           className={`font-normal text-sm ${getDateStatus(task.dueDate, false)}`}
         >
           {mapDate(task.dueDate, false)}
         </p>
+        <Dropdown setIsOpen={setIsOpen}>
+          <button
+            className="data-focus:bg-accent-hover hover:bg-accent p-2 flex items-center gap-2 cursor-pointer w-full"
+            onClick={() => {
+              setIsOpen(false);
+              setShowConfirm(true);
+            }}
+          >
+            <RiDeleteBin7Line className="text-lg" />
+            <p>Delete</p>
+          </button>
+          <button
+            className="data-focus:bg-accent-hover z-50 p-2 hover:bg-accent items-center gap-2 cursor-pointer w-full hidden lg:flex"
+            onClick={() => {
+              setIsOpen(false);
+              setShowEdit(true);
+            }}
+          >
+            <RiEdit2Line className="text-lg" />
+            <p>Edit</p>
+          </button>
+          <Link
+            to={`/edit/${encodedTask}s`}
+            className="data-focus:bg-accent-hover p-2  items-center gap-2 cursor-pointer w-full flex lg:hidden"
+          >
+            <RiEdit2Line className="text-lg" />
+            <p>Edit</p>
+          </Link>
+        </Dropdown>
       </div>
+      <DeleteModal
+        isOpen={showConfirm}
+        setIsOpen={setShowConfirm}
+        taskId={task.id}
+        taskName={task.name}
+      />
+      {showEdit && (
+        <AddModal
+          isOpen={showEdit}
+          setIsOpen={setShowEdit}
+          type="edit"
+          task={task}
+        />
+      )}
     </div>
   );
 }
