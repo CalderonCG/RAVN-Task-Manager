@@ -83,7 +83,11 @@ export const getDateStatus = (dateString: string, background: boolean) => {
   date.setHours(0, 0, 0, 0);
   today.setHours(0, 0, 0, 0);
 
-  const daysLeft = date.getDate() - today.getDate();
+  // Compare the complete date
+  const daysLeft = Math.floor(
+    (date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+  );
+
   return daysLeft < 0
     ? `text-primary ${background ? "bg-primary" : ""}`
     : daysLeft == 0
