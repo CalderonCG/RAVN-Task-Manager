@@ -79,6 +79,7 @@ function AddModal(props: ModalProps) {
       tags: [],
     },
   });
+
   //Queries---------------------------------------------------------------------------------
   //Queries to map the dropdown options
   const { data: dataTags, loading: loadingTags } =
@@ -127,12 +128,9 @@ function AddModal(props: ModalProps) {
   };
 
   const onSubmit = async (data: TaskFormData) => {
-    //Checks if any field is empty
-    if (!data.selectedAssignee || !data.selectedDate || !data.selectedPoints) {
-      return;
-    }
     //Disables to avoid multiple mutations
     setIsDisabled(true);
+
     //Creates the task to be added
     const baseTask: TaskType = {
       assigneeId: data.selectedAssignee!.id,

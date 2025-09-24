@@ -75,7 +75,8 @@ function AssigneeDropdown({
           />
         </MenuItem>
         <div
-          className=" max-h-64  w-full  overflow-y-auto          [&::-webkit-scrollbar]:w-2
+          className=" max-h-64 w-full overflow-y-auto 
+          [&::-webkit-scrollbar]:w-2
   [&::-webkit-scrollbar-track]:bg-background
   [&::-webkit-scrollbar-thumb]:bg-accent"
         >

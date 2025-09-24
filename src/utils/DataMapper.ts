@@ -85,10 +85,10 @@ export const getDateStatus = (dateString: string, background: boolean) => {
 
   const daysLeft = date.getDate() - today.getDate();
   return daysLeft < 0
-    ? `text-primary  ${background && "bg-primary"}`
+    ? `text-primary ${background ? "bg-primary" : ""}`
     : daysLeft == 0
-      ? `text-secondary  ${background && "bg-secondary"}`
+      ? `text-secondary ${background ? "bg-secondary" : ""}`
       : daysLeft <= 2
-        ? `text-tertiary  ${background && "bg-tertiary"}`
+        ? `text-tertiary ${background ? "bg-tertiary" : ""}`
         : "text-font";
 };

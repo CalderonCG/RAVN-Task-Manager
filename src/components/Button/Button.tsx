@@ -9,7 +9,7 @@ type ButtonProps = {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
 
-function Button({
+export function Button({
   variant = "neutral",
   visibility = "all",
   type = "button",

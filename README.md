@@ -1,69 +1,80 @@
-# React + TypeScript + Vite
+# RAVN Task Manager - Christopher Calderón
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+---
 
-Currently, two official plugins are available:
+## 🚀 Setup and Running Instructions
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 1. Clone the repository
+```bash
+git clone https://github.com/CalderonCG/RAVN-Task-Manager.git
+cd RAVN-Task-Manager
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Configure environment variables
 
+Inside the project folder, create a .env file with the following content. Replace YOUR_API_KEY_HERE with your actual API key:
 ```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+VITE_API_KEY="YOUR_API_KEY_HERE"
 ```
+### 3. Install dependencies
+
+Run the following command to install all required dependencies:
+```bash
+npm install
+```
+### 4. Install dependencies
+
+To run the application locally:
+```bash
+npm run dev
+```
+
+✅ Notes
+
+- Ensure you have Node.js and npm installed on your machine.
+- The application will be accessible at the local development URL provided in your terminal (e.g., http://localhost:5173).
+
+---
+
+## Project description
+
+This application provides basic task management features inspired by tools like **Trello**, **Kanban**, and **Jira**.  
+Users have full control over task details, with advanced filtering options to simplify task tracking and follow-up.
+
+<img width="1920" height="923" alt="image" src="https://github.com/user-attachments/assets/ef92d795-e9be-4d27-8fcb-6f69afe8cf04" />
+
+### App fetching from external database
+All the created task will be stored inside an external database, keeping the data persistent through sessions
+
+
+
+https://github.com/user-attachments/assets/068b0880-f3c3-4155-998b-f25269a99b17
+
+The created tasks provide detailed information, such as their status, due date, and tags assigned
+<img width="505" height="267" alt="image" src="https://github.com/user-attachments/assets/eefe9345-88be-4bab-8aa3-8adc0a92cc4c" />
+
+
+### CRUD operations over the tasks
+The application provides total control over the tasks, allowing the user to create, update and delete the tasks at will
+
+
+https://github.com/user-attachments/assets/9f8da533-6920-4760-b891-f8184900040f
+
+Also providing the option to update the task's status with a drag and drop feauture
+
+
+https://github.com/user-attachments/assets/9e1f10e8-84c0-4fef-b81e-95f329466702
+
+
+
+### Advanced filtering options
+Advanced filtering options to serach for specific tasks that matches all the parameters selected
+
+
+https://github.com/user-attachments/assets/c660be4e-31df-49e7-8dbb-bd31fc752a18
+
+### Responsive design to work on all platforms
+The apps adapts the UI to match the user's desired platform
+<img width="365" height="809" alt="image" src="https://github.com/user-attachments/assets/28615233-c7a0-42f6-9b25-5d577d546493" />
+
