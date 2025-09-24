@@ -10,6 +10,7 @@ import { avatarGenerator } from "../../../utils/AvatarGenerator";
 type ModalProps = {
   selectedValue: User | undefined;
   isLoading: boolean;
+  hasError: boolean;
   options: GetUsersQuery | undefined;
   onSelect: React.Dispatch<React.SetStateAction<User | undefined>>;
 };
@@ -17,6 +18,7 @@ type ModalProps = {
 function AssigneeDropdown({
   selectedValue,
   isLoading,
+  hasError,
   options,
   onSelect,
 }: ModalProps) {
@@ -80,29 +82,37 @@ function AssigneeDropdown({
   [&::-webkit-scrollbar-track]:bg-background
   [&::-webkit-scrollbar-thumb]:bg-accent"
         >
-          {isLoading
-            ? "Loading..."
-            : filteredUsers?.map((user) => (
-                <MenuItem key={user.id}>
-                  <span
-                    className="flex gap-2 w-full items-center text-font font-normal hover:bg-modal-card cursor-pointer  px-4 py-2"
-                    onClick={() =>
-                      handleSelect({
-                        __typename: "User",
-                        id: user.id,
-                        fullName: user.fullName,
-                      })
-                    }
-                  >
-                    <img
-                      className="w-8 rounded-full"
-                      src={avatarGenerator(user.id)}
-                      alt={user.fullName}
-                    />
-                    <p>{user.fullName}</p>
-                  </span>
-                </MenuItem>
-              ))}
+          {isLoading ? (
+            <span className="text-font-secondary font-semibold text-lg  px-4 py-2 cursor-default">
+              Loading...
+            </span>
+          ) : hasError ? (
+            <span className="text-font-secondary font-semibold text-lg  px-4 py-2 cursor-default">
+              Something went wrong
+            </span>
+          ) : (
+            filteredUsers?.map((user) => (
+              <MenuItem key={user.id}>
+                <span
+                  className="flex gap-2 w-full items-center text-font font-normal hover:bg-modal-card cursor-pointer  px-4 py-2"
+                  onClick={() =>
+                    handleSelect({
+                      __typename: "User",
+                      id: user.id,
+                      fullName: user.fullName,
+                    })
+                  }
+                >
+                  <img
+                    className="w-8 rounded-full"
+                    src={avatarGenerator(user.id)}
+                    alt={user.fullName}
+                  />
+                  <p>{user.fullName}</p>
+                </span>
+              </MenuItem>
+            ))
+          )}
         </div>
       </MenuItems>
     </Menu>

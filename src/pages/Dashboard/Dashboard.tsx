@@ -81,8 +81,11 @@ function Dashboard() {
     error: userError,
   } = useQuery<GetProfileQuery>(GET_PROFILE);
   //Get all status options query, for the columns
-  const { data: statusList, loading: statusLoading } =
-    useQuery<GetStatusQuery>(GET_STATUS);
+  const {
+    data: statusList,
+    loading: statusLoading,
+    error: statusError,
+  } = useQuery<GetStatusQuery>(GET_STATUS);
   const [updateTask] = useMutation(UPDATE_TASK);
 
   //Consts---------------------------
@@ -97,7 +100,8 @@ function Dashboard() {
   //Checks if any query is loading
   const isLoading = loading || statusLoading || userLoading;
   //Checks if any query threw an error
-  const errorMessage = error?.message || userError?.message;
+  const errorMessage =
+    error?.message || userError?.message || statusError?.message;
   //Checks if the user tasks are being filtered
   const isMyTask = filters.assigneeId === userData?.profile.id;
   //Media query hook

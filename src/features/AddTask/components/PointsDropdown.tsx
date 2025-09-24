@@ -9,12 +9,14 @@ type ModalProps = {
   selectedValue: string | undefined;
   options: GetPointsQuery | undefined;
   isLoading: boolean;
+  hasError: boolean;
   onSelect: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
 function PointsDropdown({
   selectedValue,
   isLoading,
+  hasError,
   options,
   onSelect,
 }: ModalProps) {
@@ -54,30 +56,38 @@ function PointsDropdown({
             Estimate
           </span>
         </MenuItem>
-        {isLoading
-          ? "Loading..."
-          : options?.__type?.enumValues
-              ?.slice()
-              .sort((a, b) => {
-                const valueA = numberMap[a.name as keyof typeof numberMap];
-                const valueB = numberMap[b.name as keyof typeof numberMap];
-                return Number(valueB) - Number(valueA);
-              })
-              .map((number) => {
-                const value = number.name;
-                const numberValue = numberMap[value as keyof typeof numberMap];
-                return (
-                  <MenuItem key={numberValue}>
-                    <span
-                      className="flex gap-2 items-center text-font font-normal hover:bg-modal-card cursor-pointer  px-4 py-2"
-                      onClick={() => handleSelect(number.name)}
-                    >
-                      <RiAddBoxFill />
-                      <p>{numberValue} Points</p>
-                    </span>
-                  </MenuItem>
-                );
-              })}
+        {isLoading ? (
+          <span className="text-font-secondary font-semibold text-lg  px-4 py-2 cursor-default">
+            Loading...
+          </span>
+        ) : hasError ? (
+          <span className="text-font-secondary font-semibold text-lg  px-4 py-2 cursor-default">
+            Something went wrong
+          </span>
+        ) : (
+          options?.__type?.enumValues
+            ?.slice()
+            .sort((a, b) => {
+              const valueA = numberMap[a.name as keyof typeof numberMap];
+              const valueB = numberMap[b.name as keyof typeof numberMap];
+              return Number(valueB) - Number(valueA);
+            })
+            .map((number) => {
+              const value = number.name;
+              const numberValue = numberMap[value as keyof typeof numberMap];
+              return (
+                <MenuItem key={numberValue}>
+                  <span
+                    className="flex gap-2 items-center text-font font-normal hover:bg-modal-card cursor-pointer  px-4 py-2"
+                    onClick={() => handleSelect(number.name)}
+                  >
+                    <RiAddBoxFill />
+                    <p>{numberValue} Points</p>
+                  </span>
+                </MenuItem>
+              );
+            })
+        )}
       </MenuItems>
     </Menu>
   );

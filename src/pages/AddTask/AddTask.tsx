@@ -68,14 +68,26 @@ function AddTask() {
 
   //Queries---------------------------------------------------------------------------------
   //Queries to map the dropdown options
-  const { data: dataTags, loading: loadingTags } =
-    useQuery<GetTagsQuery>(GET_TAGS);
-  const { data: dataPoints, loading: loadingPoints } =
-    useQuery<GetPointsQuery>(GET_POINTS);
-  const { data: dataUsers, loading: loadingUsers } =
-    useQuery<GetUsersQuery>(GET_USERS);
-  const { data: dataStatus, loading: loadingStatus } =
-    useQuery<GetStatusQuery>(GET_STATUS);
+  const {
+    data: dataTags,
+    loading: loadingTags,
+    error: errorTags,
+  } = useQuery<GetTagsQuery>(GET_TAGS);
+  const {
+    data: dataPoints,
+    loading: loadingPoints,
+    error: errorPoints,
+  } = useQuery<GetPointsQuery>(GET_POINTS);
+  const {
+    data: dataUsers,
+    loading: loadingUsers,
+    error: errorUsers,
+  } = useQuery<GetUsersQuery>(GET_USERS);
+  const {
+    data: dataStatus,
+    loading: loadingStatus,
+    error: errorStatus,
+  } = useQuery<GetStatusQuery>(GET_STATUS);
   //Mutations--------------------------------------------------------------------------
   const [createTask] = useMutation(CREATE_TASK, {
     onCompleted: () => {
@@ -236,6 +248,7 @@ function AddTask() {
               onSelect={field.onChange}
               options={dataPoints}
               isLoading={loadingPoints}
+              hasError={!!errorPoints}
             />
           )}
         />
@@ -257,6 +270,7 @@ function AddTask() {
               }}
               options={dataTags}
               isLoading={loadingTags}
+              hasError={!!errorTags}
             />
           )}
         />
@@ -271,6 +285,7 @@ function AddTask() {
               selectedValue={field.value}
               onSelect={field.onChange}
               options={dataUsers}
+              hasError={!!errorUsers}
               isLoading={loadingUsers}
             />
           )}
@@ -296,6 +311,7 @@ function AddTask() {
                 selectedValue={field.value}
                 onSelect={field.onChange}
                 isLoading={loadingStatus}
+                hasError={!!errorStatus}
                 options={dataStatus}
               />
             )}

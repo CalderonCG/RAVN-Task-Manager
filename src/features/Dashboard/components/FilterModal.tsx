@@ -48,14 +48,26 @@ function FilterModal({
   const [tags, dispatch] = useReducer(tagsReducer, [] as TaskTag[]);
 
   //Queries---------------------------------------------------------------------------------
-  const { data: dataTags, loading: loadingTags } =
-    useQuery<GetTagsQuery>(GET_TAGS);
-  const { data: dataPoints, loading: loadingPoints } =
-    useQuery<GetPointsQuery>(GET_POINTS);
-  const { data: dataUsers, loading: loadingUsers } =
-    useQuery<GetUsersQuery>(GET_USERS);
-  const { data: dataStatus, loading: loadingStatus } =
-    useQuery<GetStatusQuery>(GET_STATUS);
+  const {
+    data: dataTags,
+    loading: loadingTags,
+    error: errorTags,
+  } = useQuery<GetTagsQuery>(GET_TAGS);
+  const {
+    data: dataPoints,
+    loading: loadingPoints,
+    error: errorPoints,
+  } = useQuery<GetPointsQuery>(GET_POINTS);
+  const {
+    data: dataUsers,
+    loading: loadingUsers,
+    error: errorUsers,
+  } = useQuery<GetUsersQuery>(GET_USERS);
+  const {
+    data: dataStatus,
+    loading: loadingStatus,
+    error: errorStatus,
+  } = useQuery<GetStatusQuery>(GET_STATUS);
 
   //Handlers-------------------------------------------------------------------------------
   const handleApply = () => {
@@ -86,6 +98,7 @@ function FilterModal({
               selectedValue={selectedPoints}
               onSelect={setSelectedPoints}
               isLoading={loadingPoints}
+              hasError={!!errorPoints}
               options={dataPoints}
             />
             {showAssignee && (
@@ -93,6 +106,7 @@ function FilterModal({
                 selectedValue={selectedAssignee}
                 onSelect={setSelectedAssignee}
                 isLoading={loadingUsers}
+                hasError={!!errorUsers}
                 options={dataUsers}
               />
             )}
@@ -101,6 +115,7 @@ function FilterModal({
               selectedValue={tags}
               onSelect={dispatch}
               isLoading={loadingTags}
+              hasError={!!errorTags}
               options={dataTags}
             />
 
@@ -109,6 +124,7 @@ function FilterModal({
               selectedValue={selectedStatus}
               onSelect={setSelectedStatus}
               isLoading={loadingStatus}
+              hasError={!!errorStatus}
               options={dataStatus}
             />
             <DateButton

@@ -82,14 +82,26 @@ function AddModal(props: ModalProps) {
 
   //Queries---------------------------------------------------------------------------------
   //Queries to map the dropdown options
-  const { data: dataTags, loading: loadingTags } =
-    useQuery<GetTagsQuery>(GET_TAGS);
-  const { data: dataPoints, loading: loadingPoints } =
-    useQuery<GetPointsQuery>(GET_POINTS);
-  const { data: dataUsers, loading: loadingUsers } =
-    useQuery<GetUsersQuery>(GET_USERS);
-  const { data: dataStatus, loading: loadingStatus } =
-    useQuery<GetStatusQuery>(GET_STATUS);
+  const {
+    data: dataTags,
+    loading: loadingTags,
+    error: errorTags,
+  } = useQuery<GetTagsQuery>(GET_TAGS);
+  const {
+    data: dataPoints,
+    loading: loadingPoints,
+    error: errorPoints,
+  } = useQuery<GetPointsQuery>(GET_POINTS);
+  const {
+    data: dataUsers,
+    loading: loadingUsers,
+    error: errorUsers,
+  } = useQuery<GetUsersQuery>(GET_USERS);
+  const {
+    data: dataStatus,
+    loading: loadingStatus,
+    error: errorStatus,
+  } = useQuery<GetStatusQuery>(GET_STATUS);
   //Mutations--------------------------------------------------------------------------
   const [createTask] = useMutation(CREATE_TASK, {
     onCompleted: () => {
@@ -246,6 +258,7 @@ function AddModal(props: ModalProps) {
                       selectedValue={field.value}
                       onSelect={field.onChange}
                       isLoading={loadingPoints}
+                      hasError={!!errorPoints}
                       options={dataPoints}
                     />
                   )}
@@ -261,6 +274,7 @@ function AddModal(props: ModalProps) {
                       selectedValue={field.value}
                       onSelect={field.onChange}
                       isLoading={loadingUsers}
+                      hasError={!!errorUsers}
                       options={dataUsers}
                     />
                   )}
@@ -282,6 +296,7 @@ function AddModal(props: ModalProps) {
                         field.onChange(newTags);
                       }}
                       isLoading={loadingTags}
+                      hasError={!!errorTags}
                       options={dataTags}
                     />
                   )}
@@ -297,6 +312,7 @@ function AddModal(props: ModalProps) {
                         selectedValue={field.value}
                         onSelect={field.onChange}
                         isLoading={loadingStatus}
+                        hasError={!!errorStatus}
                         options={dataStatus}
                       />
                     )}

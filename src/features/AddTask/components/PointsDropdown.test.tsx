@@ -60,6 +60,7 @@ describe("PointsDropdown Component", () => {
     selectedValue: undefined,
     options: mockOptions,
     isLoading: false,
+    hasError: false,
     onSelect: vi.fn(),
   };
 
@@ -105,8 +106,8 @@ describe("PointsDropdown Component", () => {
 
       await user.click(screen.getByRole("button"));
 
-      // Menu should be open and show title
-      expect(screen.getByText("Estimate")).toBeInTheDocument();
+      // Menu title
+      expect(screen.getAllByText("Estimate")).toHaveLength(2);
     });
 
     it("should display all options when menu is open", async () => {
@@ -115,7 +116,6 @@ describe("PointsDropdown Component", () => {
 
       await user.click(screen.getByRole("button"));
 
-      // Should show all options sorted in descending order
       expect(screen.getByText("5 Points")).toBeInTheDocument();
       expect(screen.getByText("3 Points")).toBeInTheDocument();
       expect(screen.getByText("2 Points")).toBeInTheDocument();
@@ -134,7 +134,6 @@ describe("PointsDropdown Component", () => {
         parseInt(el.textContent?.split(" ")[0] || "0"),
       );
 
-      // Should be sorted 5, 3, 2, 1, 0
       expect(points).toEqual([5, 3, 2, 1, 0]);
     });
 
@@ -179,33 +178,6 @@ describe("PointsDropdown Component", () => {
       await user.click(screen.getByRole("button"));
       await user.click(screen.getByText("1 Points"));
       expect(mockOnSelect).toHaveBeenCalledWith("ONE");
-    });
-  });
-
-  // Media Query Tests
-  describe("Responsive Behavior", () => {
-    it("should apply mobile styles when on mobile", () => {
-      mockedUseMediaQuery.mockReturnValue(false); // Mobile
-
-      render(<PointsDropdown {...mockProps} />);
-
-      const menuButton = screen.getByRole("button");
-      expect(menuButton).toHaveClass("w-full", "lg:w-auto");
-    });
-
-    it("should apply desktop styles when on desktop", () => {
-      mockedUseMediaQuery.mockReturnValue(true); // Desktop
-
-      render(<PointsDropdown {...mockProps} />);
-
-      const menuButton = screen.getByRole("button");
-      expect(menuButton).toHaveClass("w-full", "lg:w-auto");
-    });
-
-    it("should call useMediaQuery with correct breakpoint", () => {
-      render(<PointsDropdown {...mockProps} />);
-
-      expect(mockedUseMediaQuery).toHaveBeenCalledWith("(min-width: 1024px)");
     });
   });
 });

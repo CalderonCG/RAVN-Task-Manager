@@ -10,6 +10,7 @@ type ModalProps = {
   selectedValue: StatusType;
   options: GetStatusQuery | undefined;
   isLoading: boolean;
+  hasError: boolean;
   isFilter?: boolean;
   onSelect: React.Dispatch<React.SetStateAction<StatusType>>;
 };
@@ -18,6 +19,7 @@ function StatusDropdown({
   selectedValue,
   isLoading,
   isFilter = false,
+  hasError,
   options,
   onSelect,
 }: ModalProps) {
@@ -67,20 +69,28 @@ function StatusDropdown({
           </MenuItem>
         )}
 
-        {isLoading
-          ? "Loading..."
-          : options?.__type?.enumValues?.map((status) => {
-              return (
-                <MenuItem key={status.name}>
-                  <span
-                    className="flex gap-2 items-center text-font font-normal hover:bg-modal-card cursor-pointer  px-4 py-2"
-                    onClick={() => handleSelect(status.name as Status)}
-                  >
-                    <p>{statusMap[status.name as StatusType]}</p>
-                  </span>
-                </MenuItem>
-              );
-            })}
+        {isLoading ? (
+          <span className="text-font-secondary font-semibold text-lg  px-4 py-2 cursor-default">
+            Loading...
+          </span>
+        ) : hasError ? (
+          <span className="text-font-secondary font-semibold text-lg  px-4 py-2 cursor-default">
+            Something went wrong
+          </span>
+        ) : (
+          options?.__type?.enumValues?.map((status) => {
+            return (
+              <MenuItem key={status.name}>
+                <span
+                  className="flex gap-2 items-center text-font font-normal hover:bg-modal-card cursor-pointer  px-4 py-2"
+                  onClick={() => handleSelect(status.name as Status)}
+                >
+                  <p>{statusMap[status.name as StatusType]}</p>
+                </span>
+              </MenuItem>
+            );
+          })
+        )}
       </MenuItems>
     </Menu>
   );
