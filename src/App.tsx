@@ -5,16 +5,21 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import Tasks from "./pages/Tasks/Tasks";
 import AddTask from "./pages/AddTask/AddTask";
 import User from "./pages/User/User";
+import { useState } from "react";
 
 function App() {
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <div
       className="bg-background w-full h-screen text-font flex flex-col-reverse
     lg:flex-row lg:p-8"
     >
-      <SideBar />
+      <SideBar setIsOpen={setIsOpen} />
       <Routes>
-        <Route path="/" element={<Dashboard />} />
+        <Route
+          path="/"
+          element={<Dashboard isOpen={isOpen} setIsOpen={setIsOpen} />}
+        />
         <Route path="/MyTasks" element={<Tasks />} />
         <Route path="/New" element={<AddTask />} />
         <Route path="/Profile" element={<User />} />

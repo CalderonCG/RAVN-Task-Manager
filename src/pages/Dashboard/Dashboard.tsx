@@ -16,7 +16,6 @@ import {
 import AddModal from "../../features/AddTask/components/AddModal";
 import FilterModal from "../../features/Dashboard/components/FilterModal";
 import { GET_PROFILE } from "../../queries/UserQuery";
-import { useMediaQuery } from "../../utils/CustomHooks";
 import Column from "../../features/Dashboard/components/Column";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 import Card from "../../features/Dashboard/components/Card";
@@ -28,9 +27,13 @@ import { useTaskFilters } from "../../features/Dashboard/hooks/useTaskFilters";
 import { useTaskData } from "../../features/Dashboard/hooks/useTaskData";
 import { useDragNDrop } from "../../features/Dashboard/hooks/useDragNDrop";
 
-function Dashboard() {
+type DashboardProps = {
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
   //Consts---------------------------
-  const [isOpen, setIsOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isList, setIsList] = useState(false);
   //Get user data query
@@ -61,9 +64,6 @@ function Dashboard() {
     UpdateTaskMutation,
     data,
   );
-
-  //Media query hook
-  const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   //Status sorting-------------------------------
   const statusOrder = ["BACKLOG", "TODO", "IN_PROGRESS", "DONE", "CANCELLED"];
@@ -190,9 +190,8 @@ function Dashboard() {
         </div>
       )}
 
-      {isDesktop && (
-        <AddModal isOpen={isOpen} setIsOpen={setIsOpen} type="create" />
-      )}
+      <AddModal isOpen={isOpen} setIsOpen={setIsOpen} type="create" />
+
       {isFilterOpen && (
         <FilterModal
           isOpen={isFilterOpen}

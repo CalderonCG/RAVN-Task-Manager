@@ -2,8 +2,13 @@ import { IoIosAddCircle } from "react-icons/io";
 import { RiFunctionLine, RiLayoutTopLine } from "react-icons/ri";
 import SideBarCard from "./SideBarCard/SideBarCard";
 import { useTheme } from "../../utils/CustomHooks";
+import Button from "../Button/Button";
 
-function SideBar() {
+type SideBarProps = {
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+function SideBar({ setIsOpen }: SideBarProps) {
   const { theme } = useTheme(); //Toggle function from Theme Context
 
   return (
@@ -25,9 +30,12 @@ function SideBar() {
         <RiFunctionLine className="text-2xl" />
       </SideBarCard>
 
-      <SideBarCard label="Add Project" route="/New" isDesktopHidden={true}>
-        <IoIosAddCircle className="text-2xl" />
-      </SideBarCard>
+      <Button onClick={() => setIsOpen(true)} visibility="mobile">
+        <div className="flex flex-col items-center justify-center text-font-secondary">
+          <IoIosAddCircle className="text-2xl" />
+          <p>Add Project</p>
+        </div>
+      </Button>
 
       <SideBarCard label="My task" route="/MyTasks">
         <RiLayoutTopLine className="text-2xl" />

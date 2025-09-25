@@ -19,7 +19,6 @@ import { useState } from "react";
 import DeleteModal from "./DeleteModal";
 import AddModal from "../../AddTask/components/AddModal";
 import type { GetTaskType } from "../../../utils/TaskTypes";
-import { Link } from "react-router";
 import { avatarGenerator } from "../../../utils/AvatarGenerator";
 import { useDraggable } from "@dnd-kit/core";
 import { useMediaQuery } from "../../../utils/CustomHooks";
@@ -36,7 +35,6 @@ function Card({ task, variant = "card" }: TaskCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const encodedTask = encodeURIComponent(btoa(JSON.stringify(task)));
 
   //DnD setup for card
   const { attributes, listeners, setNodeRef } = useDraggable({
@@ -68,7 +66,7 @@ function Card({ task, variant = "card" }: TaskCardProps) {
         <p>Delete</p>
       </button>
       <button
-        className="data-focus:bg-accent-hover z-50 p-2 hover:bg-accent items-center gap-2 cursor-pointer w-full hidden lg:flex"
+        className="data-focus:bg-accent-hover z-50 p-2 hover:bg-accent items-center gap-2 cursor-pointer w-full flex"
         onClick={() => {
           setIsOpen(false);
           setShowEdit(true);
@@ -77,13 +75,6 @@ function Card({ task, variant = "card" }: TaskCardProps) {
         <RiEdit2Line className="text-lg" />
         <p>Edit</p>
       </button>
-      <Link
-        to={`/edit/${encodedTask}`}
-        className="data-focus:bg-accent-hover p-2  items-center gap-2 cursor-pointer w-full flex lg:hidden"
-      >
-        <RiEdit2Line className="text-lg" />
-        <p>Edit</p>
-      </Link>
     </>
   );
 

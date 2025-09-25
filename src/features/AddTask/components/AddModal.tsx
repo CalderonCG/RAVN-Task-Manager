@@ -101,21 +101,46 @@ function AddModal(props: ModalProps) {
       onClose={() => setIsOpen(false)}
       className="relative z-50"
     >
-      <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-black/50">
+      <div className="fixed items-end inset-0 flex w-screen lg:items-center justify-center lg:p-4 bg-black/50">
         {showSuccess ? (
-          <DialogPanel className="min-w-160 w-fit space-y-2 bg-background-modal text-font py-8 px-4 rounded-lg flex flex-col items-center justify-center text-center">
+          <DialogPanel
+            className="w-full lg:min-w-160 lg:w-fit lg:max-w-[50rem] space-y-2 bg-background-modal text-font py-8 px-4 rounded-t-lg lg:rounded-lg
+            flex flex-col items-center justify-center gap-4 text-center"
+          >
             <RiCheckboxCircleLine className="text-6xl" />
             <p className="text-lg font-bold">
               Task {type === "edit" ? "updated" : "created"} successfully
             </p>
           </DialogPanel>
         ) : error ? (
-          <DialogPanel className="min-w-160 w-fit space-y-2 bg-background-modal text-font py-8 px-4 rounded-lg flex flex-col items-center justify-center">
+          <DialogPanel
+            className="w-full lg:min-w-160 lg:w-fit lg:max-w-[50rem] space-y-2 bg-background-modal text-font py-8 px-4 rounded-t-lg lg:rounded-lg
+            flex flex-col items-center justify-center gap-4 text-center"
+          >
             <ErrorMessage message={error} />
           </DialogPanel>
         ) : (
-          <DialogPanel className="min-w-160 w-fit space-y-4 bg-background-modal text-font p-4 rounded-lg">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <DialogPanel
+            className="w-full lg:min-w-160 lg:w-fit lg:max-w-[50rem] h-full lg:h-auto space-y-2 bg-background lg:bg-background-modal text-font py-8 px-4 rounded-t-lg lg:rounded-lg
+            flex flex-col items-center justify-start lg:justify-center gap-4 text-center "
+          >
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="space-y-4 w-full"
+            >
+              <div className="gap-8 flex lg:hidden justify-between">
+                <Button
+                  variant="neutral"
+                  onClick={() => setIsOpen(false)}
+                  type="button"
+                >
+                  Cancel
+                </Button>
+
+                <Button variant="neutral" type="submit" disabled={isDisabled}>
+                  {type === "create" ? "Create" : "Update"}
+                </Button>
+              </div>
               <Controller
                 name="taskName"
                 control={control}
@@ -141,7 +166,7 @@ function AddModal(props: ModalProps) {
                 )}
               />
 
-              <div className="flex gap-4">
+              <div className="flex flex-col w-full lg:flex-row gap-4">
                 {/* Points Dropdown */}
                 <Controller
                   name="selectedPoints"
@@ -253,7 +278,7 @@ function AddModal(props: ModalProps) {
                   </p>
                 )}
 
-                <div className="flex gap-8">
+                <div className="gap-8 hidden lg:flex">
                   <Button
                     variant="neutral"
                     onClick={() => setIsOpen(false)}
