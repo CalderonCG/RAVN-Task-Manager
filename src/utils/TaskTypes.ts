@@ -23,7 +23,13 @@ export type TaskType = {
   tags: TaskTag[];
 };
 
-export type FilterType = Partial<Omit<TaskType, "name">>;
+export type FilterType = {
+  assigneeId?: { __typename: "User"; id: string; fullName: string };
+  dueDate?: string | undefined;
+  pointEstimate?: string | undefined;
+  status?: StatusType | undefined;
+  tags?: TaskTag[] | undefined;
+};
 
 export type GetTaskType = GetTaskQuery["tasks"][number];
 

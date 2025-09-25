@@ -36,6 +36,8 @@ import {
 import Card from "../../features/Dashboard/components/Card";
 import ListHeader from "../../features/TaskList/ListHeader";
 import ListContainer from "../../features/TaskList/ListContainer";
+import Badge from "../../components/Badge/Badge";
+import { mapDate, numberMap, statusMap } from "../../utils/DataMapper";
 
 function Dashboard() {
   //Consts---------------------------
@@ -62,7 +64,7 @@ function Dashboard() {
       input: {
         ...(search !== "" && { name: search }),
         ...(filters.status !== "ALL" && { status: filters.status }),
-        ...(filters.assigneeId && { assigneeId: filters.assigneeId }),
+        ...(filters.assigneeId?.id && { assigneeId: filters.assigneeId.id }),
         ...(filters.dueDate && { dueDate: filters.dueDate }),
         ...(filters.pointEstimate && {
           pointEstimate: filters.pointEstimate as PointEstimate,
@@ -103,7 +105,7 @@ function Dashboard() {
   const errorMessage =
     error?.message || userError?.message || statusError?.message;
   //Checks if the user tasks are being filtered
-  const isMyTask = filters.assigneeId === userData?.profile.id;
+  const isMyTask = filters.assigneeId?.id === userData?.profile.id;
   //Media query hook
   const isDesktop = useMediaQuery("(min-width: 1024px)");
 
@@ -124,7 +126,7 @@ function Dashboard() {
   const handleMyTask = () => {
     setFilters((prev) => ({
       ...prev,
-      assigneeId: isMyTask ? undefined : userData?.profile.id,
+      assigneeId: isMyTask ? undefined : userData?.profile,
     }));
   };
 
@@ -189,6 +191,33 @@ function Dashboard() {
       <div className="w-full flex items-center justify-between">
         <TabSwitch value={isList} onClick={setIsList} />
         <div className="flex gap-2">
+          <div className="hidden lg:flex items-center gap-1 ">
+            {filters.pointEstimate && (
+              <Badge
+                variant="neutral"
+                label={`${numberMap[filters.pointEstimate as PointEstimate]} points`}
+              />
+            )}
+            {filters.assigneeId && (
+              <Badge variant="neutral" label={filters.assigneeId.fullName} />
+            )}
+            {filters.tags && filters.tags.length > 0 && (
+              <Badge
+                variant="neutral"
+                label={`${filters.tags.length} tags`}
+                tagTitle={filters.tags.toString()}
+              />
+            )}
+            {filters.status && filters.status !== "ALL" && (
+              <Badge variant="neutral" label={statusMap[filters.status]} />
+            )}
+            {filters.dueDate && (
+              <Badge
+                variant="neutral"
+                label={mapDate(filters.dueDate, false)}
+              />
+            )}
+          </div>
           <Button variant="neutral" onClick={() => handleMyTask()}>
             {isMyTask ? (
               <RiUserStarFill className="text-3xl text-font" />

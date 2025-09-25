@@ -45,7 +45,7 @@ function Tasks() {
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState<FilterType>({
     status: undefined,
-    assigneeId: userData?.profile.id,
+    assigneeId: userData?.profile,
     tags: undefined,
     dueDate: undefined,
     pointEstimate: undefined,

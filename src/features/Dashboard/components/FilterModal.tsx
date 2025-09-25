@@ -72,7 +72,7 @@ function FilterModal({
   //Handlers-------------------------------------------------------------------------------
   const handleApply = () => {
     setFilters({
-      assigneeId: selectedAssignee?.id,
+      assigneeId: selectedAssignee,
       pointEstimate: selectedPoints,
       status: selectedStatus,
       tags: tags,
