@@ -1,6 +1,7 @@
 import type {
   GetTaskQuery,
   GetUsersQuery,
+  PointEstimate,
   Status,
   TaskTag,
 } from "../generated/graphql";
@@ -21,6 +22,19 @@ export type TaskType = {
   pointEstimate: string;
   status: StatusType;
   tags: TaskTag[];
+};
+
+export type CreateTaskInputType = {
+  assigneeId: string;
+  dueDate: string;
+  name: string;
+  pointEstimate: PointEstimate;
+  status: Status;
+  tags: TaskTag[];
+};
+
+export type UpdateTaskInputType = CreateTaskInputType & {
+  id: string;
 };
 
 export type FilterType = {

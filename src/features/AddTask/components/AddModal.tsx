@@ -1,5 +1,5 @@
 import { Dialog, DialogPanel } from "@headlessui/react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { RiCheckboxCircleLine } from "react-icons/ri";
 import AssigneeDropdown from "./AssigneeDropdown";
 import PointsDropdown from "./PointsDropdown";
@@ -7,34 +7,13 @@ import TagDropdown from "./TagDropdown";
 import "react-datepicker/dist/react-datepicker.css";
 import DateButton from "./DateButton";
 import Button from "../../../components/Button/Button";
-import { useMutation, useQuery } from "@apollo/client";
-import {
-  CREATE_TASK,
-  GET_POINTS,
-  GET_STATUS,
-  GET_TAGS,
-  GET_TASK,
-  GET_USERS,
-  UPDATE_TASK,
-} from "../../../queries/TaskQuery";
-import type {
-  GetPointsQuery,
-  GetStatusQuery,
-  GetTagsQuery,
-  GetUsersQuery,
-  TaskTag,
-} from "../../../generated/graphql";
 import ErrorMessage from "../../../components/ErrorMessage/ErrorMessage";
-import type {
-  GetTaskType,
-  StatusType,
-  TaskType,
-  User,
-} from "../../../utils/TaskTypes";
+import type { GetTaskType } from "../../../utils/TaskTypes";
 import StatusDropdown from "./StatusDropdown";
-import { client } from "../../../apolloClient";
 import { tagsReducer } from "../../../utils/Reducer";
-import { useForm, Controller } from "react-hook-form";
+import { Controller } from "react-hook-form";
+import { useDropdownData } from "../hooks/useDropdownData";
+import { useTaskForm } from "../hooks/useTaskForm";
 
 //Types------------
 type ModalProps =
@@ -50,125 +29,40 @@ type ModalProps =
       setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
     };
 
-//Form interface
-interface TaskFormData {
-  taskName: string;
-  selectedAssignee: User | undefined;
-  selectedPoints: string | undefined;
-  selectedDate: Date | null;
-  selectedStatus: StatusType;
-  tags: TaskTag[];
-}
-
 function AddModal(props: ModalProps) {
   const { isOpen, type, setIsOpen } = props;
 
-  //ReactHook Form--------------------------------------------------
+  //Queries---------------------------------------------------------------------------------
+
   const {
+    dataPoints,
+    errorPoints,
+    dataStatus,
+    errorStatus,
+    dataTags,
+    errorTags,
+    dataUsers,
+    errorUsers,
+    isLoading,
+  } = useDropdownData();
+
+  //Form configuration ---------------------------------------------------------------
+  const useFormProps =
+    type === "create"
+      ? { type: type, setIsOpen: setIsOpen }
+      : { type: type, setIsOpen: setIsOpen, id: props.task.id };
+
+  const {
+    showSuccess,
+    error,
+    isDisabled,
+    setIsDisabled,
     control,
     handleSubmit,
-    formState: { errors },
+    errors,
     reset,
-  } = useForm<TaskFormData>({
-    defaultValues: {
-      taskName: "",
-      selectedAssignee: undefined,
-      selectedPoints: undefined,
-      selectedDate: null,
-      selectedStatus: "BACKLOG",
-      tags: [],
-    },
-  });
-
-  //Queries---------------------------------------------------------------------------------
-  //Queries to map the dropdown options
-  const {
-    data: dataTags,
-    loading: loadingTags,
-    error: errorTags,
-  } = useQuery<GetTagsQuery>(GET_TAGS);
-  const {
-    data: dataPoints,
-    loading: loadingPoints,
-    error: errorPoints,
-  } = useQuery<GetPointsQuery>(GET_POINTS);
-  const {
-    data: dataUsers,
-    loading: loadingUsers,
-    error: errorUsers,
-  } = useQuery<GetUsersQuery>(GET_USERS);
-  const {
-    data: dataStatus,
-    loading: loadingStatus,
-    error: errorStatus,
-  } = useQuery<GetStatusQuery>(GET_STATUS);
-  //Mutations--------------------------------------------------------------------------
-  const [createTask] = useMutation(CREATE_TASK, {
-    onCompleted: () => {
-      handleSuccess();
-    },
-  });
-  const [updateTask] = useMutation(UPDATE_TASK, {
-    onCompleted: () => {
-      handleSuccess();
-    },
-  });
-
-  //Selected states
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isDisabled, setIsDisabled] = useState(false);
-
-  //Event handlers
-  const handleSuccess = () => {
-    setShowSuccess(true);
-    setTimeout(() => {
-      setShowSuccess(false);
-      setIsOpen(false);
-      reset();
-      client.refetchQueries({
-        include: [GET_TASK],
-      });
-    }, 1000);
-  };
-
-  const handleError = (error: string) => {
-    setError(error);
-    setTimeout(() => {
-      setError(null);
-    }, 1000);
-  };
-
-  const onSubmit = async (data: TaskFormData) => {
-    //Disables to avoid multiple mutations
-    setIsDisabled(true);
-
-    //Creates the task to be added
-    const baseTask: TaskType = {
-      assigneeId: data.selectedAssignee!.id,
-      dueDate: data.selectedDate!.toISOString(),
-      name: data.taskName,
-      pointEstimate: data.selectedPoints!,
-      status: data.selectedStatus,
-      tags: data.tags,
-    };
-
-    //If there is a decoded tasks, then sets that task id in the query parameters
-    const addedTask =
-      type === "edit" ? { ...baseTask, id: props.task.id } : baseTask;
-
-    try {
-      //If there isnt a decoded task, then goes for the create mutation
-      if (type === "create") {
-        await createTask({ variables: { input: addedTask } });
-      } else {
-        //If there is a decoded task, then goes for the update mutation
-        await updateTask({ variables: { input: addedTask } });
-      }
-    } catch (error) {
-      if (error instanceof Error) handleError(error.message);
-    }
-  };
+    onSubmit,
+  } = useTaskForm(useFormProps);
 
   //UseEffect to map the inputs if in edit mode
   useEffect(() => {
@@ -199,7 +93,7 @@ function AddModal(props: ModalProps) {
         tags: [],
       });
     }
-  }, [props, type, isOpen, reset]);
+  }, [props, type, isOpen, reset, setIsDisabled]);
 
   return (
     <Dialog
@@ -257,7 +151,7 @@ function AddModal(props: ModalProps) {
                     <PointsDropdown
                       selectedValue={field.value}
                       onSelect={field.onChange}
-                      isLoading={loadingPoints}
+                      isLoading={isLoading}
                       hasError={!!errorPoints}
                       options={dataPoints}
                     />
@@ -273,7 +167,7 @@ function AddModal(props: ModalProps) {
                     <AssigneeDropdown
                       selectedValue={field.value}
                       onSelect={field.onChange}
-                      isLoading={loadingUsers}
+                      isLoading={isLoading}
                       hasError={!!errorUsers}
                       options={dataUsers}
                     />
@@ -295,7 +189,7 @@ function AddModal(props: ModalProps) {
                         const newTags = tagsReducer(field.value, action);
                         field.onChange(newTags);
                       }}
-                      isLoading={loadingTags}
+                      isLoading={isLoading}
                       hasError={!!errorTags}
                       options={dataTags}
                     />
@@ -311,7 +205,7 @@ function AddModal(props: ModalProps) {
                       <StatusDropdown
                         selectedValue={field.value}
                         onSelect={field.onChange}
-                        isLoading={loadingStatus}
+                        isLoading={isLoading}
                         hasError={!!errorStatus}
                         options={dataStatus}
                       />
