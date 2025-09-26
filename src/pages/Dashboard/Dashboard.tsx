@@ -8,6 +8,7 @@ import Button from "../../components/Button/Button";
 import { useState } from "react";
 import {
   RiAddLine,
+  RiCloseFill,
   RiFilterLine,
   RiUserStarFill,
   RiUserStarLine,
@@ -53,6 +54,7 @@ function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
     isMyTask,
     handleMyTask,
     filterInput,
+    resetFilter,
   } = useTaskFilters(false, userData);
 
   //Query data
@@ -89,29 +91,49 @@ function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
         <div className="flex gap-2">
           <div className="hidden lg:flex items-center gap-1 ">
             {filters.pointEstimate && (
-              <Badge
-                variant="neutral"
-                label={`${numberMap[filters.pointEstimate as PointEstimate]} points`}
-              />
+              <Badge variant="neutral">
+                {`${numberMap[filters.pointEstimate as PointEstimate]} points`}
+                <RiCloseFill
+                  className="text-xl mt-0.5 text-font-secondary hover:text-font"
+                  onClick={() => resetFilter("pointEstimate")}
+                />
+              </Badge>
             )}
             {filters.assigneeId && (
-              <Badge variant="neutral" label={filters.assigneeId.fullName} />
+              <Badge variant="neutral">
+                {filters.assigneeId.fullName}
+                <RiCloseFill
+                  className="text-xl mt-0.5 text-font-secondary hover:text-font"
+                  onClick={() => resetFilter("assigneeId")}
+                />
+              </Badge>
             )}
             {filters.tags && filters.tags.length > 0 && (
-              <Badge
-                variant="neutral"
-                label={`${filters.tags.length} tags`}
-                tagTitle={filters.tags.toString()}
-              />
+              <Badge variant="neutral" tagTitle={filters.tags.toString()}>
+                {`${filters.tags.length} tags`}
+                <RiCloseFill
+                  className="text-xl mt-0.5 text-font-secondary hover:text-font"
+                  onClick={() => resetFilter("tags")}
+                />
+              </Badge>
             )}
             {filters.status && filters.status !== "ALL" && (
-              <Badge variant="neutral" label={statusMap[filters.status]} />
+              <Badge variant="neutral">
+                {statusMap[filters.status]}
+                <RiCloseFill
+                  className="text-xl mt-0.5 text-font-secondary hover:text-font"
+                  onClick={() => resetFilter("status")}
+                />
+              </Badge>
             )}
             {filters.dueDate && (
-              <Badge
-                variant="neutral"
-                label={mapDate(filters.dueDate, false)}
-              />
+              <Badge variant="neutral">
+                {mapDate(filters.dueDate, false)}
+                <RiCloseFill
+                  className="text-xl mt-0.5 text-font-secondary hover:text-font"
+                  onClick={() => resetFilter("dueDate")}
+                />
+              </Badge>
             )}
           </div>
           <Button variant="neutral" onClick={() => handleMyTask()}>

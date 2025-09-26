@@ -1,11 +1,16 @@
+import type { PropsWithChildren } from "react";
+
 //Types-------------------------
 type BadgeProps = {
   variant?: "red" | "green" | "yellow" | "blue" | "purple" | "neutral";
-  label: string;
   tagTitle?: string | undefined;
 };
 
-function Badge({ variant = "red", label, tagTitle = undefined }: BadgeProps) {
+function Badge({
+  variant = "red",
+  tagTitle = undefined,
+  children,
+}: PropsWithChildren<BadgeProps>) {
   //Variants color definition
   const variantStyles = {
     red: "bg-primary/10 text-primary",
@@ -19,9 +24,9 @@ function Badge({ variant = "red", label, tagTitle = undefined }: BadgeProps) {
   return (
     <div
       title={tagTitle}
-      className={`py-1 px-4 ${variantStyles[variant]} w-fit rounded-sm`}
+      className={`py-1 px-3 ${variantStyles[variant]} w-fit rounded-sm flex  items-center justify-between gap-2`}
     >
-      {label}
+      {children}
     </div>
   );
 }

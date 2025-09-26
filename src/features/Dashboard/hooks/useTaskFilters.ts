@@ -32,6 +32,14 @@ export const useTaskFilters = (isUser: boolean, userData?: GetProfileQuery) => {
     return true;
   });
 
+  //Reset filter value by key
+  const resetFilter = (key: keyof FilterType) => {
+    setFilters((prev) => ({
+      ...prev,
+      [key]: key === "status" ? "ALL" : key === "tags" ? undefined : undefined,
+    }));
+  };
+
   //Checks if the user tasks are being filtered
   const isMyTask = filters.assigneeId?.id === userData?.profile.id;
 
@@ -68,6 +76,7 @@ export const useTaskFilters = (isUser: boolean, userData?: GetProfileQuery) => {
     isMyTask,
     handleMyTask,
     filterInput,
+    resetFilter,
   };
 };
 

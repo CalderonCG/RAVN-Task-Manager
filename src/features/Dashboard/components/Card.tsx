@@ -108,7 +108,9 @@ function Card({ task, variant = "card" }: TaskCardProps) {
 
         <div className="flex gap-2 w-full">
           {task.tags.slice(0, 2).map((tag) => (
-            <Badge key={tag} label={tagMap[tag]} variant={colorMap[tag]} />
+            <Badge key={tag} variant={colorMap[tag]}>
+              {tagMap[tag]}
+            </Badge>
           ))}
           {task.tags.length > 2 && (
             <span
@@ -183,7 +185,9 @@ function Card({ task, variant = "card" }: TaskCardProps) {
 
       <div className="h-full w-full flex items-center border-r-2 border-background-modal col-span-3 gap-1 px-1">
         {task.tags.slice(0, 1).map((tag) => (
-          <Badge key={tag} label={tagMap[tag]} variant={colorMap[tag]} />
+          <Badge key={tag} variant={colorMap[tag]}>
+            {tagMap[tag]}
+          </Badge>
         ))}
         {task.tags.length > 1 && (
           <span
