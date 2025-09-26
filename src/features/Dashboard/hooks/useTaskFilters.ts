@@ -13,7 +13,7 @@ type FilterHandlerParameters = {
   setFilters: React.Dispatch<React.SetStateAction<Partial<FilterType>>>;
 };
 
-export const useTaskFilters = (userData?: GetProfileQuery) => {
+export const useTaskFilters = (isUser: boolean, userData?: GetProfileQuery) => {
   const [filters, setFilters] = useState<FilterType>({
     status: undefined,
     assigneeId: undefined,
@@ -47,7 +47,11 @@ export const useTaskFilters = (userData?: GetProfileQuery) => {
     input: {
       ...(search !== "" && { name: search }),
       ...(filters.status !== "ALL" && { status: filters.status }),
-      ...(filters.assigneeId?.id && { assigneeId: filters.assigneeId.id }),
+
+      ...(filters.assigneeId?.id &&
+        (!isUser
+          ? { assigneeId: filters.assigneeId.id }
+          : { assigneeId: userData?.profile.id })),
       ...(filters.dueDate && { dueDate: filters.dueDate }),
       ...(filters.pointEstimate && {
         pointEstimate: filters.pointEstimate as PointEstimate,

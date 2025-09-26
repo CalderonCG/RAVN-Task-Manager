@@ -1,15 +1,7 @@
 import SearchBar from "../../components/SearchBar/SearchBar";
 import TabSwitch from "../../components/TabSwitch/TabSwitch";
-import { useMutation, useQuery } from "@apollo/client";
-import { GET_STATUS, GET_TASK, UPDATE_TASK } from "../../queries/TaskQuery";
-import type {
-  GetProfileQuery,
-  GetStatusQuery,
-  GetTaskQuery,
-  GetTaskQueryVariables,
-  PointEstimate,
-  Status,
-} from "../../generated/graphql";
+import { useQuery } from "@apollo/client";
+import type { GetProfileQuery } from "../../generated/graphql";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import Loader from "../../components/Loader/Loader";
 import Button from "../../components/Button/Button";
@@ -17,83 +9,45 @@ import { useState } from "react";
 import { RiAddLine, RiFilterLine, RiZoomOutLine } from "react-icons/ri";
 import AddModal from "../../features/AddTask/components/AddModal";
 import FilterModal from "../../features/Dashboard/components/FilterModal";
-import type { FilterType, GetTaskType } from "../../utils/TaskTypes";
 import { GET_PROFILE } from "../../queries/UserQuery";
-import { useMediaQuery } from "../../utils/CustomHooks";
 import Column from "../../features/Dashboard/components/Column";
-import {
-  DndContext,
-  DragOverlay,
-  type DragEndEvent,
-  type DragStartEvent,
-} from "@dnd-kit/core";
+import { DndContext, DragOverlay } from "@dnd-kit/core";
 import Card from "../../features/Dashboard/components/Card";
 import ListHeader from "../../features/TaskList/components/ListHeader";
 import ListContainer from "../../features/TaskList/components/ListContainer";
+import { useTaskFilters } from "../../features/Dashboard/hooks/useTaskFilters";
+import { useTaskData } from "../../features/Dashboard/hooks/useTaskData";
+import { useDragNDrop } from "../../features/Dashboard/hooks/useDragNDrop";
 
-function Tasks() {
-  //Fetching user
+type DashboardProps = {
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+function Tasks({ isOpen, setIsOpen }: DashboardProps) {
+  //Consts---------------------------
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isList, setIsList] = useState(false);
+  //Get user data query
   const {
     data: userData,
     loading: userLoading,
     error: userError,
   } = useQuery<GetProfileQuery>(GET_PROFILE);
-  //Consts---------------------------
-  const [activeTask, setActiveTask] = useState<GetTaskType | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [search, setSearch] = useState("");
-  const [filters, setFilters] = useState<FilterType>({
-    status: undefined,
-    assigneeId: userData?.profile,
-    tags: undefined,
-    dueDate: undefined,
-    pointEstimate: undefined,
-  });
-  const [isList, setIsList] = useState(false);
-  //Queries -----------------------------
-  //Get all task query
-  const { data, loading, error } = useQuery<
-    GetTaskQuery,
-    GetTaskQueryVariables
-  >(GET_TASK, {
-    variables: {
-      //Sends the filter parameters to the query
-      input: {
-        assigneeId: userData?.profile.id,
-        ...(search !== "" && { name: search }),
-        ...(filters.status !== "ALL" && { status: filters.status }),
-        ...(filters.dueDate && { dueDate: filters.dueDate }),
-        ...(filters.pointEstimate && {
-          pointEstimate: filters.pointEstimate as PointEstimate,
-        }),
-        ...(filters.tags && { tags: filters.tags }),
-      },
-    }, //Context for rebounce to avoid multiple queries
-    context: {
-      debounceKey: "search-tasks",
-    },
-  });
-  //Get all status options query, for the columns
-  const { data: statusList, loading: statusLoading } =
-    useQuery<GetStatusQuery>(GET_STATUS);
-  const [updateTask] = useMutation(UPDATE_TASK);
 
-  //Consts---------------------------
-  //Checks if filters are being applied
-  const isFiltering = Object.entries(filters).some(([key, value]) => {
-    if (value === undefined) return false;
-    if (key === "status" && value === "ALL") return false;
-    if (key === "tags" && Array.isArray(value) && value.length === 0)
-      return false;
-    return true;
-  });
-  //Checks if any query is loading
-  const isLoading = loading || statusLoading || userLoading;
-  //Checks if any query threw an error
-  const errorMessage = error?.message || userError?.message;
-  //Media query hook
-  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  //Filter options
+  const { filters, setFilters, search, setSearch, isFiltering, filterInput } =
+    useTaskFilters(true, userData);
+
+  //Query data
+  const { data, statusList, isLoading, errorMessage, UpdateTaskMutation } =
+    useTaskData(filterInput, userLoading, userError?.message);
+
+  //Drag and drop
+  const { activeTask, handleDragEnd, handleDragStart } = useDragNDrop(
+    UpdateTaskMutation,
+    data,
+  );
 
   //Status sorting-------------------------------
   const statusOrder = ["BACKLOG", "TODO", "IN_PROGRESS", "DONE", "CANCELLED"];
@@ -106,57 +60,6 @@ function Tasks() {
       (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB)
     );
   });
-
-  //Drag start function-----------
-  function handleDragStart(event: DragStartEvent) {
-    const { active } = event;
-    const task = data?.tasks?.find((task) => task.id === active.id) || null;
-
-    setActiveTask(task);
-  }
-
-  //Drag end function------------------
-  //Drag end function con Apollo optimisticResponse
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
-
-    if (!over) {
-      setActiveTask(null);
-      return;
-    }
-
-    const taskId = active.id as string;
-    const newStatus = over.id as Status;
-    const currentStatus = active.data.current?.status as Status;
-
-    if (newStatus !== currentStatus) {
-      //Calls the mutation from the query
-      updateTask({
-        variables: {
-          input: {
-            id: taskId,
-            status: newStatus,
-          },
-        },
-        //Optimistically mutates the cache with the same update
-        optimisticResponse: {
-          updateTask: {
-            __typename: "Task",
-            id: taskId,
-            status: newStatus,
-            name: active.data.current?.name || "",
-            assignee: active.data.current?.assignee || null,
-            dueDate: active.data.current?.dueDate || "",
-            pointEstimate: active.data.current?.pointEstimate || "ZERO",
-            tags: active.data.current?.tags || [],
-          },
-        },
-      });
-    }
-
-    // Cleans the active task
-    setActiveTask(null);
-  }
 
   return (
     <div className="w-full h-full flex flex-col p-4 items-center gap-4 text-font overflow-hidden ">
@@ -237,9 +140,8 @@ function Tasks() {
         </div>
       )}
 
-      {isDesktop && (
-        <AddModal isOpen={isOpen} setIsOpen={setIsOpen} type="create" />
-      )}
+      <AddModal isOpen={isOpen} setIsOpen={setIsOpen} type="create" />
+
       {isFilterOpen && (
         <FilterModal
           isOpen={isFilterOpen}

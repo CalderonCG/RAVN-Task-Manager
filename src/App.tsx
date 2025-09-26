@@ -19,7 +19,10 @@ function App() {
           path="/"
           element={<Dashboard isOpen={isOpen} setIsOpen={setIsOpen} />}
         />
-        <Route path="/MyTasks" element={<Tasks />} />
+        <Route
+          path="/MyTasks"
+          element={<Tasks isOpen={isOpen} setIsOpen={setIsOpen} />}
+        />
         <Route path="/Profile" element={<User />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

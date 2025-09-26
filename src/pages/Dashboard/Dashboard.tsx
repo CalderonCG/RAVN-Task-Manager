@@ -53,7 +53,7 @@ function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
     isMyTask,
     handleMyTask,
     filterInput,
-  } = useTaskFilters(userData);
+  } = useTaskFilters(false, userData);
 
   //Query data
   const { data, statusList, isLoading, errorMessage, UpdateTaskMutation } =
