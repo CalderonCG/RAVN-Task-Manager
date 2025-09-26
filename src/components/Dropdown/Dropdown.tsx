@@ -15,7 +15,7 @@ function Dropdown({ setIsOpen, children }: PropsWithChildren<DropdownType>) {
         <DropdownWrapper open={open} setIsOpen={setIsOpen}>
           <>
             <MenuButton>
-              <BsThreeDots className="text-2xl text-font-secondary touch-none" />
+              <BsThreeDots className="text-2xl text-font-secondary touch-none cursor-pointer hover:text-font" />
             </MenuButton>
 
             <MenuItems

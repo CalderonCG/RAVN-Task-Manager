@@ -19,7 +19,7 @@ function ListContainer({ type, tasks }: ListProps) {
     <div className="w-220 lg:w-full">
       <div
         onClick={() => setIsOpen((prev) => !prev)}
-        className="w-full h-14 items-center flex font-normal text-font bg-background-secondary px-4 gap-2 rounded-lg rounded-b-none border-1 border-background-modal
+        className="cursor-pointer w-full h-14 items-center flex font-normal text-font bg-background-secondary px-4 gap-2 rounded-lg rounded-b-none border-1 border-background-modal
     "
       >
         {isOpen ? (
@@ -38,7 +38,7 @@ function ListContainer({ type, tasks }: ListProps) {
   [&::-webkit-scrollbar-thumb]:bg-accent`}
       >
         {tasks?.length === 0 ? (
-          <div className="flex w-full justify-center font-bold text-font-secondary text-xl">
+          <div className="flex w-full justify-center font-bold text-font-secondary text-xl ">
             <div
               className="w-full h-14 items-center flex font-normal text-font-secondary bg-background-secondary px-4 gap-2  border-1 border-background-modal
     "

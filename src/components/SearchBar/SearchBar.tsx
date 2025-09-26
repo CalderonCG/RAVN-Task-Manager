@@ -23,7 +23,7 @@ function SearchBar({ value, onChange, avatar }: SearchProps) {
       />
       <div className="flex gap-4 h-full items-center w-fit lg:absolute right-6 ">
         <ThemeButton />
-        <RiNotification3Line className="text-2xl shrink-0 hover:text-font hover:scale-105" />
+        <RiNotification3Line className="text-2xl shrink-0 hover:text-font hover:scale-105 cursor-pointer" />
         <Link to={"/profile"} className="shrink-0">
           <img
             src={avatarGenerator(avatar)}

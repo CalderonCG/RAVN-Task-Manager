@@ -86,7 +86,7 @@ function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
               <Badge variant="neutral">
                 {`${numberMap[filters.pointEstimate as PointEstimate]} points`}
                 <RiCloseFill
-                  className="text-xl mt-0.5 text-font-secondary hover:text-font"
+                  className="text-xl mt-0.5 text-font-secondary hover:text-font cursor-pointer"
                   onClick={() => actions.resetFilter("pointEstimate")}
                 />
               </Badge>
@@ -95,7 +95,7 @@ function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
               <Badge variant="neutral">
                 {filters.assigneeId.fullName}
                 <RiCloseFill
-                  className="text-xl mt-0.5 text-font-secondary hover:text-font"
+                  className="text-xl mt-0.5 text-font-secondary hover:text-font cursor-pointer"
                   onClick={() => actions.resetFilter("assigneeId")}
                 />
               </Badge>
@@ -110,7 +110,7 @@ function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
               <Badge variant="neutral">
                 {statusMap[filters.status]}
                 <RiCloseFill
-                  className="text-xl mt-0.5 text-font-secondary hover:text-font"
+                  className="text-xl mt-0.5 text-font-secondary hover:text-font cursor-pointer"
                   onClick={() => actions.resetFilter("status")}
                 />
               </Badge>
@@ -119,7 +119,7 @@ function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
               <Badge variant="neutral">
                 {mapDate(filters.dueDate, false)}
                 <RiCloseFill
-                  className="text-xl mt-0.5 text-font-secondary hover:text-font"
+                  className="text-xl mt-0.5 text-font-secondary hover:text-font cursor-pointer"
                   onClick={() => actions.resetFilter("dueDate")}
                 />
               </Badge>

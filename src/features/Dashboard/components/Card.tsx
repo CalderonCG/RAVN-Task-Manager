@@ -162,7 +162,7 @@ function Card({ task, variant = "card" }: TaskCardProps) {
 
   // List
   return (
-    <div className="w-full h-14 items-center font-normal text-font bg-background-secondary border-1 border-background-modal grid grid-cols-20 py-0.5">
+    <div className="  w-full h-14 items-center font-normal text-font bg-background-secondary border-1 border-background-modal grid grid-cols-20 py-0.5">
       <div className="h-full w-full relative flex items-center justify-between px-4 border-r-2 border-background-modal col-span-8 gap-6">
         <div
           className={`w-1 h-full absolute left-0 ${getDateStatus(task.dueDate, true)}`}

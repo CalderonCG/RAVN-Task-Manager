@@ -13,7 +13,7 @@ function FilterDropdown({ tags, removeTag }: FilterDropdownType) {
   return (
     <Menu>
       <MenuButton
-        className={`py-1 px-3 bg-accent text-font w-fit rounded-sm flex  items-center justify-between gap-2`}
+        className={`py-1 px-3 bg-accent text-font w-fit rounded-sm flex  items-center justify-between gap-2 cursor-pointer`}
       >
         {tags.length} tags
       </MenuButton>
@@ -27,7 +27,10 @@ function FilterDropdown({ tags, removeTag }: FilterDropdownType) {
             className="data-focus:bg-accent-hover z-50 p-2 hover:bg-accent items-center gap-2 cursor-pointer w-32 flex justify-between"
           >
             {tagMap[tag]}
-            <RiCloseFill className="text-lg" onClick={() => removeTag(tag)} />
+            <RiCloseFill
+              className="text-lg cursor-pointer"
+              onClick={() => removeTag(tag)}
+            />
           </span>
         ))}
       </MenuItems>

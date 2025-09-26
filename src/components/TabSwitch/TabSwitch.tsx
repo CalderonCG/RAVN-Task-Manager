@@ -16,7 +16,7 @@ function TabSwitch({ value, onClick }: SwitchProps) {
     >
       <button
         onClick={() => onClick(false)}
-        className={`py-1 px-6 w-1/2 rounded-lg flex items-center justify-center  
+        className={`py-1 px-6 w-1/2 rounded-lg flex items-center justify-center cursor-pointer
       lg:w-fit lg:p-2 lg:hover:text-primary ${!value ? "bg-accent-hover text-button lg:text-primary lg:border-2 lg:bg-inherit" : ""}  `}
       >
         <RiFunctionLine className=" hidden lg:flex text-3xl" />
@@ -24,7 +24,7 @@ function TabSwitch({ value, onClick }: SwitchProps) {
       </button>
       <button
         onClick={() => onClick(true)}
-        className={`py-1 px-6 w-1/2 rounded-lg  flex items-center justify-center 
+        className={`py-1 px-6 w-1/2 rounded-lg  flex items-center justify-center  cursor-pointer
       lg:w-fit lg:p-2 lg:hover:text-primary ${value ? "bg-accent-hover text-button lg:text-primary lg:border-2 lg:bg-inherit" : ""} `}
       >
         <HiMiniBars3 className=" hidden lg:flex text-3xl" />

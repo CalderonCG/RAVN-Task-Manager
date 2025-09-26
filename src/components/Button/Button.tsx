@@ -35,7 +35,7 @@ export function Button({
       onClick={onClick}
       type={type}
       disabled={disabled}
-      className={`p-2 rounded-lg items-center justify-center   ${variant !== "neutral" ? "text-button" : "text-font"}
+      className={`p-2 rounded-lg items-center justify-center cursor-pointer  ${variant !== "neutral" ? "text-button" : "text-font"}
         ${visibilityStyles[visibility]} ${variantStyles[variant]}`}
     >
       {children}
