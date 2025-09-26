@@ -96,11 +96,10 @@ function User() {
               <h1 className="text-font-secondary text-lg">Description</h1>
               <div className="rounded-xl lg:h-48 border-background-modal border-1 p-4">
                 <p>
-                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Qui
-                  accusantium mollitia asperiores nostrum rem atque,
-                  exercitationem molestiae distinctio dolores! Magnam alias
-                  fugiat pariatur praesentium laborum a? Nemo laboriosam
-                  incidunt est.
+                  Hi, I’m a passionate Front-End Developer specializing in
+                  building dynamic, user-friendly applications with React.js. I
+                  enjoy turning complex problems into simple, intuitive
+                  solutions and crafting seamless user experiences.
                 </p>
               </div>
             </div>
