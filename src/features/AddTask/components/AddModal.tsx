@@ -1,19 +1,19 @@
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { useEffect } from "react";
 import { RiCheckboxCircleLine } from "react-icons/ri";
-import AssigneeDropdown from "./AssigneeDropdown";
-import PointsDropdown from "./PointsDropdown";
-import TagDropdown from "./TagDropdown";
 import "react-datepicker/dist/react-datepicker.css";
-import DateButton from "./DateButton";
+import DateButton from "./Dropdowns/DateButton";
 import Button from "../../../components/Button/Button";
 import ErrorMessage from "../../../components/ErrorMessage/ErrorMessage";
 import type { GetTaskType } from "../../../utils/TaskTypes";
-import StatusDropdown from "./StatusDropdown";
 import { tagsReducer } from "../../../utils/Reducer";
 import { Controller } from "react-hook-form";
 import { useDropdownData } from "../hooks/useDropdownData";
 import { useTaskForm } from "../hooks/useTaskForm";
+import PointsDropdown from "./Dropdowns/PointsDropdown";
+import AssigneeDropdown from "./Dropdowns/AssigneeDropdown";
+import TagDropdown from "./Dropdowns/TagDropdown";
+import StatusDropdown from "./Dropdowns/StatusDropdown";
 
 //Types------------
 type ModalProps =

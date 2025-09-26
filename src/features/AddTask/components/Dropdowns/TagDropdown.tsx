@@ -1,10 +1,10 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { RiPriceTag3Fill, RiSquareFill, RiSquareLine } from "react-icons/ri";
 import type { MouseEvent } from "react";
-import type { GetTagsQuery, TaskTag } from "../../../generated/graphql";
-import type { TagAction } from "../../../utils/TaskTypes";
-import { tagMap } from "../../../utils/DataMapper";
-import { useMediaQuery } from "../../../utils/CustomHooks";
+import type { GetTagsQuery, TaskTag } from "../../../../generated/graphql";
+import type { TagAction } from "../../../../utils/TaskTypes";
+import { useMediaQuery } from "../../../../utils/CustomHooks";
+import { tagMap } from "../../../../utils/DataMapper";
 
 //Types---------------------------------------------
 type ModalProps = {

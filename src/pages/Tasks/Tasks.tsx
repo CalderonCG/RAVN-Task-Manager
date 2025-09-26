@@ -28,8 +28,8 @@ import {
   type DragStartEvent,
 } from "@dnd-kit/core";
 import Card from "../../features/Dashboard/components/Card";
-import ListHeader from "../../features/TaskList/ListHeader";
-import ListContainer from "../../features/TaskList/ListContainer";
+import ListHeader from "../../features/TaskList/components/ListHeader";
+import ListContainer from "../../features/TaskList/components/ListContainer";
 
 function Tasks() {
   //Fetching user

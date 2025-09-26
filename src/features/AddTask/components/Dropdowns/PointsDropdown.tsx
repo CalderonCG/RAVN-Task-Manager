@@ -1,8 +1,8 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { RiAddBoxFill } from "react-icons/ri";
-import type { GetPointsQuery } from "../../../generated/graphql";
-import { numberMap } from "../../../utils/DataMapper";
-import { useMediaQuery } from "../../../utils/CustomHooks";
+import type { GetPointsQuery } from "../../../../generated/graphql";
+import { useMediaQuery } from "../../../../utils/CustomHooks";
+import { numberMap } from "../../../../utils/DataMapper";
 
 //Types---------------------------------
 type ModalProps = {

@@ -3,7 +3,6 @@ import NotFound from "./pages/NotFound/NotFound";
 import SideBar from "./components/SideBar/SideBar";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Tasks from "./pages/Tasks/Tasks";
-import AddTask from "./pages/AddTask/AddTask";
 import User from "./pages/User/User";
 import { useState } from "react";
 
@@ -21,9 +20,7 @@ function App() {
           element={<Dashboard isOpen={isOpen} setIsOpen={setIsOpen} />}
         />
         <Route path="/MyTasks" element={<Tasks />} />
-        <Route path="/New" element={<AddTask />} />
         <Route path="/Profile" element={<User />} />
-        <Route path="/Edit/:id" element={<AddTask />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>

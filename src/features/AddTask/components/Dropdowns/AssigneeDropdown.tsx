@@ -1,10 +1,10 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { RiUser3Fill } from "react-icons/ri";
-import type { GetUsersQuery } from "../../../generated/graphql";
-import type { User } from "../../../utils/TaskTypes";
 import { useState } from "react";
-import { useMediaQuery } from "../../../utils/CustomHooks";
-import { avatarGenerator } from "../../../utils/AvatarGenerator";
+import type { User } from "../../../../utils/TaskTypes";
+import type { GetUsersQuery } from "../../../../generated/graphql";
+import { useMediaQuery } from "../../../../utils/CustomHooks";
+import { avatarGenerator } from "../../../../utils/AvatarGenerator";
 
 //Types-------------------------------------------
 type ModalProps = {

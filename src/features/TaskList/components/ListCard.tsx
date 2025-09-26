@@ -1,20 +1,20 @@
 import { RiChat3Line, RiDeleteBin7Line, RiEdit2Line } from "react-icons/ri";
-import Badge from "../../components/Badge/Badge";
-import { avatarGenerator } from "../../utils/AvatarGenerator";
 import {
   colorMap,
   getDateStatus,
   mapDate,
   numberMap,
   tagMap,
-} from "../../utils/DataMapper";
-import type { GetTaskType } from "../../utils/TaskTypes";
+} from "../../../utils/DataMapper";
+import type { GetTaskType } from "../../../utils/TaskTypes";
 import { MdOutlineAccountTree } from "react-icons/md";
-import Dropdown from "../../components/Dropdown/Dropdown";
+import Dropdown from "../../../components/Dropdown/Dropdown";
 import { Link } from "react-router";
 import { useState } from "react";
-import DeleteModal from "../Dashboard/components/DeleteModal";
-import AddModal from "../AddTask/components/AddModal";
+import DeleteModal from "../../Dashboard/components/DeleteModal";
+import AddModal from "../../AddTask/components/AddModal";
+import Badge from "../../../components/Badge/Badge";
+import { avatarGenerator } from "../../../utils/AvatarGenerator";
 
 //Types------------------------------
 type CardProps = {

@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import PointsDropdown from "./PointsDropdown";
-import type { GetPointsQuery } from "../../../generated/graphql";
+import type { GetPointsQuery } from "../../../../generated/graphql";
 
 //Headless ui needed function
 Object.defineProperty(window, "ResizeObserver", {
@@ -35,7 +35,7 @@ vi.mock("react-icons/ri", () => ({
   RiAddBoxFill: () => <div data-testid="add-box-icon">AddBoxIcon</div>,
 }));
 
-import { useMediaQuery } from "../../../utils/CustomHooks";
+import { useMediaQuery } from "../../../../utils/CustomHooks";
 
 const mockedUseMediaQuery = vi.mocked(useMediaQuery);
 

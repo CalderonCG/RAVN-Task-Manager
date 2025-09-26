@@ -1,7 +1,7 @@
 import { RiArrowDownSFill, RiArrowUpSFill } from "react-icons/ri";
-import type { GetTaskType } from "../../utils/TaskTypes";
+import type { GetTaskType } from "../../../utils/TaskTypes";
 import { useState } from "react";
-import Card from "../Dashboard/components/Card";
+import Card from "../../Dashboard/components/Card";
 
 //Types------------------------------------
 type ListProps = {

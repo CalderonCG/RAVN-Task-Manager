@@ -1,13 +1,13 @@
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
-import StatusDropdown from "../../AddTask/components/StatusDropdown";
-import DateButton from "../../AddTask/components/DateButton";
-import PointsDropdown from "../../AddTask/components/PointsDropdown";
-import AssigneeDropdown from "../../AddTask/components/AssigneeDropdown";
-import TagDropdown from "../../AddTask/components/TagDropdown";
 import type { FilterType } from "../../../utils/TaskTypes";
 import Button from "../../../components/Button/Button";
 import { useDropdownData } from "../../AddTask/hooks/useDropdownData";
 import { useFilterHandler } from "../hooks/useTaskFilters";
+import PointsDropdown from "../../AddTask/components/Dropdowns/PointsDropdown";
+import AssigneeDropdown from "../../AddTask/components/Dropdowns/AssigneeDropdown";
+import TagDropdown from "../../AddTask/components/Dropdowns/TagDropdown";
+import StatusDropdown from "../../AddTask/components/Dropdowns/StatusDropdown";
+import DateButton from "../../AddTask/components/Dropdowns/DateButton";
 
 //Types----------------------------------------
 type ModalProps = {
