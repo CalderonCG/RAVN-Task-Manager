@@ -1,10 +1,17 @@
-import { useState } from "react";
-import type { FilterType } from "../../../utils/TaskTypes";
+import { useReducer, useState } from "react";
+import type { FilterType, StatusType, User } from "../../../utils/TaskTypes";
 import type {
   GetProfileQuery,
   GetTaskQueryVariables,
   PointEstimate,
+  TaskTag,
 } from "../../../generated/graphql";
+import { tagsReducer } from "../../../utils/Reducer";
+
+type FilterHandlerParameters = {
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setFilters: React.Dispatch<React.SetStateAction<Partial<FilterType>>>;
+};
 
 export const useTaskFilters = (userData?: GetProfileQuery) => {
   const [filters, setFilters] = useState<FilterType>({
@@ -57,5 +64,51 @@ export const useTaskFilters = (userData?: GetProfileQuery) => {
     isMyTask,
     handleMyTask,
     filterInput,
+  };
+};
+
+export const useFilterHandler = ({
+  setIsOpen,
+  setFilters,
+}: FilterHandlerParameters) => {
+  const [selectedAssignee, setSelectedAssignee] = useState<User | undefined>();
+  const [selectedPoints, setSelectedPoints] = useState<string | undefined>(
+    undefined,
+  );
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<StatusType>("ALL");
+  const [tags, tagsDispatcher] = useReducer(tagsReducer, [] as TaskTag[]);
+
+  //Handlers-------------------------------------------------------------------------------
+  const handleApply = () => {
+    setFilters({
+      assigneeId: selectedAssignee,
+      pointEstimate: selectedPoints,
+      status: selectedStatus,
+      tags: tags,
+      dueDate: selectedDate?.toISOString() || undefined,
+    });
+    setIsOpen(false);
+  };
+
+  const filters = {
+    selectedAssignee,
+    selectedPoints,
+    selectedDate,
+    selectedStatus,
+    tags,
+  };
+  const actions = {
+    setSelectedAssignee,
+    setSelectedPoints,
+    setSelectedDate,
+    setSelectedStatus,
+    tagsDispatcher,
+    handleApply,
+  };
+
+  return {
+    filters,
+    actions,
   };
 };

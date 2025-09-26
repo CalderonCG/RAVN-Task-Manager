@@ -64,7 +64,7 @@ function AddModal(props: ModalProps) {
     onSubmit,
   } = useTaskForm(useFormProps);
 
-  //UseEffect to map the inputs if in edit mode
+  //UseEffect to map the inputs if in edit mode-----------------------------------------
   useEffect(() => {
     setIsDisabled(false);
     if (type === "edit" && isOpen && props.task) {
@@ -94,6 +94,8 @@ function AddModal(props: ModalProps) {
       });
     }
   }, [props, type, isOpen, reset, setIsDisabled]);
+
+  //----------------------------------------------------------------------------------------------
 
   return (
     <Dialog

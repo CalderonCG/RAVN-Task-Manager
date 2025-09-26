@@ -4,24 +4,10 @@ import DateButton from "../../AddTask/components/DateButton";
 import PointsDropdown from "../../AddTask/components/PointsDropdown";
 import AssigneeDropdown from "../../AddTask/components/AssigneeDropdown";
 import TagDropdown from "../../AddTask/components/TagDropdown";
-import { useReducer, useState } from "react";
-import type {
-  GetPointsQuery,
-  GetStatusQuery,
-  GetTagsQuery,
-  GetUsersQuery,
-  TaskTag,
-} from "../../../generated/graphql";
-import { tagsReducer } from "../../../utils/Reducer";
-import { useQuery } from "@apollo/client";
-import {
-  GET_POINTS,
-  GET_STATUS,
-  GET_TAGS,
-  GET_USERS,
-} from "../../../queries/TaskQuery";
-import type { FilterType, StatusType, User } from "../../../utils/TaskTypes";
+import type { FilterType } from "../../../utils/TaskTypes";
 import Button from "../../../components/Button/Button";
+import { useDropdownData } from "../../AddTask/hooks/useDropdownData";
+import { useFilterHandler } from "../hooks/useTaskFilters";
 
 //Types----------------------------------------
 type ModalProps = {
@@ -38,48 +24,21 @@ function FilterModal({
   setIsOpen,
   setFilters,
 }: ModalProps) {
-  //Selected states-------------------------------------------------------
-  const [selectedAssignee, setSelectedAssignee] = useState<User | undefined>();
-  const [selectedPoints, setSelectedPoints] = useState<string | undefined>(
-    undefined,
-  );
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedStatus, setSelectedStatus] = useState<StatusType>("ALL");
-  const [tags, dispatch] = useReducer(tagsReducer, [] as TaskTag[]);
+  //Filter selection-------------------------------------------------------
+  const { filters, actions } = useFilterHandler({ setIsOpen, setFilters });
 
   //Queries---------------------------------------------------------------------------------
   const {
-    data: dataTags,
-    loading: loadingTags,
-    error: errorTags,
-  } = useQuery<GetTagsQuery>(GET_TAGS);
-  const {
-    data: dataPoints,
-    loading: loadingPoints,
-    error: errorPoints,
-  } = useQuery<GetPointsQuery>(GET_POINTS);
-  const {
-    data: dataUsers,
-    loading: loadingUsers,
-    error: errorUsers,
-  } = useQuery<GetUsersQuery>(GET_USERS);
-  const {
-    data: dataStatus,
-    loading: loadingStatus,
-    error: errorStatus,
-  } = useQuery<GetStatusQuery>(GET_STATUS);
-
-  //Handlers-------------------------------------------------------------------------------
-  const handleApply = () => {
-    setFilters({
-      assigneeId: selectedAssignee,
-      pointEstimate: selectedPoints,
-      status: selectedStatus,
-      tags: tags,
-      dueDate: selectedDate?.toISOString() || undefined,
-    });
-    setIsOpen(false);
-  };
+    dataPoints,
+    errorPoints,
+    dataStatus,
+    errorStatus,
+    dataTags,
+    errorTags,
+    dataUsers,
+    errorUsers,
+    isLoading,
+  } = useDropdownData();
 
   return (
     <Dialog
@@ -95,46 +54,46 @@ function FilterModal({
           <DialogTitle className="font-bold">Filter tasks</DialogTitle>
           <div className="flex w-full flex-col lg:flex-row lg:items-center gap-2 ">
             <PointsDropdown
-              selectedValue={selectedPoints}
-              onSelect={setSelectedPoints}
-              isLoading={loadingPoints}
+              selectedValue={filters.selectedPoints}
+              onSelect={actions.setSelectedPoints}
+              isLoading={isLoading}
               hasError={!!errorPoints}
               options={dataPoints}
             />
             {showAssignee && (
               <AssigneeDropdown
-                selectedValue={selectedAssignee}
-                onSelect={setSelectedAssignee}
-                isLoading={loadingUsers}
+                selectedValue={filters.selectedAssignee}
+                onSelect={actions.setSelectedAssignee}
+                isLoading={isLoading}
                 hasError={!!errorUsers}
                 options={dataUsers}
               />
             )}
 
             <TagDropdown
-              selectedValue={tags}
-              onSelect={dispatch}
-              isLoading={loadingTags}
+              selectedValue={filters.tags}
+              onSelect={actions.tagsDispatcher}
+              isLoading={isLoading}
               hasError={!!errorTags}
               options={dataTags}
             />
 
             <StatusDropdown
               isFilter={true}
-              selectedValue={selectedStatus}
-              onSelect={setSelectedStatus}
-              isLoading={loadingStatus}
+              selectedValue={filters.selectedStatus}
+              onSelect={actions.setSelectedStatus}
+              isLoading={isLoading}
               hasError={!!errorStatus}
               options={dataStatus}
             />
             <DateButton
-              selectedDate={selectedDate}
-              onChange={setSelectedDate}
+              selectedDate={filters.selectedDate}
+              onChange={actions.setSelectedDate}
             />
           </div>
           <div className="flex gap-4 w-full justify-between lg:justify-end">
             <Button onClick={() => setIsOpen(false)}>Cancel</Button>
-            <Button variant="primary" onClick={() => handleApply()}>
+            <Button variant="primary" onClick={() => actions.handleApply()}>
               Apply
             </Button>
           </div>
