@@ -40,6 +40,14 @@ export const useTaskFilters = (isUser: boolean, userData?: GetProfileQuery) => {
     }));
   };
 
+  // Remove specific tag from tags array
+  const removeTag = (tagToRemove: TaskTag) => {
+    setFilters((prev) => ({
+      ...prev,
+      tags: prev.tags?.filter((tag) => tag !== tagToRemove) || undefined,
+    }));
+  };
+
   //Checks if the user tasks are being filtered
   const isMyTask = filters.assigneeId?.id === userData?.profile.id;
 
@@ -67,16 +75,23 @@ export const useTaskFilters = (isUser: boolean, userData?: GetProfileQuery) => {
       ...(filters.tags && { tags: filters.tags }),
     },
   };
-  return {
-    filters,
-    setFilters,
+  const values = {
     search,
-    setSearch,
     isFiltering,
     isMyTask,
-    handleMyTask,
     filterInput,
+  };
+  const actions = {
+    setFilters,
+    setSearch,
+    handleMyTask,
     resetFilter,
+    removeTag,
+  };
+  return {
+    filters,
+    values,
+    actions,
   };
 };
 

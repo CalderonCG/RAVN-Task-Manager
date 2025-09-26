@@ -27,6 +27,7 @@ import { mapDate, numberMap, statusMap } from "../../utils/DataMapper";
 import { useTaskFilters } from "../../features/Dashboard/hooks/useTaskFilters";
 import { useTaskData } from "../../features/Dashboard/hooks/useTaskData";
 import { useDragNDrop } from "../../features/Dashboard/hooks/useDragNDrop";
+import FilterDropdown from "../../features/Dashboard/components/FilterDropdown";
 
 type DashboardProps = {
   isOpen: boolean;
@@ -36,6 +37,7 @@ type DashboardProps = {
 function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
   //Consts---------------------------
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+
   const [isList, setIsList] = useState(false);
   //Get user data query
   const {
@@ -45,21 +47,11 @@ function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
   } = useQuery<GetProfileQuery>(GET_PROFILE);
 
   //Filter options
-  const {
-    filters,
-    setFilters,
-    search,
-    setSearch,
-    isFiltering,
-    isMyTask,
-    handleMyTask,
-    filterInput,
-    resetFilter,
-  } = useTaskFilters(false, userData);
+  const { filters, values, actions } = useTaskFilters(false, userData);
 
   //Query data
   const { data, statusList, isLoading, errorMessage, UpdateTaskMutation } =
-    useTaskData(filterInput, userLoading, userError?.message);
+    useTaskData(values.filterInput, userLoading, userError?.message);
 
   //Drag and drop
   const { activeTask, handleDragEnd, handleDragStart } = useDragNDrop(
@@ -82,8 +74,8 @@ function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
   return (
     <div className="w-full h-full flex flex-col p-4 items-center gap-4 text-font overflow-hidden ">
       <SearchBar
-        value={search}
-        onChange={setSearch}
+        value={values.search}
+        onChange={actions.setSearch}
         avatar={userData?.profile.id}
       />
       <div className="w-full flex items-center justify-between">
@@ -95,7 +87,7 @@ function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
                 {`${numberMap[filters.pointEstimate as PointEstimate]} points`}
                 <RiCloseFill
                   className="text-xl mt-0.5 text-font-secondary hover:text-font"
-                  onClick={() => resetFilter("pointEstimate")}
+                  onClick={() => actions.resetFilter("pointEstimate")}
                 />
               </Badge>
             )}
@@ -104,25 +96,22 @@ function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
                 {filters.assigneeId.fullName}
                 <RiCloseFill
                   className="text-xl mt-0.5 text-font-secondary hover:text-font"
-                  onClick={() => resetFilter("assigneeId")}
+                  onClick={() => actions.resetFilter("assigneeId")}
                 />
               </Badge>
             )}
             {filters.tags && filters.tags.length > 0 && (
-              <Badge variant="neutral" tagTitle={filters.tags.toString()}>
-                {`${filters.tags.length} tags`}
-                <RiCloseFill
-                  className="text-xl mt-0.5 text-font-secondary hover:text-font"
-                  onClick={() => resetFilter("tags")}
-                />
-              </Badge>
+              <FilterDropdown
+                tags={filters.tags}
+                removeTag={actions.removeTag}
+              />
             )}
             {filters.status && filters.status !== "ALL" && (
               <Badge variant="neutral">
                 {statusMap[filters.status]}
                 <RiCloseFill
                   className="text-xl mt-0.5 text-font-secondary hover:text-font"
-                  onClick={() => resetFilter("status")}
+                  onClick={() => actions.resetFilter("status")}
                 />
               </Badge>
             )}
@@ -131,13 +120,13 @@ function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
                 {mapDate(filters.dueDate, false)}
                 <RiCloseFill
                   className="text-xl mt-0.5 text-font-secondary hover:text-font"
-                  onClick={() => resetFilter("dueDate")}
+                  onClick={() => actions.resetFilter("dueDate")}
                 />
               </Badge>
             )}
           </div>
-          <Button variant="neutral" onClick={() => handleMyTask()}>
-            {isMyTask ? (
+          <Button variant="neutral" onClick={() => actions.handleMyTask()}>
+            {values.isMyTask ? (
               <RiUserStarFill className="text-3xl text-font" />
             ) : (
               <RiUserStarLine className="text-3xl text-font" />
@@ -167,7 +156,8 @@ function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
   [&::-webkit-scrollbar-track]:bg-background
   [&::-webkit-scrollbar-thumb]:bg-accent"
         >
-          {data?.tasks.length === 0 && (isFiltering || search.trim() !== "") ? (
+          {data?.tasks.length === 0 &&
+          (values.isFiltering || values.search.trim() !== "") ? (
             <div className="w-full flex-1 flex flex-col items-center justify-center font-bold text-font-secondary text-xl">
               <RiZoomOutLine className="text-4xl" />
               <p className="font-normal text-center">
@@ -219,7 +209,7 @@ function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
           isOpen={isFilterOpen}
           setIsOpen={setIsFilterOpen}
           filters={filters}
-          setFilters={setFilters}
+          setFilters={actions.setFilters}
           showAssignee={true}
         />
       )}
