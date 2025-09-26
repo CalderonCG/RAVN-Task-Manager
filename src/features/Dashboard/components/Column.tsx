@@ -15,7 +15,7 @@ function Column({ type, tasks }: ColumnProps) {
     id: type.name,
   });
   //Sorts the tasks with the position value
-  const sortedTask = tasks?.sort((a, b) => a.position - b.position);
+  const sortedTask = tasks?.sort((a, b) => a.position - b.position).reverse();
 
   return (
     <div

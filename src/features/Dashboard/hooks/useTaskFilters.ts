@@ -64,10 +64,10 @@ export const useTaskFilters = (isUser: boolean, userData?: GetProfileQuery) => {
       ...(search !== "" && { name: search }),
       ...(filters.status !== "ALL" && { status: filters.status }),
 
-      ...(filters.assigneeId?.id &&
-        (!isUser
-          ? { assigneeId: filters.assigneeId.id }
-          : { assigneeId: userData?.profile.id })),
+      ...(isUser
+        ? userData?.profile.id && { assigneeId: userData.profile.id }
+        : filters.assigneeId?.id && { assigneeId: filters.assigneeId.id }),
+
       ...(filters.dueDate && { dueDate: filters.dueDate }),
       ...(filters.pointEstimate && {
         pointEstimate: filters.pointEstimate as PointEstimate,

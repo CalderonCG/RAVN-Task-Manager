@@ -275,7 +275,7 @@ function AddModal(props: ModalProps) {
               <div className="w-full flex justify-end items-center">
                 {/* Validation errors */}
                 {Object.keys(errors).length > 0 && (
-                  <p className="text-primary flex-1">
+                  <p className="text-primary text-start flex-1">
                     {Object.values(errors)[0]?.message}
                   </p>
                 )}
