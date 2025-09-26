@@ -108,7 +108,7 @@ function User() {
               <h1 className="text-font-secondary text-lg">
                 Highest rated completed tasks
               </h1>
-              <div className="rounded-xl w-full   lg:h-48 border-background-modal border-1 overflow-x-scroll">
+              <div className="rounded-xl w-full   lg:h-auto border-background-modal border-1 overflow-x-scroll lg:overflow-auto">
                 <ListHeader />
                 {sortedTasks?.slice(0, 3).map((task) => (
                   <Card task={task} variant="list" />
