@@ -56,7 +56,10 @@ function User() {
         <ErrorMessage message={message} />
       ) : (
         <div className="w-full flex flex-col lg:flex-row gap-4 overflow-y-auto">
-          <div className="w-full lg:w-1/4 lg:py-16 lg:h-full bg-background-secondary p-8 flex flex-col items-center justify-between gap-8 rounded-xl">
+          <div
+            className="w-full lg:w-1/4 lg:py-16 lg:h-full bg-background-secondary p-8 flex flex-col items-center justify-between gap-8 rounded-xl
+          lg:px-4"
+          >
             <div className="w-full   flex flex-col items-center gap-4 text-center">
               <img
                 src={avatarGenerator(userData?.profile.id)}
@@ -68,19 +71,19 @@ function User() {
               </h1>
             </div>
             <div className="w-full flex flex-col gap-4">
-              <div className="flex w-full  justify-between lg:justify-start lg:gap-4">
+              <div className="flex w-full  justify-between lg:justify-start lg:gap-2">
                 <p className="font-semibold text-font-secondary">Email:</p>
                 <p>{userData?.profile.email}</p>
               </div>
-              <div className="flex w-full justify-between lg:justify-start lg:gap-4">
+              <div className="flex w-full justify-between lg:justify-start lg:gap-2">
                 <p className="font-semibold text-font-secondary">Type:</p>
                 <p>{userTypeMap[userData?.profile.type as UserType]}</p>
               </div>
-              <div className="flex w-full justify-between lg:justify-start lg:gap-4">
+              <div className="flex w-full justify-between lg:justify-start lg:gap-2">
                 <p className="font-semibold text-font-secondary">Created at:</p>
                 <p>{mapDate(userData?.profile.createdAt, false)}</p>
               </div>
-              <div className="flex w-full justify-between lg:justify-start lg:gap-4">
+              <div className="flex w-full justify-between lg:justify-start lg:gap-2">
                 <p className="font-semibold text-font-secondary">Updated at:</p>
                 <p>{mapDate(userData?.profile.updatedAt, false)}</p>
               </div>
